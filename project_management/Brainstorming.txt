@@ -16,7 +16,8 @@ Stage 2:
 1. No criticism
 2. You are not trying to solve the problem
 3. Don't interrupt anyone
-4. Write down everything
+4. Write down everything, not just the title.
+    (i.e. Tower defense + turtle towers, are the turtle the towers?)
 
 Stage 3:
 [Begins the session]
@@ -47,6 +48,13 @@ Stage 5:
 Stage 6:
 [End loop]
 1. Quantity matters
+
+Stage 7:
+[Filtering Session]
+1. Problems should be simple
+2. Divide Complex problems
+3. Brainstorm each subproblem
+4. Problems should be simple and easily articulated
 
 Output:
   -> Brainstorming leads to Prototyping
