@@ -1,0 +1,123 @@
+Low fidelity prototype 1.
+
+[Why paper prototype?]
+1. Get Feedback from other people
+  - Proof of concept
+  - Communicate, set a solid point to start
+2. Experiment with Alternatives
+  - Catch big problems you are going to deal
+3. Easy to change or throw away
+    - It has to be disposable and cheap
+    
+-> Find the small set of rules, who takes the most of the fun
+-> Hypothesis, the player answer YES or NOT if the game was good or not
+
+[How?]
+1. Define a set of rules
+2. The consequences of the design will pop up a bunch of new dynamics
+
+[Testing]
+1. Bring in players, test from the start
+2. Everybody can contribute to the design of the game (artist, developers)
+
+[Analysis]
+1. Shows usability problems
+    - A Player has a decision (knows what to do), but has no idea how to execute it. 
+
+[FEEDBACK]
+1. Players tend to give more criticism when they see something is clearly incomplete.
+2. Deliverately set things that look incomplete, so people will give you more feedback
+    (ie. Text Placeholder for cards)
+3. Feedback is valuable, but the solutions they give you are not.
+    (ie maybe the color isn't the problem maybe the shapes are too small)
+    
+    
+[Tools]
+1. Large sheet of paper
+    Grided / hex grided
+2. Index Cards
+  - Write rules
+  - Build graphs
+3. Dice
+4. Post-it
+  - Multiple screens
+5. pencil, tape, ...
+6. Small toys
+    -lego, towers
+7. Mobile Camera
+Warning: Contrained by the tools!
+
+
+[Team Roles]
+- Players
+- Computer / Facilitator
+    - Present the rules
+    - Get the feedback
+    - Follow the script (respond accordingly)
+    - Encourage the player to think loud, 
+      is he confused? 
+      is he thinking hard about the problem?
+      is he bored?
+- Observers
+    - Cannot intervene with the player
+    - let him play suboptimal, take bad decisions
+    
+ [Human simulating the backend]
+ - Someone plays the computer
+ - Very constrained
+ - Communication
+ - Rules
+ - Don't let the player what the computer is thinking
+ - The computer only reveals information. It doesn't explains what is it doing
+ 
+ [Player vs Player]
+ - People plays together
+    - Cooperative / competitive
+    - Symetric / Asymetric
+ - Very Loose
+    - Open Communication
+    - Rule Negotiation
+  - Facilitator helps explain the rules
+  
+  [Live action]
+  - Predetermined rules
+  - Explained before game
+  - Loose interpretation and constraints
+  - Limited communication 
+  - Avatar walks around
+  
+  [Markers]
+  - High Contrast for markers in the game
+  - 
+  
+  [Rules]
+  - Write rules on cards
+  - Rearrange flow control
+  - Update cards as you change rules
+  - Periodically take photos
+  - Simplify, simplify simplify set of rules
+  
+  [Quality Loop, Iterative Design]
+  1. Question
+      - What's this prototye is going to achieve
+  2. Rapid design
+      - Axiomatic design, things without a question
+        (assume a random condition, and player has to identify and anticipate)
+  3. Play & test
+      - Team & Others
+  4. Revise
+  5. Repeat
+  
+  [Changes]
+  1. Amend, replace, killing a rule
+      - something buggle the game or its too confuse, then take the rule out
+  2. Limit/Unlimit
+  3. Player interference
+  4. Mess with the play order
+  5. Variable changes. (attack/defense) Multiply/divide 2
+  6. Core and reconstruct
+  7. Throw away
+  
+  
+  -> output:
+      design log, problems, changes.
