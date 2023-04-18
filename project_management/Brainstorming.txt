@@ -1,7 +1,8 @@
 [Metadata]
 MIT OCW CMS.611J class 2:
     https://www.youtube.com/watch?v=j8ZGpRo8jd4&list=PLUl4u3cNGP61V4W6yRm1Am5zI94m33dXk&index=4
-
+Bibliography:
+    Applied imagination, Alex Osborn
 [Organization Process]
 
 [Explanation]
