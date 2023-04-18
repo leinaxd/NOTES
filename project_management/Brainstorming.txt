@@ -5,6 +5,8 @@ Bibliography:
     Applied imagination, Alex Osborn
 [Organization Process]
 
+The idea of this talk is to FORMALIZE the BRAINSTORMING process
+
 [Explanation]
 Stage 1:
 1. Explain the goal even if everybody knows
@@ -21,14 +23,31 @@ Stage 2:
     (i.e. Tower defense + turtle towers, are the turtle the towers?)
 
 Stage 3:
+[Roles]
+1. Designate a facilitator (leader) responsabile of
+    - Understand and explain the problem
+    - Aim of the brainstorm session
+    - Encouraging ideation and discouraging criticism
+    - Ensure that no voices are lost during discussion (call people not involved enought)
+    - Encourage people join ideas together (thinking together vs alone)
+    - Encourage synthesis of ideas
+    - His role isn't to identify the best solutions
+2. Resignate a secretary responsible of:
+    - Record every idea
+    - Monitor duration of the session
+    - if possible, participate in brainstorming
+    - Shows the ideas in a huge panel so everybody can see
+    - His role isn't to qualify each idea, just report
+3. These roles swaps so everybody can participate
+
+Stage 4:
 [Begins the session]
-1. Designate a facilitator and secretary
-2. Keep a Casual Spirit atmosphere
-3. Start with a bad or worthless idea 
+1. Keep a Casual Spirit atmosphere
+2. Start with a bad or worthless idea 
   (The stupider the first idea, the confident to speak)
 
 
-Stage 4:
+Stage 5:
 [Feedback coming]
 1. Positive feedback ALWAYS  
   (zero negative feedback, you want to lower defenses)
@@ -38,7 +57,7 @@ Stage 4:
 3. From unfeasible to scaled down
 4. Rework unfeasible ideas (Best approach) vs   
 
-Stage 5:
+Stage 6:
 [Rework]
 1. Build on ideas. Combine, transform
 2. Exploration of each idea
@@ -46,11 +65,11 @@ Stage 5:
 4. Rework unfeasible ideas
 5. REINFORCE, positive loop makes ideas wilder
 
-Stage 6:
+Stage 7:
 [End loop]
 1. Quantity matters
 
-Stage 7:
+Stage 8:
 [Filtering Session]
 1. Problems should be simple
 2. Divide Complex problems
@@ -59,3 +78,6 @@ Stage 7:
 
 Output:
   -> Brainstorming leads to Prototyping
+
+Form groups:
+    - Everybody stands up. As you form groups of 6, sit down
