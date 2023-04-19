@@ -1,0 +1,68 @@
+[Metadata]
+MIT OCW CMS.611J Lecture 5:
+    https://www.youtube.com/watch?v=UxMpn92vGXs&list=PLUl4u3cNGP61V4W6yRm1Am5zI94m33dXk&index=5
+Bibliography:
+
+[Project management]
+- Planning, Organizing, Securing, Motivating, Controlling the resources
+
+[How?]
+- Predicting
+- Plan for the risk
+
+[Waterfall Plan]
+1. Concept & Design
+    - Define some specifications
+        - What to make?
+        - What are the features?
+    (ie in games is its concept and design)
+2. Pre-production
+    - Test in small scale
+    - Has your team done what they intended to do
+    - Is the software you were going to buy actually work?
+3. Production
+    - Hire a team
+    - Create a whole lot of fancy schedules
+    - Implement everything
+4. Alpha
+    - All your features in
+5. Beta
+    - More testers
+    - Free players vs hire a lot of testers
+6. Shipping
+7. Maintenance
+
+Limitations
+  Bottlenecks
+  - You solve every stage 100% and move on to the next stage
+  - All testing goes into the end where the team can't respond it usefully
+  - All schedules strech out, budget stretch out
+  - You are not doing user testing (reactions)  
+   
+  
+[Agile Manifesto]
+1. DESIGN ITERATION
+    - Assume you will changing your design in the course of the project
+2. Changes on-demand
+    Its better to talk rather than send a whole change requests.
+3.  Prototype > Documentation
+    - Show us what is doing (working software) vs tell us what it will do (comprehensive documentation)
+4. Customer collaboration over contract negotiation
+    - Don't worry about signing contracts and getting people to observe milestones
+5. Responding to change over following a plan
+    - If you discover, what you're doing isn't working, sit down and try to fix it
+    rather than go down the rabbit hole
+
+[Agile method]
+1. Start with your idea and vision
+2. On every iteration
+    Run the waterfall process
+    - A little bit of design
+    - A little bit of implementation
+    - Spend time testing
+    - 
+
+[Types of project management called Agile]
+
+
+[Scrum]
