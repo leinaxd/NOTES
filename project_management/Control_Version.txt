@@ -1,0 +1,64 @@
+[Metadata]
+MIT OCW CMS.611J class 3:
+    https://www.youtube.com/watch?v=2pfdTSZ-GUM&list=PLUl4u3cNGP61V4W6yRm1Am5zI94m33dXk&index=3
+Bibliography:
+    
+    
+[Aliases]
+    TLA??? 
+    Revision control system (RCS)
+    Source Contro Management (RCM)
+    Source Control
+    Version Control 
+
+    Concurrent Version Systems (CVS)
+    Subversion (SVN)
+    Perforce (p4c)
+    Git 
+    Mercurial (hg)
+[Idea]
+    - you have 1 copy of the Perfect True Platonic source code someone else and 1 copy in your machine
+        Machine -> Server you copy files from a central server
+        Server -> Machine you make changes in your local machine
+        Machine -> Server you copy files to the central server
+    - Syncronizes files
+[Features]
+    - Authoritative (trust your teamworks)
+    - Backup system
+    - A way to share code
+    - A history of your project
+    - An undo button
+    - A way to simultaneous edit the same file
+    
+[Good practices]
+    - At the submitting, include a comment of what the heck you have done
+
+[Operations]
+    - Copy from the server
+        (<get> <update> <pull> <checkout> <revert (special case to undo)>)
+    - Submit changes to the server
+        (<submit> <commit> <put> <push> <checkin>)
+    - Check status of local files
+        (<status>)
+    - Lock files so nobody can touch the file you are working on.
+        (<lock>)
+    - Compare different versions of the same file
+        (<diff>)
+    - Merge changes by two different people
+        (<merge> <resolve>)
+
+[Distributed Version Control]
+    - List of changes, you can send here or there, skip the server, send to a machine
+    - Usefull for teams, but quite dangerous to sync
+
+[Rules]
+    1. Don't break the build!
+        The version of the project in your authoritative server should always build and run with 0 errors and 0 warnings
+        - This can delay the commit
+    2. Use a check build
+
+    [Tips]
+    - ignore uneeded files
+    - Lock binary files.
+    (ie. p4c, usefull for modeling)
+    
