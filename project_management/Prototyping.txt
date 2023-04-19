@@ -12,6 +12,10 @@ Low fidelity prototype 1.
 -> Find the small set of rules, who takes the most of the fun
 -> Hypothesis, the player answer YES or NOT if the game was good or not
 
+[When?]
+1. After Brainstorming
+
+
 [How?]
 1. Define a set of rules
 2. The consequences of the design will pop up a bunch of new dynamics
@@ -118,6 +122,11 @@ Warning: Contrained by the tools!
   6. Core and reconstruct
   7. Throw away
   
-  
+  [Overfitting & Underfitting]
+  1. For a quick project, don't do more than you should
+    (Don't apply an effect because its easy or because you can.
+     like photoshop, you get lost in the features)
+     
+       
   -> output:
       design log, problems, changes.
