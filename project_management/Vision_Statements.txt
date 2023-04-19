@@ -1,0 +1,53 @@
+[Metadata]
+MIT OCW CMS.611J class 3:
+    https://www.youtube.com/watch?v=2pfdTSZ-GUM&list=PLUl4u3cNGP61V4W6yRm1Am5zI94m33dXk&index=4
+Bibliography:
+    
+VISION STATEMENTS
+[Why?]
+- Communicate what to expect from the project.
+
+
+[Design Documents, the old alternative]
+- Document describing the game, from start to finish
+- All its going to happend
+- All mechanichs
+- All the characters
+- All the stories
+- All the interactions
+Limitations
+  1. A guy spends a lot of time maintaining, and nobody spends any time reading
+  2. Nobody spends time maintaining, and nobody spends any time reading
+  Not a very useful investment of time, but a lot of time invested in it.
+Why?
+  - People feel better when things are written down.
+  - Get confident on what they are doing.
+  
+ 
+[When?]
+- After prototyping
+- After playing with your model
+
+[Who?]
+- Defines the project for the team and its clients
+
+[What?]
+- Goal
+- Scope
+- Ideas
+- Theme
+- Core mechanics
+- Story
+- Audience
+- Characters
+
+[Format]
+- 1 page or less
+- Back of the box
+- 3/4 bullet points to put on the back of the game's selling box
+- High level Design Doc vision statement
+- Few sentences Goal
+- 20 seconds of gameplay
+Formats: 
+  - Back of Box
+  - HLDD
