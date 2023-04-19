@@ -1,0 +1,22 @@
+[Metadata]
+MIT OCW CMS.611J lecture 4:
+    https://www.youtube.com/watch?v=dE-QgdrtzHw&list=PLUl4u3cNGP61V4W6yRm1Am5zI94m33dXk&index=4
+Bibliography:
+    
+    
+[Elevator Pitches]
+- One minute pich in an elevator with a manager
+
+[Why?]
+- if you can describe the project in one minute, that's a good project
+
+[What?]
+- Convince him why its cool
+- Convince him what it does
+- What about your game is planning for randomness
+- Core piece
+- Vision statement
+
+[Practice?]
+- Use already done games and explain it as it was your project
+- Explain terrain, characters etc.
