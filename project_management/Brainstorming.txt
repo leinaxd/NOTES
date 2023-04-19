@@ -4,8 +4,13 @@ MIT OCW CMS.611J class 2:
 Bibliography:
     Applied imagination, Alex Osborn
 [Organization Process]
-
 The idea of this talk is to FORMALIZE the BRAINSTORMING process
+
+[When?]
+1. Before Prototyping
+2. After Prototyping
+3. After feedback
+4. After testing
 
 [Explanation]
 Stage 1:
