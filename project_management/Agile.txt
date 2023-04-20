@@ -55,14 +55,193 @@ Limitations
 
 [Agile method]
 1. Start with your idea and vision
-2. On every iteration
+2. On every iteration (SPRINT)
     Run the waterfall process
     - A little bit of design
     - A little bit of implementation
-    - Spend time testing
-    - 
+    - Test 
+    - Adapt
+        - Reviewing the overall project is doing, is the right direction?
+        - Modify your plan accordingly
+        - Adjust the processes and try to improve them
+        - Who can get those task done faster or better
+    - Start next iteration
+    
+[Benefits]
+1. spend less time designing features that people don't want, and more on feature they do want
+2. Doesn't make you code faster, but makes sure the code you write is the code you want
+
+[Limitations]
+1. Classic Agile assumes interchangable tasks & Developers
+2. Software teams are not interchangeable
+    (Programmers, Artist, Designers, Audio Specialists, Producers)
 
 [Types of project management called Agile]
 
 
 [Scrum]
+https://www.scrum-institute.org/
+- Transparency
+    - All your decisions and processes are transparent
+    - Everybody in the team can be involved
+    - Everybody can understand why something was done.
+- Inspection
+    - Individual responsability of stay informed and share information
+    - Everything in the team is inspected at some point
+        (Decisions, Processes, Team Actions, Deliverables, Code)
+    - if the team discovers a problem, (The builds keep breaking every night)
+        the team takes responsability and fix it.   
+- Adaptability
+    - Willing to adapt processes and decisions.
+    - Find a structural problem
+- The project management is the team Responsability. 
+        (not a project owner, not the programmer team, not the producer)
+    - Therefore every one has to understand what everybody is doing.
+    
+    
+[Anatomy of a SPRINT]        
+- Meetings  
+    - Sprint Planning, Daily Scrum, Sprint Review, Retrospective
+        Sprint: Iteration cycle of redesign. It has a fixed length (depending on the project) 2 weeks-1month
+        - You take a couple of features, implement them, test it and grab more features.
+        Planning meeting: How many of those items can get done
+        Daily Scrum: talk about what you are doing, how you are doing it, what your hope to get done.
+        Sprint review: At the end of the sprint, compare what you have done against what you want to have done.
+                (adjust your backlog if you need to)
+        Retrospective meeting: instead of talking the product, you talk about the team and the processes.
+- Artifacts, 
+    - Product Backlog, Sprint Backlog, Task list, Scrumboard
+        Product Backlog: Back log of every sprint (complete feature list)
+        Sprint Backlog: Set of features for this particular sprint
+        Task list: Subdivision of each feature. A chunk of work you can estimate fairly well.
+        
+[Roles]
+Team is responsible for all its project management (not true)
+- Team Member
+- Product Owner
+    - Holds the solo vision of the product
+    - Defines the backlog, helps prioritizing it
+    - Lets them know which of their features are the most important
+    - wheather the features are working the way they need to.
+- Scrum Master
+    - Team coach / Keeper of documents
+    - Runs the meetings
+    - Facilitator
+    - Ensure that scrum is followed
+    - Team is working smoothly
+    - Updates product backlog, sprint backlogs, task lists, scrum boards, records.
+    - Keeping meeting/communications flowing is a lot for one person
+    - Don't burden with making final decisions 
+   
+
+[Scrum Board]
+- Physical board
+    - Cards with all task
+    - Divide in section to show the status of each task
+- Show how far along they are, what is the state of their project
+- Digital Boards 
+    Trello
+    - chrome plug-in "scrum for trello"
+    Asana
+    
+    
+    
+[Product Backlog]
+    Not just a feature list
+    Its an organized, Prioritized Feature List
+    Maintained & Organized by the Product Owner
+    - How to decide what goes into it?
+    - How do you estimate?
+    - How do you prioritize?
+Items
+    - ID: unique number of thought order
+        - Useful when breaking a task into subtask, showing related task with same id
+    - Description of the feature
+    - Authorization: Whose can access those files
+    - Estimation of how big this feature is.
+        (small, medium, large, comparison between tasks)
+        if feature A takes you 3 hs, and you have 3 other small tasks. 
+            its easy to understand that this project will take you 12hs
+    - How big is the relation between tasks
+    - Divide some task? (ie. networking)
+[Time Boxing]
+
+
+[User Stories]
+- Specific way to describe a feature
+- Unique to Scrum
+- Test your feature in a clean manner to someone who didn't help you write the document
+- You can double check when you are going to implement this
+As the 
+    (Who are you going to write the feature for, and who is going to use it)
+    - User
+    - Designer
+    - Artist
+I want 
+    (Describe what are you going to do. But explain the test)
+    - Describe something testable here
+So that
+    (why you need it?)
+    - Explain reason why you want this feature
+(ie. Physics to show a rock drown into water. Instead make an animation of that part. Rest will work without engine)
+
+User Story vs Features:
+    - As the user i want cars to go fast so i can feel powerful in game.
+    -> The player's car's max speed should be at least 150MPH
+    - As the designer i want a level editor so that i can create a level without depending on the artists or programmers
+    -> Level editor
+
+MAKE SURE YOU ARE NOT DOING EXTRA WORK!
+
+[How do you keep meetings short (time boxing)]
+
+[Ex]
+- Create a product backlog for P2 using User Stories & Excel
+- Prioritize your features
+- Armed with your product Backlog & your vision statement
+    Prepare a 2 min. description of your project goals & important features.
+    Not a pitch, but a report on the state of your team's preparation to work this weekend
+    
+    
+ [Meetings]
+ If you have 1h meeting in a 6 group team, then you have wasted 6hs. So make sure you used the time properly.
+ - Timeboxing
+    - Time budget for this task, don't exceed.
+        If you didn't found your answer in 1hs, stop take the best and continue.
+        (perfect is the enemy of the good)
+    (ie. Sprints are just a bit timebox, after it finished you reevaluate your situation)
+    
+ - Having Clear Agendas
+    
+        
+ - Having Involved Participants
+ 
+ Rules.
+ 1. Before you get the meeting, make sure you know the goal of it,
+    what do you get from this.
+ 2. Timeboxing the meeting (15-20min)
+ 2. If you don't know what's the meeting for, you probably shouldn't having it.
+ 3. Who actually needs to be there? Don't involve people doesn't need to be there.
+    Not all meeting requires the whole team.
+    
+    
+ [Sprint review Meeting]
+ - Demonstrate working product
+ - Review & Evaluate Product
+ - Review & Update Product Backlog
+ - Timebox (1-2h)
+ 
+ [Retrospective Meeting] 
+    (process & team, short list 1-2 items upgrades from the past)
+ - Things to keep doing
+ - Things to stop doing
+ - New things to try
+ - Timebox (30min)
+ 
+ [Daily Scrum]
+ - What did you do yesterday?
+ - What will you do next?
+ - What is blocking you? (what is keeping you from getting things done?)
+ - Timeboxed (5-10min) (3 fast questions)
+ Note.
+   If issues comes don't talk about it. arange a special meeting with only involved people who can help you.
