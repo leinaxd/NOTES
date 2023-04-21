@@ -1,0 +1,124 @@
+[Metadata]
+MIT OCW CMS.611J Lecture 6:
+    https://www.youtube.com/watch?v=nrfl6GAQy2s&list=PLUl4u3cNGP61V4W6yRm1Am5zI94m33dXk&index=7
+Sources:
+
+[Iterate everything]
+Experiment, Analyze, Repeat
+- Paper prototypes
+- Digital prototypes
+- Team communication
+- Baseball pitches
+- Scientific Theories
+- Romantic relationships
+- Lasagna Recipe
+- Coding Style
+
+
+1. How you name your variables
+
+[Debugging]
+- Coding is slow
+  - Think
+  - Implement
+  - debug
+  - integrate
+  - iterate
+Debugging is slower
+  - Figure the problem (slower)
+  - Change the code
+
+[Playtest your code]
+Clear code?
+- your gameplay is harder than you think
+- your puzzles are harder than you think
+- your instructions aren't as clear
+- your documentation isn't as clear
+- your code isn't as comprehensible
+ITS HARDER TO READ CODE THAN TO WRITE IT!
+
+[Simplifying]
+- Write your code to require as little knowledge as possible
+  - of the project
+  - of the function
+  - of the computer language
+  - of the subject matter (math)
+Simplicity
+    - easy to read
+    - fewer bugs
+    - fewer characters vs higher meaning 
+        (slower part is thinking not writing, so write longer variable names)
+    - each step is simple
+
+[Psychology]
+- Reduce num things to remember
+    - an avg human can hold in working memory is 7+-2
+- Reduce num decisions
+    - After a long session the quality of decisions gets deteriorated
+    
+    
+[Comments]
+- Write comments to explain WHY we are doing something
+- Write comments to explain WHAT are we doing ONLY when the briefest glance of code is not enought
+- Name variables and functions so that they remove the need for comments
+- If an algorithm is long enought, its easy to loose track of the steps, write an overview of the algorithm in plain text
+- When in doubt, write a comment
+
+[Variable naming]
+- Should be longer enought to describe the concept
+- Should be pronunciable
+- Should look diferent
+- Should be spelled correctly
+- should include the units of measurement
+- Should teach other programmers what is doing
+Boolean variable should be asking a question (status is a bad name)
+string variables vs attributes. 
+    if status=='closed'
+    vs
+    if status == Status.Closed
+    you avoid misspelling errors
+[Variable Scope naming]
+- according the function of the variable it correspondes some coding style
+  - camel casing
+  - unerscores
+  -> is it an argument?
+  -> is it a function?
+  -> is it a module name? a class name?
+[Statements]
+Don't do everything in one line. Do the equation more intuitive
+
+[Warnings]
+- Are clues about flaws of your code
+- when you let warning stick around, you won't notice the new ones as you are ignoring everything
+
+[Backward conditional]
+in some languages is better to
+    if (null=variable_name)  than
+    if (variable_name=null)
+so you get a compiler error for asignaments
+
+[Don't nest]
+use functions but don't nest
+use dependency injection
+
+[Proximity]
+Declaration of variable should be close to its usage
+same for functions
+
+[Recursion]
+looks cool, but hard to debug
+
+
+[Do profiling]
+instead of playing with which part is the slowest, do profile to understand each part
+
+
+[ASAP]
+Address bugs before writing new code
+treat warning as errors
+
+[Debugging]
+Binary search
+take a walk, many bugs resolve doing something else
+
+[Coding standars]
