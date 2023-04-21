@@ -1,0 +1,57 @@
+
+[Feature Size]
+- Is this feature small? medium? or large?
+    -> he gives you toy examples, then ask you to vote. He made people reveal their thought process.
+    -> We are good reasoning about shape, but time and complexity we are bad.
+        Now each person has different blocks with different times to build it.
+        -> You have 16 hours of work. pick your blocks.
+        -> People choose the smaller objects,
+        -> However in reallity, the framework (tought one) is the priority
+    -> Discuss with the team the size of the features
+    -> Divide Huge features into smaller features
+-> Converge into a concensus
+    -> Listen until everybody agrees the size of the feature
+    -> If stuck, put the feature aside and review it later 
+    -> [Scrummaster] should move the team into their next feature, but cannot decide the estimate
+    -> Don't try to change everyone's mind. Try to study together the feature in more depth
+    -> Don't think in averages. If someone think its small, other huge it doesn't make it medium
+    
+[Estimation]
+- Informed decisions to control your project to hit its targets
+    - maybe all product backlog features
+    - maybe what can you get done for this sprint
+    -> you can't base your decisions on your fondest desires, team has limitations
+- Estimation is the process of knowing what your team is capable of doing
+    Not what you want to happen, or what can happen
+What?
+    Product backlog: features
+    Sprint backlog: task
+    Size, effort, people, time
+    
+    -> feature_size is going to broken down into tasks.
+        - individual things people can do
+        (ie. jump feature: involves [code, art, sound, debugging, integration]
+[Estimation]
+- How much time something is going to take.
+- Its not about how hard a thing is, but how long does it going to take
+1. Translate from size (small, medium, large)
+        into effort (how much raw work avg person takes)
+        and split it into people (individual productivity)
+[Estimation vs Planning]
+Estimation is not Planning.
+1. you plan to achieve certain goal
+2. you commit to a plan when you accept a task
+3. you estimate to see if the plan is realistic
+4. you commit to an estimate when you think its accurate
+5. you re-estimate as you work on the task
+What is not an estimate:
+    Target: it has to be done in 2 days
+    Estimate: it'll take about 2 days to do it
+    Plan: i'll need 2 days to do it
+    Reality: it took 2 days to do it
+
+[Accuracy vs Precision]
+Accuracy = rate of success (BIAS)
+Precision = how many times you get same outcome (VARIANCE)
+its important to know how precise and accurate an estimate is.
+[Track your own estimates]
