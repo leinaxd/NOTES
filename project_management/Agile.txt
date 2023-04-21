@@ -1,7 +1,7 @@
 [Metadata]
 MIT OCW CMS.611J Lecture 5:
     https://www.youtube.com/watch?v=UxMpn92vGXs&list=PLUl4u3cNGP61V4W6yRm1Am5zI94m33dXk&index=5
-Bibliography:
+Sources:
 
 [Project management]
 - Planning, Organizing, Securing, Motivating, Controlling the resources
@@ -245,3 +245,36 @@ MAKE SURE YOU ARE NOT DOING EXTRA WORK!
  - Timeboxed (5-10min) (3 fast questions)
  Note.
    If issues comes don't talk about it. arange a special meeting with only involved people who can help you.
+
+=============================================================================   ======
+Join a course:
+1. Agile Project Management
+https://lnkd.in/dMBKgSBV
+2. Agile with Atlassian Jira
+https://lnkd.in/d4Bangwc
+3. Managing an Agile Team
+https://lnkd.in/dMwDGCx7
+4. Agile Meets Design Thinking
+https://lnkd.in/durJy5wb
+5. Agile Software Development
+https://lnkd.in/d8Wi9_54
+6. Agile Planning for Software Products
+https://lnkd.in/dCJBfQ3D
+
+#FREE Scrum Courses
+1. Scrum Master Certification Specialization
+https://lnkd.in/dB-59XwU
+2. Introduction to Scrum Master Training
+https://lnkd.in/dKVDtJ6F
+3. Introduction to Agile Development and Scrum
+https://lnkd.in/d9XdcpgR
+4. Combining Scrum with Other Agile Methodologies
+https://lnkd.in/dE256tCh
+5. Scrum Master Certification Exam Preparation
+https://lnkd.in/dGiJZxTG
+6. Scrum Master Certification: Scrum Methodologies
+https://lnkd.in/d8MCSPra
+7. Scrum Master Certification: Scaling Agile and the Team-of-Teams
+https://lnkd.in/dwb4F8Bb
+8. How to create a Jira SCRUM project
+https://lnkd.in/d-9SJ7sd
