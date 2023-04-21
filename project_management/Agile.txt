@@ -1,5 +1,5 @@
 [Metadata]
-MIT OCW CMS.611J Lecture 5:
+MIT OCW CMS.611J Lecture 5/6:
     https://www.youtube.com/watch?v=UxMpn92vGXs&list=PLUl4u3cNGP61V4W6yRm1Am5zI94m33dXk&index=5
 Sources:
 
@@ -246,6 +246,56 @@ MAKE SURE YOU ARE NOT DOING EXTRA WORK!
  Note.
    If issues comes don't talk about it. arange a special meeting with only involved people who can help you.
 
+
+
+
+[Agile part 2]
+include data estimating in agile
+- how to record it
+- how to show it
+
+[Sprint planning meeting]
+- look at your product backlog, decide what can you get done
+- and make a sprint backlog
+- and break that down into a sprint task list
+[Sprint review meeting]
+At the end of sprint you reevaluate for how close it came to what you had intended to make
+- Its a chance to change the product backlogs by the team (lead by product owner) to modify
+and change the plan.
+
+[Creating a sprint Backlog]
+Product backlog: Big story
+    (product backlog: physics/AI/lots of powers/long story/many characters/inmersive world)
+Sprint backlog: Story A, Story B
+    (make some trees/recomender model/NPC)
+Sprint tasklist: [TaskA.1] [TaskA.2]  [TaskB.1] [TaskB.2
+
+[Epic stories to smaller stories]
+As the user, I want an improvised physics engine, so that i can have good, responsive car driving physics
+    What does that mean anyway?
+    What's the most important part of the story?
+    - Realistic Accelearation?
+    - Braking?
+    - Friction? Mass & Moment?
+    - Special Effects of sparks crackling off the pavement , smoke, pouring out outworked engines?
+    This is one of the methods Agile teams with differently skilled members can use to do better load balancing for their team.
+
+ 
+[Tasks]
+    - Small enought to ESTIMATE with better ACCURACY [1-8hs of work]
+    - Can be assigned to just 1 person
+    - By breaking a story into tasks the team can find 'hidden' dependences & potential team overloading 
+    before the sprint gets started
+    
+[SCRUM BOARD]
+[Stories][To Do][In progress][Testing][Done]
+    (trello / scrummy.com)
+- More work for the scrum master
+- But its your responsability to maintain it and move things over
+Divides by stories
+Divides by users
+- Column Block (your task depends in some other task)
+- Column On Fire
 =============================================================================   ======
 Join a course:
 1. Agile Project Management
