@@ -1,0 +1,89 @@
+[Metadata]
+MIT OCW CMS.611J Lecture 7:
+    https://www.youtube.com/watch?v=xQANWfUYeNg&list=PLUl4u3cNGP61V4W6yRm1Am5zI94m33dXk&index=12
+Sources:
+
+[Postmortem and reflextion presentation]
+- Summary of the process of what you are doing
+- What you learn
+- what you did wrong
+- what you are going to do in the future
+- In 5 min
+
+[Quality Assurance]
+- diferent types of testing
+- systematic process
+- checks if the product developed is meeting specified requirements 
+
+[Scrum & testing]
+Before you finished your task, someone in your team should validate your work
+and run your tests as well as their own.
+
+
+[Types of testing]
+1. Technical testing
+  - Looking for defects
+  - if you are simulating a car, make sure it runs the right velocity and right FPS
+2. Playtesting
+  - you run your software
+3. User testing (not in your team)
+  - Someone else tries your software
+  - focus testing
+    (is it fun, is it a good game)
+  - user testing
+    (usability? dificulty? expectations?)
+4. Security testing
+  - Try to hack your code for vulnerabilities
+
+
+[Technical testing basic]
+- Technical standards (have them)
+- Bug database
+- Build and test before check in
+- Daily builds, daily play throughs
+- Planned feature cuts
+  (Plan wich features are going to be cut first)
+- Code Freezes (code reviews)
+- Asset freezes
+
+[Technical testing advanced]
+- Maintain feature lists
+- Agree how features should work
+- Test newly implemented features as soon as they're done
+- Checklist testing, methodological testing of all features, all branches, all possible states.
+  (Regression testing, testing features that haven't changed since last checkin to make sure they're still working)
+- Remember that checklist testing, and strict feature testing,
+  doesn't cover freedom play, getting in the game and just doing stuff to see what happens. Do it too
+    
+[Bug reporting]
+- .What happened. vs .What should had happened.
+- .How to reproduce.
+- .How common & serious the bug is.
+- .Supporting data (links, screenshots, numbers).
+
+[Feedback]
+- Critique vs Critiscism
+  - Is the game too easy?
+  - Do i skip the game track/history
+- Take the feedback, discard the testers solutions
+  - users try to fit your game to they expectations.
+    a shooter user would like to have a gun, even in a strategic game 
+[User Testing]
+- Engaging game is hard. 
+- How the users react to your game.
+- Gauging overall game dificulty/challenge
+- Test driven design
+- Check your UI against actual users
+
+[How User testing]
+- Experimental method.
+  - Form an hipothesis
+  - Create a test for it
+  - Gather data
+  - Analyze results
+- Have a Question or Goal for each focus test
+- Develop a Method: standardize your approach
+  - Introductory Script
+  - List of observations to look for
+  - Set of questions to ask your testers
+- Review your data and decide what the team should do about it
