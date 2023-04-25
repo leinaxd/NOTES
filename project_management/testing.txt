@@ -132,3 +132,71 @@ The state of your game will affect your data
  [The goal for today]
  - Finding feedback of your software!
  
+ 
+ 
+ [RIOT GAMES]
+ - Player focus testing (talk to players)
+ - All decisions are in term of
+    - How much value the adds to the player
+    - How much pain causes to the player
+ - Custom Anthem for the worldchampionship
+    - Do things to represent how players feels
+ - Lot of playtesting
+ - Lot of user testing
+ - Balance, identify overpowerful champions
+ - Temporal Scenarios Modes to make the game alive
+ - Clarity measure. How clear the information is shown
+ - Team test, quickly feedback
+ - Guerrilla test, other teams in your company try to explode your work
+ - Hardware diference between users
+ [User Labs]
+ [Insights]
+    - Reception / Interest
+    - Usage patterns / Errors
+    - Players with diferent experience
+    - Needs / Desires
+    - Beliefs
+ [Methods]
+    - Observation
+    - Think aloud
+        (how the UI is showing the info, and how the player is building a model)
+        (Strean if consciousness)
+    - Interviews / Questionnaire
+    - Experimental / Quantitative
+        - Give the user a task, account all mistake he made
+        - plot the error rate for each user
+        - Plot the time each user require to complete certain task
+        (you can test joystick, mouse to reach certain regions etc.)
+        so you can improve the design
+    - Physiological
+        - Eye tracking
+        - Where are they looking (minimap, abilities, charachter, enemy)
+        - Stress/excitement (when they cannot vocalize)
+        
+ [Case of study: Lucian]
+ - Goals: 
+    - feel: sleek, speedy, serious
+    - Gameplay: Range Damage with finesee gameplay, high skill ceiling
+    - Fantasy: Equilibrium, two guns
+ - Challanges:
+    - How do you let a player feel like a quick 'gun ninja' 
+    - does this character fit in the Riot game?
+[Research flow]
+- Concept testing (determining concept)
+    concept: [Noble, elegant | Futuristic but magical | Dark & serious | Each gun has custom effects]
+     Survey: [Fantasy | Mood | Personality | Role | Fit in League]
+   feedback: [As the guns were in different color, users expected different behaviour,
+              it worked in a way i didn't want it to work]
+- Lab study (test version a)
+- Lab study 2 (test version b based on feedback)
+    - Why does it feels slow?
+         - Mechanics? Animation?
+- Lab study 3 (test version c based on feedback)
+- Post lauch (test impact and reception)
+- You cannot answer players questions
+- you can ask to understand, not to criticise
+- ASK AN INITIAL QUESTION, to make comfortable the user. 'how is that?' instead 'how it is feel', your data is really valuable
+There's always a researcher in the room
+
+
+[Focus test, run test]
