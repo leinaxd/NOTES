@@ -87,3 +87,13 @@ and run your tests as well as their own.
   - List of observations to look for
   - Set of questions to ask your testers
 - Review your data and decide what the team should do about it
+
+- Is your user enganging with the game or just pressing random buttons?
+- Ask the user what the UI should tell him
+- You can show them pictures of the intended UI, so you know early if the user liked or not
+- Have a dedicated observer
+    - List of things to observe
+- What can the user tell you (short) you cannot see
+- Ask the player to talk in loud to show his thinking proccess
+    - Adults when they don't know what they are doing, don't tell until they figure out
+    - Childs usually say they don't understand
