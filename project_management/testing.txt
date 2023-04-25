@@ -35,7 +35,11 @@ and run your tests as well as their own.
 4. Security testing
   - Try to hack your code for vulnerabilities
 
-
+[Usability testing]
+ - The only required for this game project
+ - We are not talking about testing code, but testing ideas
+ 
+ 
 [Technical testing basic]
 - Technical standards (have them)
 - Bug database
@@ -97,3 +101,34 @@ and run your tests as well as their own.
 - Ask the player to talk in loud to show his thinking proccess
     - Adults when they don't know what they are doing, don't tell until they figure out
     - Childs usually say they don't understand
+
+[Neutral Questions]
+- What are you doing?
+- What's your plan?
+- What are you doing?
+- Timer the amount of time people is struggling at a level
+
+[Data]
+- Magnify good stuff
+- Minimize bad stuff
+The state of your game will affect your data
+
+[Feedback]
+- People don't want to tell bad things into your face, 
+    they'd rather write on a piece of paper
+    
+[User testing]
+ - Focus test form
+    (What's the goal of the test)
+ - Observer script / survey
+    (How would the user react)
+ - User students is not a representative population
+ [Bug database]
+ - Chira
+ - bugzilla
+ - buganizer
+ 
+ 
+ [The goal for today]
+ - Finding feedback of your software!
+ 
