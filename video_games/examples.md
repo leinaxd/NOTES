@@ -16,7 +16,8 @@ Notes of games
   
 2. The talos principle
     https://www.youtube.com/watch?v=1bi56xzKgjo
-    - Name the levels
+    - Named the levels
+    - shiny trophies
     - A few Super realistic objects in a low def world
     - Juegos muy largos parecen trabajo. 
     - Backin time button to rewind last bad move
