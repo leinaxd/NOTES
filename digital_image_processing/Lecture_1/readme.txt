@@ -1,0 +1,2 @@
+- images are 400 x ratio
+- max compresion
