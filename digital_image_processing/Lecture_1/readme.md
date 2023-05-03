@@ -88,7 +88,6 @@ Synthetic Images
 
 ## Types of Image Processing
 
-![](original_image.jpeg)
 
 ### Low-Level Image Processing
 
@@ -100,8 +99,6 @@ Synthetic Images
     INPUT: IMAGE
     
     OUTPUT; IMAGE
-![](low_level.jpeg)
-
  ### Mid-Level Image Processing
  
  - Segmenting an image into Regions/Objects describing an image
@@ -111,7 +108,7 @@ Synthetic Images
     
     OUTPUT: Attributes (edges, lines, regions)
 
-![](mid_level.jpeg)
+
 
  ### High-Level Image Processing
  
@@ -123,5 +120,54 @@ Synthetic Images
     INPUT: IMAGE
     
     OUTPUT: TASK
-
+    
+![](original_image.jpeg)
+![](low_level.jpeg)
+![](mid_level.jpeg)
 ![](high_level.jpeg)
+
+
+### Major Acquisition
+
+- How Humans Brain & Eye & visual system works
+- How do we represent image & color
+- Biology
+- How does Camaras adquire
+- Cascade
+
+### Image Manipulations & Enhancements
+
+How to maje images betters to me
+- Subjective Process like Photoshop
+- Rotations 
+- Brightness
+
+### Image Restoration
+
+How Much an image was alterated?
+Can we undo the process?
+- If we know an image has been blured, can we estimate how much?
+- Near filter, Estimation filter
+
+### Image Reconstruction from projections
+
+### Image Compression
+
+- Lossless formats (raw)
+- Lossy formats (Jpeg)
+
+### Image Segmentation
+
+- Edges, Lines, Objects
+- Detecting Primitives
+
+### Image Understanding & Computer Vision
+
+- Object Recognition
+
+### Advanced Topics
+
+- How do you compose objects
+- A movie is a compositions of many objects
+- Image Watermarking
+- Visual Effects
