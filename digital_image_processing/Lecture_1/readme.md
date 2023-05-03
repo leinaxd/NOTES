@@ -13,8 +13,6 @@ What is a digital Image?
 ![camera](origin_of_image.png)
 
 Image Sources:
-- Video Camera
-- Radar Image (RPI)
 - Gamma Ray Imaging (High Energy)
     Patient get injected some sort of isotope, the gamma rays get detected by a detector
     - Medical, Cargo
@@ -57,3 +55,17 @@ Visible-Band Energy:
 ![mauf](manufacturing_line.jpeg)
 ![license](license_plate_recognition.jpeg)
 ![bio](biometrics.jpg)
+
+Micro-wave / Milimiter-wave (THz):
+    - Radar Image (RPI)
+     
+![](microwave.jpeg)
+![](microwave_example.jpeg)
+
+Radio-wave:
+    - MRI Magnetic Resonance Imaging (detail)
+    - Functional MRI (can detect certain proteins)
+
+![](MRI.jpeg)
+![](MRI_example.jpeg)
+![](fMRI.jpeg)
