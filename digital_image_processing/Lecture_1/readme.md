@@ -52,8 +52,8 @@ Visible-Band Energy:
   - Biometrics
   - Spacecraft Imaging
   
-![](satellite.png)
-![](thermal_image.jpeg)
-![](manufacturing_line.jpeg)
-![](license_plate_recognition.jpeg)
-![](biometrics.jpg)
+![sat](satellite.png)
+![thermal](thermal_image.jpeg)
+![mauf](manufacturing_line.jpeg)
+![license](license_plate_recognition.jpeg)
+![bio](biometrics.jpg)
