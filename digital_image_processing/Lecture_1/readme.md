@@ -9,16 +9,22 @@ Source:
 ## Lecture 1. Introduction
 
 What is a digital Image?
+
 ![camera](origin_of_image.png)
 
-- Radar Image (RPI)
+Sources:
 - Video Camera
+- Radar Image (RPI)
 - Gamma Ray Imaging (High Energy)
     Patient get injected some sort of isotope, the gamma rays get detected by a detector
     - Medical, Cargo
-- X-Ray (low energy)
-    - Mendical, Cargo
 
 ![medical_example_1](medical_example_1.png)
 ![medical_example_2](medical_example_2.png)
 ![cargo_example_3](cargo_example_3.png)
+
+- X-Ray (low energy)
+    - Mendical, Cargo
+
+![x-ray](x_ray_example.png)
+![X-ray2](x_ray_example_2.png)
