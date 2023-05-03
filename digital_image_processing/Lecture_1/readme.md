@@ -12,7 +12,7 @@ What is a digital Image?
 
 ![camera](origin_of_image.png)
 
-Sources:
+Image Sources:
 - Video Camera
 - Radar Image (RPI)
 - Gamma Ray Imaging (High Energy)
@@ -28,3 +28,22 @@ Sources:
 
 ![x-ray](x_ray_example.png)
 ![X-ray2](x_ray_example_2.png)
+
+- Computer Tomography
+
+![](Computational_tomography.png)
+
+- Ultraviolet Imaging
+  Sample with a fluorescent dye
+  - Measuring densities
+
+![](UV-die.png)
+![](uv_example_1.png)
+![](uv_example_2.png)
+![](uv_example_3.png)
+
+Visible-Band Energy:
+  - Smartphones
+  - Light Microscope
+  - Satelite Imaging
+  - Infra Red
