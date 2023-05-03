@@ -77,3 +77,8 @@ Non-photon-related imaging:
 ![](ultrasonic.jpeg)
 ![](ultrasound_example.jpeg)
 ![](electron_microscope.jpeg)
+
+Synthetic Images
+     - Polution Map / weather map
+
+![](polution_map.jpeg)
