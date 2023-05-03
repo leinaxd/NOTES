@@ -46,4 +46,9 @@ Visible-Band Energy:
   - Smartphones
   - Light Microscope
   - Satelite Imaging
-  - Infra Red
+  - Infra Red (How hot something is)
+  - Manufacturing / Industrial inspection
+
+![](satellite.png)
+![](thermal_image.jpeg)
+![](manufacturing_line.jpeg)
