@@ -33,7 +33,7 @@ Image Sources:
 
 - Ultraviolet Imaging
   Sample with a fluorescent dye
-  - Measuring densities
+- Measuring densities
 
 ![](UV-die.png)
 ![](uv_example_1.png)
@@ -41,14 +41,14 @@ Image Sources:
 ![](uv_example_3.png)
 
 Visible-Band Energy:
-  - Smartphones
-  - Light Microscope
-  - Satelite Imaging
-  - Infra Red (How hot something is)
-  - Manufacturing / Industrial inspection
-  - License plate recognition
-  - Biometrics
-  - Spacecraft Imaging
+- Smartphones
+- Light Microscope
+- Satelite Imaging
+- Infra Red (How hot something is)
+- Manufacturing / Industrial inspection
+- License plate recognition
+- Biometrics
+- Spacecraft Imaging
   
 ![sat](satellite_example.png)
 ![thermal](thermal_image.jpeg)
@@ -57,28 +57,71 @@ Visible-Band Energy:
 ![bio](biometrics.jpg)
 
 Micro-wave / Milimiter-wave (THz):
-    - Radar Image (RPI)
+- Radar Image (RPI)
      
 ![](microwave.jpeg)
 ![](microwave_example.jpeg)
 
 Radio-wave:
-    - MRI Magnetic Resonance Imaging (detail)
-    - Functional MRI (can detect certain proteins)
+- MRI Magnetic Resonance Imaging (detail)
+- Functional MRI (can detect certain proteins)
 
 ![](MRI.jpeg)
 ![](MRI_example.jpeg)
 ![](fMRI.jpeg)
 
 Non-photon-related imaging:
-    - Ultrasonic
-    - Electron Microscope (throwing electrons)
+- Ultrasonic
+- Electron Microscope (throwing electrons)
     
 ![](ultrasonic.jpeg)
 ![](ultrasound_example.jpeg)
 ![](electron_microscope.jpeg)
 
 Synthetic Images
-     - Polution Map / weather map
+- Polution Map / weather map
 
 ![](polution_map.jpeg)
+
+
+
+
+## Types of Image Processing
+
+![](original_image.jpeg)
+
+### Low-Level Image Processing
+
+- Preprocessing to 
+    - remove Noise
+    - Sharpen images
+    - Enhance
+
+    INPUT: IMAGE
+    
+    OUTPUT; IMAGE
+![](low_level.jpeg)
+
+ ### Mid-Level Image Processing
+ 
+ - Segmenting an image into Regions/Objects describing an image
+    - Diferenciate Cells
+
+    INPUT: IMAGE
+    
+    OUTPUT: Attributes (edges, lines, regions)
+
+![](mid_level.jpeg)
+
+ ### High-Level Image Processing
+ 
+- Making sense of an image
+- Understanding
+- Computer Vision
+- Object Recognition / Face Recognition
+
+    INPUT: IMAGE
+    
+    OUTPUT: TASK
+
+![](high_level.jpeg)
