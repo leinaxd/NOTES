@@ -69,3 +69,11 @@ Radio-wave:
 ![](MRI.jpeg)
 ![](MRI_example.jpeg)
 ![](fMRI.jpeg)
+
+Non-photon-related imaging:
+    - Ultrasonic
+    - Electron Microscope (throwing electrons)
+    
+![][ultrasonic.jpeg]
+![][ultrasound_example.jpeg]
+![](electron_microscope.jpeg)
