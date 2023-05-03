@@ -48,7 +48,12 @@ Visible-Band Energy:
   - Satelite Imaging
   - Infra Red (How hot something is)
   - Manufacturing / Industrial inspection
-
+  - License plate recognition
+  - Biometrics
+  - Spacecraft Imaging
+  
 ![](satellite.png)
 ![](thermal_image.jpeg)
 ![](manufacturing_line.jpeg)
+![](license_plate_recognition.jpeg)
+![](biometrics.jpg)
