@@ -37,5 +37,7 @@ Dynamic Range (highest brightness/ darkest brightness)
 - Eye: O(10^10)
 Sensitivity (small changes in intensity)
 - do you percieve the dot from the background?
+
 ![](adaptive_lens.jpeg)
 ![](sensitivity.jpeg)
+![](sensitivity_2.jpeg)
