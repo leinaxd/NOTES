@@ -53,9 +53,33 @@ More optical ilusions classified
 Moving image ilusions:
 - Critical fusion Ilusion (Aliasing)
 
-## Light & Color
-- Emited radiation (Watts)
-- Recieved by your eyes (Lumens)
-- Brigthness
+## Light
+
 ![](electromagnetic_spectrum.jpeg)
 
+- **Radiant flux**, Emited radiation (Wats)
+- **Luminous Flux**, Recieved (perceived) by your eyes (Lumens = 1cd x 1sr)
+- **Brightness** or **luminance**, intensity of light for a given puntual direction (Candela)
+- **Density of Energy**, Energy per area (lux = cd*sr/area = lumen/m^2)
+![](daylight_illuminance.jpeg)
+
+## Color
+- **Rods**, sensitive to light intensity, night 'scotoptic' vision
+  - Achromatic
+  - Many rods per single nerve
+  - Periphereal Vision
+  - Very sensitive
+  - Slow responses
+  - 75-150 Millions per retina
+- **Cones**, sensitive to direct light, photoptic vision
+  - Chromatic 
+      - L sensitive to Red (65%)
+      - M sensitive to Green (33%)
+      - S but most sensitive to Blue (2%)
+  - Concentrated in fovea
+  - One per nerve end
+  - High Visual Acuity, spatial resolution
+  - Fast response
+  - 6-7 Millions per retina
+
+![](cones_color_response.jpeg)
