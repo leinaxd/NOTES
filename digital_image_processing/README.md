@@ -45,7 +45,7 @@ Source:
   - Rods
   - Cones
 - Chromaticity Diagram
-- Adaptive room control
+- Adaptive room color control
 - Matlab color ramps
 
 ## Lecture 3
