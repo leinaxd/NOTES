@@ -35,9 +35,27 @@ Brigthness
 - Iris can adapt the brightness adaptively
 Dynamic Range (highest brightness/ darkest brightness)
 - Eye: O(10^10)
-Sensitivity (small changes in intensity)
+Sensitivity to brightness (small changes in intensity)
 - do you percieve the dot from the background?
 
 ![](adaptive_lens.jpeg)
 ![](sensitivity.jpeg)
 ![](sensitivity_2.jpeg)
+
+Sensitivity to color
+
+![](sensitivity_3.jpeg)
+
+More optical ilusions classified
+- https://michaelbach.de/ot/
+- https://www.ritsumei.ac.jp/~akitaoka/index-e.html
+
+Moving image ilusions:
+- Critical fusion Ilusion (Aliasing)
+
+## Light & Color
+- Emited radiation (Watts)
+- Recieved by your eyes (Lumens)
+- Brigthness
+![](electromagnetic_spectrum.jpeg)
+
