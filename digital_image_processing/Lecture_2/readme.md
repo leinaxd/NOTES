@@ -83,3 +83,62 @@ Moving image ilusions:
   - 6-7 Millions per retina
 
 ![](cones_color_response.jpeg)
+
+Obs. Many animals have different types of cones, what you see as a red flower maybe a bird perceives as two differents colors.
+There's also Womans with 4 types of cones, and mans with colorblindness
+
+Standard CIE Primary colors
+- Red 700nm
+- Green 546nm
+- Blue 436nm
+
+Combining colors.
+- Additive (leds)
+- Substractive (paints)
+
+Color Terms
+- Brightness/Intensity/Value, How much light there is
+- Hue, Dominant Color
+- Saturation, Purity/Strength color
+
+Hue & Saturation defines the Chromaticity of a color
+- encodes the color space
+
+Tristimulus model
+- Encodes the color via its proportion of Red, Green and Blue
+X, Y, Z = R/(R+G+B) , G/(R+G+B) , B/(R+G+B)
+
+X  = \int_0^\infty I(\lambda) · X(lambda) dlambda
+I(\lambda) = spectral power distribution
+X(lambda) = Color matching function, the official red
+
+Chromaticity Diagram
+
+![](chromaticity_diagram.jpeg)
+
+You can combine differnt sources of light. So you got:
+
+![](chromaticity_combination.jpeg)
+
+Color spaces
+- RGB (monitors)
+- CMYK (printers)
+- HSV, HSI (describing colors)
+
+Changing light color in the ceiling of the room
+- Adaptive to external changing room light
+- Controls human comfort & productivity
+- Color Control
+
+![](adaptive_room_lights.jpeg)
+
+The color you percieve is the sum of the frequencies of your cones responses multiplied by the source intensity.
+You can match that sum to the value you want to be to trick into a fake color as supermarckets does.
+
+![](Eye_color_acquisition.jpeg)
+
+This works best in the red channel.
+- You can also ramp the colors for a PWM wave and control each color
+
+Matlab Crazy Coords
+![](matlab_crazy_coords.jpeg)
