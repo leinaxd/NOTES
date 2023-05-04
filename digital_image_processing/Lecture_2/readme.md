@@ -12,8 +12,30 @@ How Humans perceive color
 - **Pupil**, it's a moving window.
 - **Iris**, is the muscle who contracs/expands to controls the aperture of the pupil.
 - **lens** (crystalline), biconvex lens who can change shape used to focus light. When op
+- **retina**, Nerveous tissue sensitive to light (rods and cones). 
+- **Fovea**, central part of the retina, where the color sensitive cells (cones) reside
+- **Optic Nerve**, The wire of information towards the brain, (region without sensitive cells)
+Notes:
+- The Fovea is just 1.5mm square with 350k color sensitive cells. 
+- A 24 megapixels at 24mmx16mm chip size, you would have 62500 pixels
+Digital Cameras Sensor size:
+- Full frame, 36mm x 24mm 
+- APS-C, 22mm x 15mm
+- Micro Four Thirds, 17mm x 13mm
+- One-inch sensor, 13.2mm x 8.8mm
+- Compact, 11mm x 11mm
+- 
 ![](eye.jpeg)
-
 ![](crystalline.jpeg)
+![](fovea.jpeg)
 
 
+Brigthness
+- Brightness is logarithmic as a function of incident intensity
+- Iris can adapt the brightness adaptively
+Dynamic Range (highest brightness/ darkest brightness)
+- Eye: O(10^10)
+Sensitivity (small changes in intensity)
+- do you percieve the dot from the background?
+![](adaptive_lens.jpeg)
+![](sensitivity.jpeg)
