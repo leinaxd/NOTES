@@ -83,3 +83,7 @@ Reflectance
 
 ### Sampling & Quantization
 
+Bright Sensors are quantizied (rounded)
+
+![](discrete_quantization.jpeg)
+
