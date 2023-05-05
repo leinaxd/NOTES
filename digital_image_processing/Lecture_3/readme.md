@@ -87,3 +87,32 @@ Bright Sensors are quantizied (rounded)
 
 ![](discrete_quantization.jpeg)
 
+The lower the sampling size -> Blockiness
+The lower of num of levels  -> False contouringm low detail
+
+
+We think of an image as a 2D array of numbers.
+Color is just a new dimension called channel-
+
+Notation:
+- Matlab, (0,0) is the upper left
+- Cartesian, (0,0) is the lower left
+- Plane projection, (0,0) is the central focal point.
+
+### Matlab
+- imshow( ·, []), the second argumetns, states the smallest value to dark and the largest value to white
+
+
+### Distance between images
+- Euclidean distance
+- Manhattan distance (city blocks)
+
+![](distance_images.jpeg)
+
+### Video
+Sampling in the time domain
+- Speed visual system perceives a stream of discrete images as being continous
+- 30hz / 60 hz
+
+### slow motion
+- Old camera, a slight opening in the window is moving instead of a full exposition.
