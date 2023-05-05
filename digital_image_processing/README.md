@@ -57,3 +57,16 @@ Source:
 - Sampling & Quantization
 - Distance between images
 - Video
+
+## Lecture 4
+- Histograms
+- Point Operations
+  - Threshold
+  - Digital Negative
+  - Contrast stretching
+  - Histogram Equalization
+  - Histogram Specification
+  - Gamma correction
+- Local Operations
+  - AvG filter
+  - Edge detection filter
