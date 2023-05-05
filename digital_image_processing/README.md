@@ -49,3 +49,11 @@ Source:
 - Matlab color ramps
 
 ## Lecture 3
+- How a camera works
+  - depth of field
+  - image resolution
+  - color quality
+- Ilumination model
+- Sampling & Quantization
+- Distance between images
+- Video
