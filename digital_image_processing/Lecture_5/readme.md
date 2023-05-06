@@ -98,5 +98,5 @@ Bilinear Interpolation
 
 ![](bilinear_interpolation.jpeg)
 
-![](other_interpolation.jpeg)
+![](other_interpolations.jpeg)
 
