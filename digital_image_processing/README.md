@@ -84,3 +84,19 @@ Source:
 - Color interpolation
 
 - Projective Transformations
+
+
+## Lecture 6: Spatial Filters
+- 1D filters
+- 2D filters
+- Low pass filters
+  - Avg filter
+  - Gaussian Filter
+- High Pass filters
+  - derivative filter
+  - Sobel
+- Sharpen
+- Unsharpen
+- Non linear filters
+  - Median filter
+  - Salt & Pepper noise
