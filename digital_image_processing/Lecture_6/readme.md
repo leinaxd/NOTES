@@ -1,4 +1,6 @@
-# Book Robot vision
+Book Robot vision
+- Berthold Klaus, Paul Horn
+
 # Lecture 6: Spatial filter
 
 
@@ -49,6 +51,11 @@ Gaussian Filter
 ### High pass filter
 Instead of looking the sum of pixels (int), take the difference of pixels
 - result is sharpening
+- can also be combined with threshold for edge detection
+
+```
+H_pf = Id - H_lp
+```
 
 1D example.
 - large slopes, larger derivatives
@@ -57,3 +64,46 @@ Instead of looking the sum of pixels (int), take the difference of pixels
 ![](1D_dif.jpeg)
 
 ![](2D_dif.jpeg)
+
+![](dif_filter_threshold.jpeg)
+
+How to enhance (sharpen)
+- cons: you also enhance noise
+
+![](enhance_filter.jpeg)
+
+![](enhance_filter_2.jpeg)
+
+Unsharp masking
+- Just add a fraction of the difference edge
+
+![](unsharp_masking.jpeg)
+
+![](unsharp_masking_2.jpeg)
+
+Sobel 
+- Filters do not need to be symetric
+
+![](sobel_1.jpeg)
+
+![](sobel_2.jpeg)
+
+### Non Linear filters
+Salt & Pepper noise
+- Random pixels are set to 0 or 255
+
+![](salt_pepper_noise.jpeg)
+
+Not all image filters are linear
+
+Median Filter
+
+![](median_filter.jpeg)
+
+![](median_filter_2.jpeg)
+
+When to use gaussian, when median?
+
+![](gaussian_median_when.jpeg)
+
+All filters can be applied locally
