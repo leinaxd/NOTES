@@ -70,3 +70,17 @@ Source:
 - Local Operations
   - AvG filter
   - Edge detection filter
+
+## Lecture 5
+- Geometric transformations
+  - Translation
+  - Scaling
+  - Flipping
+  - Rotation
+  - Shearing
+- Isometric Transformations
+- Affine Transformations
+- Automatic Alignament
+- Color interpolation
+
+- Projective Transformations
