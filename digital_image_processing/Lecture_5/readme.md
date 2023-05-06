@@ -27,11 +27,11 @@
 
 - Shear
 
-![](shear_img_1,jpeg)
+![](shear_img_1.jpeg)
 
-![](shear_img_2,jpeg)
+![](shear_img_2.jpeg)
 
-![](shear_img_3,jpeg)
+![](shear_img_3.jpeg)
 
 
 
