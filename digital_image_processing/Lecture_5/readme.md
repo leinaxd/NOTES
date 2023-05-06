@@ -55,7 +55,7 @@ Projective Transformation
 
 ![](projective_transformation.jpeg)
 
-### Automatic Allignament
+### Automatic Alignament
 - (dual align is a more robust version)
 Align a collection of image to build a bigger picture
 1. Find the same points in multiple images.
