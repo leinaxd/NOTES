@@ -6,7 +6,9 @@ Source:
   
   UCF CRCV 20 lectures
   https://www.youtube.com/watch?v=715uLCHt4jE
-  
+
+Bibliography:
+    - Gonzalez and Woods, 3rd ed
   
 ## Lecture 1. Introduction
 
@@ -118,3 +120,18 @@ Source:
 - Sampling & Aliasing
 - Antialiasing Filter
 - Moire patterns
+
+## Lecture 9: Unitary Image Transforms
+- Unitary transform
+- Fourier Basis Transform
+- Spatial Basis Transform
+- Compression & Parseval Theorem
+- Limitations DFT
+- Discrete Cosine Transform
+- Discrete Sine Transform
+- Hadamart Transform
+- Haar Transform
+- Wavelet Transform
+- Jpeg / Jpeg2000 algorithm
+- Time vs Frequency trade off
+- Multiresolution Analysis
