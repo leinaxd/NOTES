@@ -1,4 +1,4 @@
-# Lecture 9: Unitary Image Transformation
+# Lecture 9: Unitary Image Transforms
 
 ### General Image transformations
 - In 2D a rotation is like a change of basis of the coordinate system
