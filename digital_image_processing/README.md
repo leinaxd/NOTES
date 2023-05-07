@@ -100,3 +100,21 @@ Source:
 - Non linear filters
   - Median filter
   - Salt & Pepper noise
+
+## Lecture 7: 2D- Discrete Fourier Transform
+- Definitions
+- Basis functions
+- DFT of an image
+- Shifting the DFT
+- Striping lines
+- DFT properties
+
+##  Lecture 8: Frequency Domain Filtering, Sampling & Aliasing
+- Box mask & circle mask
+- Impulse response
+- Gaussian Filter
+- High Pass filter
+- Laplacian Filter
+- Sampling & Aliasing
+- Antialiasing Filter
+- Moire patterns
