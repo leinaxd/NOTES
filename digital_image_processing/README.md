@@ -1,4 +1,4 @@
-**NOTES of the Digital Image Processing course by Ruch Radke**
+**NOTES of the Digital Image Processing course by Rich Radke**
 
 Source:
   Rich Radke Youtube channel:
