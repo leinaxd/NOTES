@@ -19,3 +19,8 @@ Ideas:
 - Computing its derivatives as a filter (laplacian)
 - Then updating parameters
 - All image transformations, but with neural network meaning
+
+4. Canny edge detection es como unir puntos en un grafo.
+   tal vez la idea se puede extender a teoria de grafos aleatorios.
+   
+5. puede una imagen modelar un grafo?
