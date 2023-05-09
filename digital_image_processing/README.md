@@ -135,3 +135,14 @@ Bibliography:
 - Jpeg / Jpeg2000 algorithm
 - Time vs Frequency trade off
 - Multiresolution Analysis
+
+## Lecture 10: Edge detection
+- Ideal edges
+- Real world edges
+- Image gradients
+- Gradient operators
+  - Laplacian
+  - Laplacian of a Gaussian
+  - Difference of Gaussians
+  - Scale-invariant feature transform (SIFT) for object detection
+- Canny Edge detector
