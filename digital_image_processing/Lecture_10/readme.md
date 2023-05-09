@@ -81,7 +81,7 @@ Difference of Gaussian (DoG)
 - Can approximiate to the mexican hat
 - Used in computer vision
 
-![](difference_of_gaussian.jpeg)
+![](difference_of_gaussians.jpeg)
 
 Scale-invariant feature transform (SIFT)
 - Automatically finding good features in the image (corners, blobs)
@@ -107,4 +107,5 @@ Then connect edges through a threshold
 ![](canny_edge_detector_3.jpeg)
 
 ![](canny_vs_sobel.jpeg)
+
 (Usefull for next lecture on connecting edges and finding bounds)
