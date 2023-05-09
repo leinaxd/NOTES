@@ -76,4 +76,67 @@ Note. Derivative <-> Code invariance
 
 First Approach: Connect the dots
 
-![](polygon_fitting.jpeg)
+![](polygon_fitting_1.jpeg)
+
+Algorithm:
+- P: Sequence or ordered distinct points (ie. ordered edges after boundary following)
+- Specify 2 starting points A, B, 
+  -  if the curve is open, A,B are the natural endopoints
+  -  if the curve is closed,  A,B are the left and rightmost points
+- Specify a threshold T (pixel distance), how close every point is going to have to be to one of these boundary lines.
+
+![](polygon_fitting_2.jpeg)
+
+![](polygon_fitting_3.jpeg)
+
+Now compute the distances, from this line to all the vertices
+- Select the vertex further away
+
+![](polygon_fitting_4.jpeg)
+
+Stack that point if its above the threshold
+
+![](polygon_fitting_5.jpeg)
+
+![](polygon_fitting_6.jpeg)
+
+![](polygon_fitting_7.jpeg)
+
+Otherwise, remove the last vertex from 'in process' stack, and make it the last vertex of the 'final' stack.
+
+![](polygon_fitting_8.jpeg)
+
+If 'in process' not empty go step 1, else done.
+- vertices in my final list are the ordered vertices of my polygon
+
+![](polygon_fitting_9.jpeg)
+
+![](polygon_fitting_10.jpeg)
+
+Now you have to connect from B to A, but its already drawed (same line as A to B but the other direction)
+
+![](polygon_fitting_11.jpeg)
+
+![](polygon_fitting_12.jpeg)
+
+![](polygon_fitting_13.jpeg)
+
+If you choose a Threshold T small, then you end up connecting all points.
+
+### Other methods. for connecting dots into smooth curves
+Cubic B Splines
+Splines families
+Other extensions.
+
+![](polygon_fitting_14.jpeg)
+
+Limitations, only works for closed lines, it doesn't fill the gaps
+- See next lecture (morphological image cross)
+- or extra blobs
+- Require some pre-processing
+
+![](polygon_fitting_15.jpeg)
+
+you don't want to mess arround jumping 3 pixels ahead or you will end connecting everything
+
+
