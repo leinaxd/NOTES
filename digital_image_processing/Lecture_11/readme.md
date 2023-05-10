@@ -139,4 +139,96 @@ Limitations, only works for closed lines, it doesn't fill the gaps
 
 you don't want to mess arround jumping 3 pixels ahead or you will end connecting everything
 
+### Fitting straigth lines
+- its easy to do with previous algorithm when there's one line.
+- What if there are multiple lines?
+- Or many edge pixels not on any line.
 
+![](straight_line_1.jpeg)
+
+
+### The Hough Transform
+- Each possible line through and edge pixel can be represented as an equation
+- y = mx+b, except you cannot draw a vertical line at x=0
+- you can do instead is describing as x cos(theta) + y sin(theta) = rho
+- Rho how far away is your pixel from the center of the image
+
+![](hough_transform.jpeg)
+
+A single edge point (x1,y1), could belong to many possible lines in the (theta, rho) plane
+- piece of cosine
+
+![](hough_transform_2.jpeg)
+
+Now i add another point (x2, y2)
+- I have another set of curves
+- The crossing point between the 2 plots is the line who connects those points.
+
+![](hough_transform_3.jpeg)
+
+![](hough_transform_4.jpeg)
+
+Algorithm
+1. Detect Edge points (binary image)
+2. Subdivision of the (rho, theta) plane
+3. For each edge point, increment the corresponding (rho, theta) cell by +1
+4. Look for (rho, theta) cells with large pixel counts (voting peaks)
+5. Select highest peaks
+6. Map The corresponding (rho, theta) points into lines in the (x,y) plane
+
+![](hough_transform_5.jpeg)
+
+```
+%matlab
+[H, theta, rho] = hough(bw)
+peaks = houghpeaks(H, num_peaks)
+lines = houghlines(BW, theta, rho, peaks)
+```
+
+![](hough_transform_6.jpeg)
+
+![](hough_transform_7.jpeg)
+
+Sudoku's Numbers acts as a clutter
+
+![](hough_transform_8.jpeg)
+
+Hough array plane (theta, rho)
+
+![](hough_transform_9.jpeg)
+
+![](hough_transform_10.jpeg)
+
+Best scenario
+- There's nothing else in the image that is distracting me from finding these lines
+- You have to find the right threshold
+
+![](hough_transform_11.jpeg)
+
+Another example
+- you can start reasoning in the geometry of objects
+- Or the camera who took the photo
+
+![](hough_transform_12.jpeg)
+
+![](hough_transform_13.jpeg)
+
+if i threshold for the lines that i missed
+- things are starting to get a little bit crazy
+- You can do some post-processing
+- 
+![](hough_transform_14.jpeg)
+
+
+Another example
+- Why didn't it pick up that long line of the building?
+- Because you are searching literally for straight lines
+- you can still filter by some orientation
+
+![](hough_transform_15.jpeg)
+
+Through a low pass filter (LoG) you can improve the hough detector.
+
+![](hough_transform_16.jpeg)
+
+(Next time, morphological operations)
