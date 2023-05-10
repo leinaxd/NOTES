@@ -146,3 +146,12 @@ Bibliography:
   - Difference of Gaussians
   - Scale-invariant feature transform (SIFT) for object detection
 - Canny Edge detector
+
+## Lecture 11: Edge linking and line detection
+- Moore's Boundary Following Algorithm
+  - Sequence Chain code
+- Polygon Fitting Algorithm
+- The Hough Transform
+  - (rho, theta) plane
+  - Drawing Hough lines
+  - Preprocessing before Hough transform
