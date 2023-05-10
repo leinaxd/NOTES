@@ -1,3 +1,4 @@
+https://www.youtube.com/watch?v=_con6DnhkaA&list=PLuh62Q4Sv7BUf60vkjePfcOQc8sHxmnDX&index=11
 # Lecture 11: Edge linking and line detection
 
 How to describe those edges mathematically.
@@ -216,7 +217,7 @@ Another example
 if i threshold for the lines that i missed
 - things are starting to get a little bit crazy
 - You can do some post-processing
-- 
+
 ![](hough_transform_14.jpeg)
 
 
