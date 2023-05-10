@@ -72,6 +72,7 @@ bwtraceboundary
 Note. Derivative <-> Code invariance
 
 ### Polygon fitting algorithm
+- Find triangles, rectangles, polygons in the picture
 - instead of following indivual pixels, we want to match pixels with a parametrized line
 - Convert from RGB to vector image
 
