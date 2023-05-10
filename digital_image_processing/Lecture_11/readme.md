@@ -20,7 +20,7 @@ Find neighbor pixels
 
 Boundary Following
 - We have edge points around a closed contour 
-- 
+
 ![](boundary_following.jpeg)
 
 Moore's algorithm for Boundary following
@@ -41,7 +41,7 @@ Moore's algorithm for Boundary following
 
 6. Continue until arrival starting point AND you start repeating the pattern. b=b0 & next = b1
 
-![] (moore_algorithm_4.jpeg)
+![](moore_algorithm_4.jpeg)
 
 8. The ordered list of 'b' is the boundary
 9. Collect the chain code
