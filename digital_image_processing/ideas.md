@@ -33,3 +33,6 @@ Ideas:
     - Cuando uno escribe con una lapicera, o en el celular, hace un trazo.
         este trazo en pixeles, se puede parametrizar para denotar un recorrido con determinada
         varianza (proceso gausiano)
+
+7. Se puede generalizar el algorithmo de Hough 
+    - Soporte splines en vez de lineas rectas?
