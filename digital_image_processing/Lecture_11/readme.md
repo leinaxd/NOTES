@@ -81,7 +81,7 @@ First Approach: Connect the dots
 ![](polygon_fitting_1.jpeg)
 
 Algorithm:
-- P: Sequence or ordered distinct points (ie. ordered edges after boundary following)
+- P: Sequence or **ordered** distinct points (ie. ordered edges after **boundary following**)
 - Specify 2 starting points A, B, 
   -  if the curve is open, A,B are the natural endopoints
   -  if the curve is closed,  A,B are the left and rightmost points
