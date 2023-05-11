@@ -24,7 +24,8 @@ Ideas:
    tal vez la idea se puede extender a teoria de grafos aleatorios.
    
 5. puede una imagen modelar un grafo?
-
+    - De Cuantos Megapixeles sería una imágen que modele determinado grafo?
+    - De cuantos megapixeles una red neuronal artificial?=
 6. Proyecto final de DSP:
     - Web scrapping de un documento o libro.
     - Transformar la imágen en curvas, texto, símbolos matematicos formato latex
