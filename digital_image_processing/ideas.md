@@ -25,7 +25,10 @@ Ideas:
    
 5. puede una imagen modelar un grafo?
     - De Cuantos Megapixeles sería una imágen que modele determinado grafo?
-    - De cuantos megapixeles una red neuronal artificial?=
+    - De cuantos megapixeles una red neuronal artificial?
+    - Se puede comprimir esta imágen que contiene los parámetros?
+    - se pueden codificar la red sobre una imágen? 
+    - Cuanta información cabe en una imágen?
 6. Proyecto final de DSP:
     - Web scrapping de un documento o libro.
     - Transformar la imágen en curvas, texto, símbolos matematicos formato latex
