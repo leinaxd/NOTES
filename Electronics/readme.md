@@ -8,5 +8,7 @@
    Útil para construir un Phased array.
    Me imagino un array de transistores que acortan o estiran el camino. O Relés que cierran una longitud u otra.
    Cuantos grados puedo variar de fase de una misma señal?
+   ```
    |·|·|·|·|·|     |·|·|·|·|·|
     |  (long 1)         | (long 3)
+   ```
