@@ -102,7 +102,7 @@ Otsu can fail when there's no strong pixel in the histogram
 ![](otsu_method_7.jpeg)
 
 Remedies:
-- Low pass filter then apply otsuç
+- Low pass filter, then apply otsu
 - Only consider pixels near edges when computing the threshold (draw a boundary)
 
 ![](otsu_method_8.jpeg)
