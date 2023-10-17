@@ -34,6 +34,6 @@ Introduction
       - keep growing the contour.
      ![](contour_growing.jpg)
 
-    ` matlab: grayconnected' 
-    ![](grayconnected.jpg)
-
+    ` matlab: grayconnected `
+    
+![](grayconnected.jpg)
