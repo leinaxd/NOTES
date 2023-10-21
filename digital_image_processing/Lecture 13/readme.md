@@ -37,3 +37,9 @@ Introduction
     ` matlab: grayconnected `
     
 ![](grayconnected.jpg)
+
+---
+
+Region Split and Merge
+    1. Specify a condition/rule Q
+![](region_split_merge.jpg)
