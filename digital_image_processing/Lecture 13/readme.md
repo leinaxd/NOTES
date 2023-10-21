@@ -42,4 +42,8 @@ Introduction
 
 Region Split and Merge
     1. Specify a condition/rule Q
+    2. Split into four dijoint quadrants any region $R_i$ for which $Q(R_i)=True$
+    3. When no further splitting is possible, merge any adjacent regions $R_j$ and $R_k$ for which $Q(R_j \cap R_k)=True $
+    4. Stop when no further merging is possible.
+    
 ![](region_split_merge.jpg)
