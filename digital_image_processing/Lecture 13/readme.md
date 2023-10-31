@@ -58,11 +58,17 @@ In this section we discuss two related approaches to region segmentation. The fi
 ![](clustering.jpg)
 
 The idea of K-Means cluster is to gather N-dim data into a natural number of clusters K.
-- you have to guess how many clusters there is going to be
+- you have to guess how many clusters $K$ there is going to be
 
     
 1. Specify an initial set of cluster centers $\{m_1 .. m_k \}\in R^{d}$
-2. For each $X_i\in R^{d}$ in dataset, assign it to the closest cluster $x_i\in cluster\ j\ if\ ||x_i - m_i||<||x_i - m_k||\ k\notin j$
+2. For each $X_i\in R^{d}$ in dataset, assign it to the closest cluster $x_i\in cluster\ j\ \ \  if\ ||x_i - m_i||<||x_i - m_k||\ k\notin j$
 3. Update the means $m_j$ to the average value of all $x_i$ in cluster $j$. $m_j=\frac{|C_j|}{1}\sum_{x\in C_j}\ j=1...K$
 4. Keep alternating 2. and 3. until convergence, $m_j$ stop changing.
-    
+
+For example, given a grey histogram, you can run k-means with K = 3, and get the clusters.
+
+![](hist_clustering.jpg)
+
+![](clustering_example.jpg)
+
