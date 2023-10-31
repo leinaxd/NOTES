@@ -47,3 +47,22 @@ Region Split and Merge
     4. Stop when no further merging is possible.
     
 ![](region_split_merge.jpg)
+
+
+---
+
+## Clustering and Superpixels.
+
+In this section we discuss two related approaches to region segmentation. The first is a classical approach based on seeking clusters in data, related to such variables as intensity and color.  The second approach is based on using clustering to extract 'superpixels' from an image.
+
+![](clustering.jpg)
+
+The idea of K-Means cluster is to gather N-dim data into a natural number of clusters K.
+- you have to guess how many clusters there is going to be
+
+    
+1. Specify an initial set of cluster centers $\{m_1 .. m_k \}\in R^{d}$
+2. For each $X_i\in R^{d}$ in dataset, assign it to the closest cluster $x_i\in cluster\ j\ if\ ||x_i - m_i||<||x_i - m_k||\ k\notin j$
+3. Update the means $m_j$ to the average value of all $x_i$ in cluster $j$. $m_j=\frac{|C_j|}{1}\sum_{x\in C_j}\ j=1...K$
+4. Keep alternating 2. and 3. until convergence, $m_j$ stop changing.
+    
