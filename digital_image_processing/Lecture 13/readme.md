@@ -72,3 +72,12 @@ For example, given a grey histogram, you can run k-means with K = 3, and get the
 
 ![](clustering_example.jpg)
 
+Here K-means is used to cluser similar color pixels, however it doesn't consider the spatial allocation of neighboring pixels. 
+
+## SUPERPIXELS
+
+Superpixels are a modification of K-means where regions that are contiguous and have smilar intensity or color.
+
+![](Superpixels.jpg)
+
+
