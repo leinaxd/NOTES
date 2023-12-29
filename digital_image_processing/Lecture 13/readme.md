@@ -78,6 +78,6 @@ Here K-means is used to cluser similar color pixels, however it doesn't consider
 
 Superpixels are a modification of K-means where regions that are contiguous and have smilar intensity or color.
 
-![](Superpixels.jpg)
+![](superpixels.jpg)
 
 
