@@ -109,3 +109,4 @@ Applications:
 
     - Compression 
     - Neural Network reconstruction
+    - Get the image's pallet of colors
