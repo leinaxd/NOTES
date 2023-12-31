@@ -106,5 +106,6 @@ What is the distance function?
  - Use $C$ to tune tradeoff. C big: Superpixels compact, favor color distance small
 
 Applications:
-    - Compression 
 
+    - Compression 
+    - Neural Network reconstruction
