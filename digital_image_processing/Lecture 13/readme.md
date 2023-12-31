@@ -98,7 +98,13 @@ Idea:
 5) [Optional] Replace colors of pixels in each cluster with the average color.
 
 What is the distance function?
- - combination of color distance $d_c = || [R G B]_i^T - [r g b]_j^T||$
- - and the spatial distance $d_s = || [X Y]^T_i - [x y]^T_j|| $
+ - combination of color distance $d_c = || [R\ G\ B]_i^T - [r\ g\ b]_j^T||$
+ - and the spatial distance $d_s = || [X\ Y]^T_i - [x\ y]^T_j|| $
  - So the final distance is computed as $D=\sqrt{\frac{d_c}{C}^2 + \frac{d_s}{S}^2}$
+    Where C: Max color Distance
+    Where S: Max Spatial distance
+ - Use $C$ to tune tradeoff. C big: Superpixels compact, favor color distance small
+
+Applications:
+    - Compression 
 
