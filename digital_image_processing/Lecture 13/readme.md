@@ -74,10 +74,20 @@ For example, given a grey histogram, you can run k-means with K = 3, and get the
 
 Here K-means is used to cluser similar color pixels, however it doesn't consider the spatial allocation of neighboring pixels. 
 
-## SUPERPIXELS
+## SLIC SUPERPIXELS: Simple, linear iterative clustering
 
 Superpixels are a modification of K-means where regions that are contiguous and have smilar intensity or color.
+- It represent a compact representation of the image
+- Keeps things together better for subsequent segmentation
+- A modification of K-means where you include spatial information
 
 ![](superpixels.jpg)
 
+Idea:
+- Clustering in 5D: [R G B X Y]
+1) Initialize superpixel centers by sampling N locations on a regular grid
+    - Move slightly to a 3x3 neighborhood to lie on the lowest gradient position (doesn't want to start on an edge)
+![](sampling_superpixels.jpg)
+
+2) For each cluster center $\mu_i$, compute distance (To be determined) between $\mu_i$ and each pixel and each pixel in a neighborhood of $\mu_i$
 
