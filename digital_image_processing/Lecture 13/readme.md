@@ -87,7 +87,18 @@ Idea:
 - Clustering in 5D: [R G B X Y]
 1) Initialize superpixel centers by sampling N locations on a regular grid
     - Move slightly to a 3x3 neighborhood to lie on the lowest gradient position (doesn't want to start on an edge)
+
 ![](sampling_superpixels.jpg)
 
-2) For each cluster center $\mu_i$, compute distance (To be determined) between $\mu_i$ and each pixel and each pixel in a neighborhood of $\mu_i$
+2) For each cluster center $\mu_i$ compute distance (To be determined) between $\mu_i$ and each pixel and each pixel in a neighborhood of $\mu_i$ of size S
+    - Assign those pixels to cluster $i$ if its distance is better than its current value.
+    
+3) Update the cluster centers like K-means
+4) Repeat until convergence
+5) [Optional] Replace colors of pixels in each cluster with the average color.
+
+What is the distance function?
+ - combination of color distance $d_c = || [R G B]_i^T - [r g b]_j^T||$
+ - and the spatial distance $d_s = || [X Y]^T_i - [x y]^T_j|| $
+ - So the final distance is computed as $D=\sqrt{\frac{d_c}{C}^2 + \frac{d_s}{S}^2}$
 
