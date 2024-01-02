@@ -118,5 +118,16 @@ Idea:
     - For example, given the array of pixels, a Background Terminal and a Foreground Terminal
     - I want to find a way to connect each pixel to one of both options
     - So initially, each pixel is connected to both Foreground and Background
+    - So you want to cut some of the edges until you get a disconnected graph
+        - A cut is a set of edges that when removed separates F and B
+        - Best cut: We assign a weight to each edge (pixel to pixel, and pixel to terminal).
+        - Let C the set of edges that minimizes $\sum_{(i,j) \in C} w_{i,j}$ (set of edges in C)
+        - Stuff close in color should be preserved (same terminal), stuff far away should be separated.
+        
+![](foreground_background_graph.jpg)
+    
+- Between adjacent pixels we could use
+    $w_{i,j} = \frac{1}{dist(i,j)} e^{-\frac{1}{2\sigma^2} ||I_i - I_j||^2}$
+- if $I_i$ is close to $I_j$, $e^0 = 1$
+- otherwise $e^{-big} = 0$ 
 
-    ![](foreground_background_graph.jpg)
