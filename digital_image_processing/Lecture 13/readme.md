@@ -140,3 +140,7 @@ Idea:
 Also you can use Superpixels to estimate probability in regions
 
 ![](plane_graph_cut.jpg)
+
+Another simpler implementation is called "grab cut" where you select a rectangle for the foreground
+
+![](grab_cut.jpg)
