@@ -130,4 +130,13 @@ Idea:
     $w_{i,j} = \frac{1}{dist(i,j)} e^{-\frac{1}{2\sigma^2} ||I_i - I_j||^2}$
 - if $I_i$ is close to $I_j$, $e^0 = 1$
 - otherwise $e^{-big} = 0$ 
+- we let the user "scribble" the background pixel and foreground color to get its probability distribution. That implies $w_iF=\infty$ and $w_iB=0$
+- other pixels $w_{iF}=-\lambda log F_B(I_i)$
+- $w_{iB}=-\lambda log F_F(I_i)$
+(low probability means high weight)
 
+![](graph_cut_koala.jpg)
+
+Also you can use Superpixels to estimate probability in regions
+
+![](plane_graph_cut.jpg)
