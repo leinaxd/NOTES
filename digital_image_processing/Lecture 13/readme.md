@@ -110,3 +110,13 @@ Applications:
     - Compression 
     - Neural Network reconstruction
     - Get the image's pallet of colors
+
+## Graph Cut Segmentation
+
+Idea: 
+    - separate foreground / background in complex environment like a B/W zebra from background
+    - For example, given the array of pixels, a Background Terminal and a Foreground Terminal
+    - I want to find a way to connect each pixel to one of both options
+    - So initially, each pixel is connected to both Foreground and Background
+
+    ![](foreground_background_graph.jpg)
