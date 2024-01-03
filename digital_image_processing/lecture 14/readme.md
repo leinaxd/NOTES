@@ -22,4 +22,10 @@ Instead of dealing with Pixel level segmentation, we are about to deal with curv
 ![](active_contour_2.jpg)
 
 
+Its an iterative process, we want a segmentation curve that.
+1) Conforms to Image Edges
+2) Is a smoothly varying curve vs lots of jagged rooks and crannies Tradeoff
+
+What is a good curve? Define a cost function.
+
 
