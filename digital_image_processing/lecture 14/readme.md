@@ -57,7 +57,32 @@ We descompose $E(C)$ into 2 parts
 ![](energy_curve_3.jpg)
 
 NOTE: Assuming Image is grayscale
+
     - If there is no edge, then its gradient is zero
     - If i have a big edge, then $||\nabla I|| is big, meaning $E_{ext}$ lower energy (negative)
     
+Intuition is that I want the snake being attracted to edges
     
+### How to Minimize E(c) via variational calculus?
+
+Finding the Curve function, which minimize its Energy.
+- In practice we solve the problem by creating a curve $C(s,t)$ with $s, t$ discrete.
+
+![](energy_curve_4.jpg)
+
+![](energy_curve_5.jpg)
+
+In practice, this results in a $2K \times 2K$ linear system solved at each iteration.
+- lot of tips under the hood.
+- You may want to resample the curve to uniform points
+
+![](energy_curve_6.jpg)
+
+```
+#Matlab: SNAKE ALGORITHM
+```
+It is not always robust
+
+![](energy_curve_7.jpg)
+![](energy_curve_8.jpg)
+![](energy_curve_9.jpg)
