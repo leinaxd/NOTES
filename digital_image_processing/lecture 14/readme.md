@@ -128,4 +128,64 @@ There are little vectors who normally would have zero gradient pushing toward th
 
 It doesn't work well with texturized background, 
 
-also its slow
+also its slow.
+
+
+It turns out there are segmentated points disconnected
+
+![](gradient_vector_flux_7.jpg)
+
+Snakes defined at set of points arround the contour can be a pain.
+- Keep in track the number of points, point distribution uniformly
+- Get points to probe into concavities
+- Snakes can't wrap arround multiple objects at once
+- Also snakes can't do holes
+ 
+I.e. A biogist can't segment bunch if cells.
+![](cell_example.jpg)
+
+
+
+## Level Sets
+Instead of parametrizing curve by a set of ordered points, discretize image plane $I(x,y)$ and 
+
+define a function $\Phi (x,y)$. Evolve this entire function.
+
+- Pixels where $\Phi (x,y) = 0$ Implicitly define the object contour we care about. (multiple holes)
+
+The curve i want is the set of points where $\Phi (x,y) = 0$
+![](level_sets_1.jpg)
+
+![](level_sets_2.jpg)
+
+![](level_sets_3.jpg)
+
+For example an image of letter **R** can be extrapolated
+![](level_sets_4.jpg)
+
+So instead of evolving the **R** contour instead we are evolving the color function $\Phi$.
+
+Evolving the level set function $\Phi(x,y,t) is mathematically better behave.
+- Comes from Fluid Dynamics
+
+You get an **Isosurface** algorithm to extract the final segmentation.
+
+
+---
+Everything so far is edge based.
+
+In the absence of strong edges, we can use a region based formulation.
+
+Instead of pushing the curve into the edges of an object. 
+
+I want a curve to separate the image into an inside part and an outside
+
+![](region_segmentation.jpg)
+
+- The $\lambda_1$ says the std over the pixels **inside** to be small.
+- The $\lambda_2$ says the std over the pixels **outside** to be small.
+- The $\lambda_3$ is a penalty to the curve to be short (internal force).
+- The $\lambda_4$ encourage the area **inside** to shrink.
+
+![](region_segmentation_2.jpg)
+
