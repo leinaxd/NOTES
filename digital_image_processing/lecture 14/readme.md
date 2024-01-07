@@ -57,9 +57,8 @@ We descompose $E(C)$ into 2 parts
 ![](energy_curve_3.jpg)
 
 NOTE: Assuming Image is grayscale
-
-    - If there is no edge, then its gradient is zero
-    - If i have a big edge, then $||\nabla I|| is big, meaning $E_{ext}$ lower energy (negative)
+- If there is no edge, then its gradient is zero
+- If i have a big edge, then $||\nabla I|| is big, meaning $E_{ext}$ lower energy (negative)
     
 Intuition is that I want the snake being attracted to edges
     
@@ -86,3 +85,47 @@ It is not always robust
 ![](energy_curve_7.jpg)
 ![](energy_curve_8.jpg)
 ![](energy_curve_9.jpg)
+![](energy_curve_10.jpg)
+
+Problem with basic snake 
+- Flat regions (white or black) have $E_{ext}=0$ 
+- Contour never sees strong edges that are far away
+- Image noise implies small gradients hunging up the snake
+
+The solution is **Gradient Vector Flow** (GVF)
+
+Idea:
+- Instead of using exactly the image gradient, create a new vector field over image plane
+
+![](gradient_vector_flux_1.jpg)
+
+so $v$ is defined to minimize:
+
+![](gradient_vector_flux_2.jpg)
+
+Where $||\nabla e||^2$ is basically the magnitud of the edge map
+
+Where $||v - \nabla e || ^2 is basically saying, how similar is the thing i'm creating $v$ to the thing i want $\nabla e$
+
+When i'm in a really edging region, then the $v$ i'm creating agrees with what's going on with the edges $\nabla e$.
+- As Those terms are multyping, when $\nabla e$ is big, $v-\nabla e$ must be small.
+
+Where $u$ is a tunning parameter who trades off how smooth is the vector field vs how close it is from the edges.
+
+Intuition:
+- If $\nabla e$ is big, gradient is large and $v$ is going to follow edge gradient faithfully.
+- If $\nabla e$ is small, gradient is small and $v$ is following along to be as smooth as possible.
+- $u$ trades off 'how smooth' vs 'how faithfull'
+
+![](gradient_vector_flux_3.jpg)
+![](gradient_vector_flux_4.jpg)
+
+There are little vectors who normally would have zero gradient pushing toward the edge.
+
+![](gradient_vector_flux_5.jpg)
+
+![](gradient_vector_flux_6.jpg)
+
+It doesn't work well with texturized background, 
+
+also its slow
