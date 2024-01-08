@@ -53,3 +53,32 @@ Example of breaking the islands with 2 structure elements.
 
 ![](erosion_example.jpg)
 
+```
+#matlab STREL('disk',1)
+[0 1 0]
+[1 1 1]
+[0 1 0]
+#its not just a matrix, it has a center
+```
+In this exmaple, skinny lines doesn't fit the structure element, also it thickers the rest of the image
+![](erosion_example_2.jpg)
+
+So Erosion Removes thin lines, isolated dots. Is peeling away layers (edges)
+
+## Dilation
+
+Now we want to flatten out pixels
+
+Erosion is always a subset of the image A
+![](erosion_2.jpg)
+
+Dilation finds pixels such that shifted STREL has any overlap with the original set.
+![](dilation.jpg)
+
+```
+#matlab imdilate(im, strel)
+```
+
+![](dilation_example.jpg)
+
+![](dilation_example_2.jpg)
