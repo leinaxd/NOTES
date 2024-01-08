@@ -28,9 +28,28 @@ There might be some pixels that should be black and other ones that should be wh
 Morpho = shape based processing.
 
 Morphological operators takes a **set of pixels** and returns a **set of pixels**
+- A set of pixels is a list of coordinates $(x_i, y_i)\ x,y\in Integer$
 
 Key Element "**Structure element**" is a small template that helps produce the new image from the old one.
 
+Translation Operation:
 
+![](translation_operation.jpg)
 
+Reflection Operation:
+
+![](reflection_operation.jpg)
+
+Structuring element: small Binary Array
+
+![](structuring_element.jpg)
+
+Erosion:
+- Set of points $Z$ such that the Structure element (Strel) translated by $Z$ fits fully inside $A$
+
+![](erosion.jpg)
+
+Example of breaking the islands with 2 structure elements.
+
+![](erosion_example.jpg)
 
