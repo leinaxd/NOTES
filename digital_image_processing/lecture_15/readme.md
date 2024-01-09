@@ -82,3 +82,31 @@ Dilation finds pixels such that shifted STREL has any overlap with the original 
 ![](dilation_example.jpg)
 
 ![](dilation_example_2.jpg)
+
+Next, what we want are operators that bridge gaps/fill but don't change overall are of objects.
+
+## Opening 
+
+Erode, then dilate.
+- Break narrow bridges
+- Eliminate thin structures
+
+![](opening.jpg)
+
+![](opening_example.jpg)
+
+## Closing
+
+Dilate, then erode.
+- Fuses narrow breaks
+- Eliminates small holes
+
+![](closing.jpg)
+
+![](closing_example.jpg)
+
+In this example, the first image is the original fingerprint, the second is eroded with ```strel('diamond', 1)```, and the third is closed with ```strel('square', 3)```
+
+![](example_3a.jpg)
+![](example_3b.jpg)
+![](example_3c.jpg)
