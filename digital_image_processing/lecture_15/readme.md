@@ -110,3 +110,60 @@ In this example, the first image is the original fingerprint, the second is erod
 ![](example_3a.jpg)
 ![](example_3b.jpg)
 ![](example_3c.jpg)
+
+
+There many combinations of Erosion, Dilation
+
+## Boundary extraction
+
+Take the original shape and erode by 1 pixel then substract ```xor``` that from the original shape.
+
+![](boundary_extraction.jpg)
+
+![](boundary_extraction_example.jpg)
+
+Here we want to extract the hole or flood it.
+- Starting inside the whole you keep dilating as long as you stay in that region
+
+![](hole_extraction.jpg)
+
+There are more morphological operators...
+
+## Watershed transform
+
+The idea is to reconstruct shape through ilumination.
+Application: For counting blobs or disconnected shapes
+
+
+Given a grayscale image, we think of this as a height map of ilumination.
+![](watershed_1.jpg)
+
+1. Find a local minima (lowest intensity value)
+2. Punch a hole in each one
+3. Start rising the water level from the bottom 1 unit at a time
+4. Keep track of which points are asociated with which minima. (group through gradient)
+5. At the point two basins are about to merge, build a single pixel "dam" to make it separate (list of pixels)
+![](watershed_2.jpg)
+
+![](watershed_3.jpg)
+
+How is this related to morphological image processing?
+- Lets revisit the flooding of 2 basins at time N.
+- The flooding is a dilation operation which makes the basins a little bit bigger.
+- So you keep flooding and building a wall as needed
+- 'Floot at time N' all pixels which $I(x,y)<N$
+![](watershed_4.jpg)
+![](watershed_5.jpg)
+
+The inverse process is also available
+- Given a binary Image, you want to convert to a gray scale image.
+- What is the furthest distance that any pixel is from a given value point
+- The closer to the boundry the lower its value
+- Once you have the gray scale image you can plot apply the watershed algorithm
+
+![](watershed_6.jpg)
+![](watershed_7.jpg)
+![](watershed_8.jpg)
+
+For example, if you have an image of cells made from different blobs, you want to count the number of cells.
+![](watershed_9.jpg)
