@@ -151,7 +151,8 @@ How is this related to morphological image processing?
 - Lets revisit the flooding of 2 basins at time N.
 - The flooding is a dilation operation which makes the basins a little bit bigger.
 - So you keep flooding and building a wall as needed
-- 'Floot at time N' all pixels which $I(x,y)<N$
+- 'Floot at time N' all pixels which 'I(x,y)<N'
+  
 ![](watershed_4.jpg)
 ![](watershed_5.jpg)
 
