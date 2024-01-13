@@ -208,6 +208,7 @@ This coral is segmented through active contour
 - Then `bwmorph(bw2, 'skel',Inf)`
 - The result still have spurs
 ![](ex_7.jpg)
+
 ![](ex_8.jpg)
 ![](ex_9.jpg)
 ![](ex_10.jpg)
@@ -215,4 +216,25 @@ This coral is segmented through active contour
 ![](ex_12.jpg)
 
 So far we talked about Binary images
+- But remember that are underlying intensities/colors inside each blob
 
+## Texture 
+Texture, can also be filtered 
+- Flat
+- Noisy
+- Stripey
+For example with Fourier Analysis...
+
+Another approach is working with the histogram inside each blob!
+- mean intensity
+- second moment (variance) / contrast
+  - Flat  => Var = 0
+  - Noisy => Var = High
+- Third moment (skewness) (distribution direction to the left/right)
+- Entropy (How random, how compressable)
+
+![](std.jpg)
+![](skw.jpg)
+![](entropy.jpg)
+
+None of these reflect spatial distribution of intensities.
