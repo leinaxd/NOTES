@@ -157,4 +157,29 @@ Pricipal Component Analysis for shape fitting can also be applied.
 ![](pca.jpg)
 
 
+# Shape abstraction
+For some branching structure, like for medicine you cannot deal with those shapes
+- you can trace a one pixel length skeleton to represent that structure
+- i.e. blood vessels
 
+![](blood_vessels.jpg)
+
+If you can extract the skeleton, you could
+- Meassure distance between joints
+
+Estimation
+1. Successive Erosions until one pixel line
+2. Distance transform (Compute the distance between every interior point to the boundary, then your skeleton is where you have your local maxima of that distance)
+
+Medial Axis, Definition: 
+- Points that have more than one nearest neighbor
+- You can draw circles that sandwich right inside the shape
+
+![](medial_axis.jpg)
+
+Here is a simple example.
+- Ussually prunning is required to delete the spurs.
+
+![](simple_example_1.jpg)
+![](simple_example_2.jpg)
+![](simple_example_3.jpg)
