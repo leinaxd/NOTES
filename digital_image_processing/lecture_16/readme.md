@@ -158,6 +158,8 @@ Pricipal Component Analysis for shape fitting can also be applied.
 
 
 # Shape abstraction
+Idea is to extract the fundamental connectivity of the shape
+
 For some branching structure, like for medicine you cannot deal with those shapes
 - you can trace a one pixel length skeleton to represent that structure
 - i.e. blood vessels
@@ -183,3 +185,18 @@ Here is a simple example.
 ![](simple_example_1.jpg)
 ![](simple_example_2.jpg)
 ![](simple_example_3.jpg)
+
+
+```
+#matlab
+bwmorph(BW, 'skel', Inf)
+```
+![](A.jpg)
+![](AA.jpg)
+
+How to get rid of the spurs?
+- How many points are connected
+- The point at the very end of the spur is also connected to the points of the skeleton
+- You incrementally search for points conneted to many points of the skeleton until you find 3 of them
+
+![](simple_example_4.jpg)
