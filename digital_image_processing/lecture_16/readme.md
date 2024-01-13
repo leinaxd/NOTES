@@ -54,3 +54,92 @@ What is the best fit ellipse?
 ![](ellipse_fit.jpg)
 
 ![](eigenval.jpg)
+
+```
+#Matlab
+[x, y] = meshgrid([-100:100], [-100:100]);
+z = (x/5).^2 + (y/3).^2;
+im = z < 100;
+imshow(im)
+
+r = regionprops(im)
+>>> Area = 4689
+>>> Centroid = [101, 101]
+>>> bounding box = [51, 71, 99, 59]
+```
+
+![](ex1.jpg)
+
+Eccentricity of the ellipse
+- Circle has ECC = 0
+- Line has ECC = 1
+
+![](eccentricity.jpg)
+
+```
+r = regionprops(im, 'area', 'eccentricity')
+a = [r.Area]
+e = [r.Eccentricity]
+
+ind = a > 50 & e<0.4;
+find(ind)
+```
+
+```
+function highlight(bw, ind, im)
+r=bw;
+g=bw;
+b=bw;
+
+if nargin >2
+  rim = im(:,:,1)
+  gim = im(:,:,2)
+  bim = im(:,:,3)
+end
+
+if islogical(ind)
+  f = find(ind);
+else
+  f = ind;
+end
+
+L = bwlabel(bw);
+
+for i=1:length(f)
+  ob = (L==f(i));
+  r(ob) = 1;
+...
+```
+
+```
+bwlabel(bw) %Each blob in different color
+```
+
+![](ex_2.jpg)
+![](ex_3.jpg)
+
+Now show the thing who passed the test
+
+![](ex_4.jpg)
+
+Now we want 
+` ind = a > 50 & a <50000 & e<0.7`
+
+![](ex_5.jpg)
+
+Solidity test
+` ind = a > 50 & a <50000 & e<0.7 & s>0.7`
+
+![](ex_6.jpg)
+
+# Topology of the Blob
+The Euler number counts how many conected components has minus num of holes.
+
+![](euler_num.jpg)
+
+Magnetic Ink character recognition.
+- How to design numbers that are easily identificable
+
+![](MICR.jpg)
+
+
