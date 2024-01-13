@@ -244,3 +244,66 @@ None of these reflect spatial distribution of intensities.
   - e.g. '1 pixel to the right'
 
 ![](GLCM.jpg)
+
+If there are N-Gray levels in the image, then make an $N\times N$ Matrix where
+$P(pixel 1, pixel 2 |acording to Q) = (l_1, l_2)$
+
+- an histogram where starting at pixel 1, how often (how many times) you encounter a following 1 (then 1 following 2, etc...)
+- The image is $8\times 8$
+![](GLCM_histogram.jpg)
+if you want actual probabilities divide by $K$
+
+you will have $K$ pixels (number of  possible pixels pairs according to Q)
+
+In practice, number of gray level is quantized (i.e. 8 or 16)
+![](GLCM_ex_1.jpg)
+![](GLCM_ex_2.jpg)
+![](GLCM_ex_3.jpg)
+
+`gl = graycomatrix(im)`
+
+![](GLCM_ex_4.jpg)
+![](GLCM_ex_5.jpg)
+![](GLCM_ex_6.jpg)
+
+- So a dark pixel is likely followed by another dark pixel, because the variation between bands is gentle
+- The real Image is like the random noise image, but near intensities are close to each others.
+
+consider now an offset vector of pixels adjacencies
+`off = [zeros(1,20), [1:20]]'`
+- how the GLCM changes as a function of the offset that i give.
+
+![](off_vec.jpg)
+
+`g1 = graycomatrix(im1, 'offset', off)`
+
+next we can talk about statistics of this vectors
+- Contrast
+- Correlation (how predictable is going from one neighbor to the next)
+- Energy
+- Homogeneity
+`s1 = graycoprops(g1)`
+
+i.e. a noisy image we don't expect any correlation
+`plot(1:20, s1.Correlation, 1:20, s2.Correlation)
+legend('noise', 'sine')`
+
+- The noise image has 0 correlation
+- while the sine correlation has a sine correlation of step 24
+![](noise_sine_correlation.jpg)
+
+
+In the following example we have the same biscuit but different texture
+- There are some correlation in the first bunch of group pixels.
+- The further i go, the higher the unpredictibility
+- For the second image, i see some pattern predictibility arround 10 pixels
+
+![](correlation_texture.jpg)
+
+![](correlation_texture_2.jpg)
+
+Instead of looking for offsets in the 'x' left-right direction i can change to the up-down direction
+- There is no a clear pattern as before in the vertical direction.
+![](off_vec_2.jpg)
+![](correlation_texture_3.jpg)
+
