@@ -292,6 +292,7 @@ legend('noise', 'sine')`
 
 - The noise image has 0 correlation
 - while the sine correlation has a sine correlation of step 24
+  
 ![](noise_sine_correlation.jpg)
 
 
@@ -306,6 +307,7 @@ In the following example we have the same biscuit but different texture
 
 Instead of looking for offsets in the 'x' left-right direction i can change to the up-down direction
 - There is no a clear pattern as before in the vertical direction.
+  
 ![](off_vec_2.jpg)
 ![](correlation_texture_3.jpg)
 
