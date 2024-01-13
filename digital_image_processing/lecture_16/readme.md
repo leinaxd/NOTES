@@ -200,3 +200,19 @@ How to get rid of the spurs?
 - You incrementally search for points conneted to many points of the skeleton until you find 3 of them
 
 ![](simple_example_4.jpg)
+
+
+This coral is segmented through active contour
+- Then `rgb2gray(im)>130` it iss thresholded to be a binary image
+- Then `bwfill(bw1,"holes")` to fill out the holes
+- Then `bwmorph(bw2, 'skel',Inf)`
+- The result still have spurs
+![](ex_7.jpg)
+![](ex_8.jpg)
+![](ex_9.jpg)
+![](ex_10.jpg)
+![](ex_11.jpg)
+![](ex_12.jpg)
+
+So far we talked about Binary images
+
