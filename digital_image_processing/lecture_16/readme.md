@@ -238,3 +238,9 @@ Another approach is working with the histogram inside each blob!
 ![](entropy.jpg)
 
 None of these reflect spatial distribution of intensities.
+
+## Gray-Level Co-Occurence Matrix (GLCM)
+1. Specify an operator Q (spatial relation b/w 2 pixels)
+  - e.g. '1 pixel to the right'
+
+![](GLCM.jpg)
