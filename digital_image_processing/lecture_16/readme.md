@@ -250,7 +250,9 @@ $P(pixel 1, pixel 2 |acording to Q) = (l_1, l_2)$
 
 - an histogram where starting at pixel 1, how often (how many times) you encounter a following 1 (then 1 following 2, etc...)
 - The image is $8\times 8$
+
 ![](GLCM_histogram.jpg)
+
 if you want actual probabilities divide by $K$
 
 you will have $K$ pixels (number of  possible pixels pairs according to Q)
