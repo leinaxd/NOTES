@@ -143,3 +143,18 @@ Magnetic Ink character recognition.
 ![](MICR.jpg)
 
 
+
+## Fourier Series
+If a shape is parametrizable, fourier transform can be done.
+- Then you can apply low pass filtering
+
+![](fourier.jpg)
+
+Pricipal Component Analysis for shape fitting can also be applied.
+- You requiere some training shapes
+- Then compute how likely is to observe some shape
+
+![](pca.jpg)
+
+
+
