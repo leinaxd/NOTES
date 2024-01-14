@@ -207,4 +207,48 @@ So i want something that i can compare independant of the orientation of the fea
 Harris-Laplace (how to find the corners and how to find the scale)
 
 ### SIFT feature detector
+Scale Inveariant Feature Transform
+- Finding the pixels that should describe certain feature
+- For template matching, we're directly comparing pixel intensities.
 
+- Instead, i extract what's called 'the descriptor' from the region of pixels
+- a different way of thinking what's inside that square or circle for direct comparison.
+
+Suppose i found those regions
+- Suppose i found the pixel at the left, and the circle is kind of telling you how does this feature excells
+- First thing is to assign an orientation to that feature
+- Based on the gradients of that picture,
+- you can draw a histogram of the gradients inside that box
+- There's a lot of pixels pointing in the same direction
+  
+![](1_SIFT.jpg)
+
+No matter how big that block is, you will end with an 16-grid of different directions
+
+![](2_SIFT.jpg)
+
+Then you can compare from multiple images, the direction of each feature.
+
+![](3_SIFT.jpg)
+
+Another example:
+
+![](4_SIFT.jpg)
+
+I have this book, that i want to find in the image
+- The book is found in the image even when it has been obscured by the other objects
+  
+![](5_SIFT.jpg)
+![](6_SIFT.jpg)
+![](7_SIFT.jpg)
+
+Even with different perspective, orientation and scale it performs well
+
+![](8_SIFT.jpg)
+
+Feature detectors are also used in movies to track some texture to the character.
+
+![](7_feature_detector.jpg)
+
+Homework,
+compare template matching with SIFT or modern detectors
