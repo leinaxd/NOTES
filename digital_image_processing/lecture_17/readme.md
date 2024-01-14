@@ -248,7 +248,7 @@ Even with different perspective, orientation and scale it performs well
 
 Feature detectors are also used in movies to track some texture to the character.
 
-![](7_feature_detector.jpg)
+![](6_feature_detector.jpg)
 
 Homework,
 compare template matching with SIFT or modern detectors
