@@ -90,3 +90,121 @@ Another example is trying to find all windows
 Increasing the window size makes no match in the image
 
 ![](9_template_matching.jpg)
+
+# Image Features
+not necesary try to find the whole object in the image, but instead a little pieces of an object.
+So you break out the object of interest into so called 'feature points' 
+
+For example, instead of trying to find a particular face you may try to do is to make corner points or features points
+that describes different regions of the face.
+- you may run tiny detectors on the image
+- The idea is to describe an object as a collection of smaller features
+  
+![](1_image_features.jpg)
+
+## What makes a good feature?
+A feature should be something distinctive in the image
+- Are the following pixels good features of the image?
+  
+![](2_image_features.jpg)
+
+The middle feature has nothing inside but a flat texture, not best option.
+
+![](3_image_features.jpg)
+
+What about this guy? is this a better representation?
+- Its an edge
+- moving up and down you can find the contour of the object
+  
+![](4_image_features.jpg)
+
+Then it is this sticker feature
+- This guy is good, it has edges in both directions, if you try to correlate this feacture you would have high correlation
+
+![](5_image_features.jpg)
+![](6_image_features.jpg)
+
+So lets test how good is each feature.
+- You would like to have a feature to tell you how good is that feature
+
+![](7_image_features.jpg)
+
+So you want to define a detector and a cost function 
+- A good feature should have lots of edge strenght in 2 directions.
+- They should be locally disctintive
+  (like a puzzle piece)
+- Have high gradients in both directions
+  
+![](8_image_features.jpg)
+
+### Shi-Tomasi Corner Detection
+1. Compute gradients $g_x, g_y$ at each point in the image (ussually Sobel or 1-1 detectors)
+2. For every $N \times N$ block $B$ of pixels
+   - create matrix of gradients
+  
+![](1_shi_tomasi.jpg)
+
+  - Compute eigenvalues and eigenvectors of the matrix ($\lambda_1, \lambda_2$)
+  - If $\labmda_1, \lambda_2 are both > \tau$  then Accept $B$ as a feature.
+
+The idea is that the eigenvalues of that block, has something to do how edgy the block is 
+And the eigenvectors tells you where are the dominant edges of your edges.
+
+Here u, v si basically saying what do i get if i correlated with all of its neighbors. u,v are how do i move away from the center
+- The flat patch is saying that all blocks are basically the same
+- The edge patch, is saying that in one direction i have high differences while in the other i have no correlation
+- The last both patches are saying that the image only matches at the zero point.
+
+![](8_image_features.jpg)
+
+```
+%matlab
+corner()
+```
+Another example 
+
+![](2_shi_tomasi.jpg)
+
+Non maximum supremum
+- instead of trying to find the stronger corner in the neighborhood
+
+Shi-Tomasi (related to Harris corner detector) is good for finding corners at a certain scale, but has some issues:
+- There may be many corners (1Mega pixels image would give you thouthens of points)
+- Only at a small scale
+
+
+![](3_shi_tomasi.jpg)
+
+
+### Invariance
+The idea behind point feature detection is to be scale independent.
+- I want to draw a circle arround the feature to know how long it extends
+- Also you would want to take a picture of the same feature at different perspectives 
+
+
+![](1_feature_detector.jpg)
+
+![](2_feature_detector.jpg)
+
+The center of the circle is showing you where the feature is located and the radius is kind of showing you what is the information that should make up that feature when i described it.
+
+![](3_feature_detector.jpg)
+
+Even with scaled the feature should be invariant to transformations
+- Defining a circle or a square about that feature wouldn't help you
+
+![](4_feature_detector.jpg)
+
+So i want something that i can compare independant of the orientation of the feature.
+
+![](5_feature_detector.jpg)
+
+### Better Features than simple Corners
+- Multi-scale (windows of different sizes)
+- 'Best' scale for a feature (characteristic scale)
+- viewpoint or rotation invariant neighborhoods to describe the feature (that is instead of comparing a square of blocks of pixels here, i want to be able to understand how to normalize a region that is directly comparable to each image very differently looking)
+
+Harris-Laplace (how to find the corners and how to find the scale)
+
+### SIFT feature detector
+
