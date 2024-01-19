@@ -136,3 +136,84 @@ The intensity is coded as described before, while the color channels as the eye 
 - Maybe 4x4 blocks instead of 8x8
 
 
+
+## Predictive Coding
+Take something from the previous step, predict what's going to happen in the next step and then code the error between my prediction and what actually have.
+
+The Hypothesis is that the errors are going to have a much tighter distribution, meaning they're easier to code.
+- Images have a better correlation between neighboring pixels,
+- so use previous pixels to predict the value of the next pixel.
+- Simply code the error in the prediction
+
+Instead of coding blocks, suppose we are coding pixel values
+- Predict value from a sequence
+- Predict value from a neighborhood
+
+As i don't need to look ahead, this system is causal.
+
+![](15_lossy_transform.jpg)
+
+Take the original image, as a streamer of values
+- Make a prediction of the current pixel value
+
+![](16_lossy_transform.jpg)
+
+![](17_lossy_transform.jpg)
+
+The idea is to reduce the entropy of the distribution.
+
+![](18_lossy_transform.jpg)
+
+The predictive process could be an autoregressive process.
+- Weighted average of pixels in row.
+
+![](19_lossy_transform.jpg)
+
+Also could be applied to any neighborhood.
+
+![](20_lossy_transform.jpg)
+
+- if lossless of $e[n]$ there's no problem
+- If lossy coding of $e[n]$ then we also need the quantizer inside the predictor to ensure the compressor/decomressor agree on predictions.
+
+![](21_lossy_transform.jpg)
+
+
+
+## Video Compression
+Think of a series of image compression problems, images are spaced very closely 1/24 of sec
+
+![](22_lossy_transform.jpg)
+
+Many of video compression algorithms use **Block based motion compensation**.
+
+### MPEG-1
+I define whats called a group of pictures (GOP)
+- i'm going to code this video in this group of pictures. (e.g. 15 frames)
+
+![](23_lossy_transfomr.jpg)
+
+**I** frame stands for 'independently coded frames' 
+**P** frame stands for 'predict macroblocks based on previous P or I frame'
+
+![](24_lossy_transform.jpg)
+
+The prediction process is trying to find that location in the I frame.
+- Try to find the best mesh
+
+![](25_lossy_transform.jpg)
+
+Instead of coding **P** pixel by pixel, 
+- Send the **Motion vector** + Residual Block
+
+![](26_lossy_transform.jpg)
+
+For the other blocks called **B** frame
+- Bidirectional Frames
+- you can predict macroblocks from P/I frames in either side.
+
+![](27_lossy_transform.jpg)
+
+Anything between P/I can be allucinated...
+
+This way you achieve compression rates really high
