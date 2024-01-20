@@ -80,11 +80,118 @@ Its 2D Fourier Transform is
 
 ![](10_image_restoration.jpg)
 
-
+There are some frequencies out of place.
 
 ![](11_image_restoration.jpg)
 
+Periodic Noise (non-iid) manifest as unusual peaks in the FFT
+- can be removed through notch filter
+- Or high pass filter
+
 ![](12_image_restoration.jpg)
-
-
 ![](13_image_restoration.jpg)
+
+![](14_image_restoration.jpg)
+![](15_image_restoration.jpg)
+
+How to determine what kind of noise is present
+- You can select some flat region
+- Analyze the PDF of that region
+
+![](16_image_restoration.jpg)
+![](17_image_restoration.jpg)
+
+Histogram of the flat region
+- A gaussian has been fitted to that histogram
+  
+![](18_image_restoration.jpg)
+
+Other model of noise could be possible, in our case gaussian fits well
+
+![](19_image_restoration.jpg)
+
+You can't substract noise
+- in the IID case, there's no much we can do beyond we already know
+- Mean filter
+- Median filter
+
+![](20_image_restoration.jpg)
+
+How agressive should be my filter?
+
+### **Adaptive Filter**
+Changes depending on the noise characteristics in a local window around the pixel
+
+Suppose we know: 
+- The corrupted image
+- The noise variance across the entire image
+- We can estimate the local mean around the pixel
+- and the Local variance
+
+![](21_image_restoration.jpg)
+
+A way of doing reconstruction is taking the corrupted image minus that term.
+- Decision comparing the local noise variance to what i think is locally added to the image
+
+![](22_image_restoration.jpg)
+
+
+If local variance is zero, the reconstruction image is the corrupted image
+If the local variance is bigger than the global variance, then my estimated output is close to my estimated input.
+- High local variance means an edge, we want to preserve edges
+If the local variance is about the same my global variance, that means that my estimated output is basically the mean.
+- Avg intensities in kind of normal regions
+  
+![](23_image_restoration.jpg)
+
+
+We need an estimate of the global variance to this method to work.
+- Like using the flat region characteristics
+
+`wiener2()`
+
+
+In the left the original image, in the right the wiener filter.
+
+![](24_image_restoration.jpg)
+
+Compared with applying a smoothing filtering
+- Left is wiener filter, righr is smoothing filter
+  
+![](25_image_restoration.jpg)
+
+
+### What happens when we also have degradation
+How to estimate the blur? $H(u,v)$
+- i have not access to the original image.
+  
+![](26_image_restoration.jpg)
+
+Guessing, take a piece of the degraded image and guess what the original image should have looked like
+
+- Look at the fourier transform of a **Guess Area** and compare it with our manual guess
+
+![](27_image_restoration.jpg)
+
+Experimentation
+- if you have access to the imaging device
+- Directly adquire the impulse response (dark room with a pinhole of light) (point spread function)
+
+Estimate or model $H(u,v)$ (i.e. gaussian noise)
+
+
+Here we have luck capuring a star
+
+![](28_image_restoration.jpg)
+
+
+### Inverse Filtering 
+so,
+- we have a degraded image, $\hat{I}(x,y)$
+- we have the estimated blur, $H(x,y)$ (the star cropped from the original image is the impulse response H)
+
+Then apply the inverse filter of the blur
+
+![](29_image_restoration.jpg)
+
+However this process doesn't work in real life,
