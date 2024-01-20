@@ -194,4 +194,64 @@ Then apply the inverse filter of the blur
 
 ![](29_image_restoration.jpg)
 
+`deconvwnr()`
+
+![](30_image_restoration.jpg)
+
 However this process doesn't work in real life,
+- Because there's also this noise inside the corrupted image
+
+![](31_image_restoration.jpg)
+
+If $H(u,v)$ is small for some u, v. 
+- Then the ratio $\frac{N}{H}$ is very large, then you would have a poor reconstruction
+
+One solution is to apply inverse filter at low frequencies.
+- given a frequency radius $r$
+
+![](32_image_restoration.jpg)
+
+
+### Wiener Filter
+The right to do is minimizing the mean squared errorfunction.
+Take the original image, and the reconstruction image
+- We have a model for how the corrupted image is produced from the original image
+
+![](33_image_restoration.jpg)
+
+Where 
+- $S_F=|I(x,Y)|^2$
+- $S_n=|N(u,v)|^2$
+  
+![](34_image_restoration.jpg)
+
+
+The problem before was if the inverse filter $H$ is zero, it blows up. Which doesn't occur now
+- if the noise is zero, we got the inverse filter
+- Practically we try to tune the $\frac{S_F}{S_n}$ number
+
+We may be able to estimate the power spectrum of the noise $S_n(u,v)$  but we don't know $S_f(x,y)$ because it requires the original image.
+
+Instead, we usually use something simpler.
+- with K a tunable parameter until get a good result
+  
+![](35_image_restoration.jpg)
+
+`deconvwnr(IM, H, K)`
+
+
+![](36_image_restoration.jpg)
+
+Result of increasing K
+
+![](37_image_restoration.jpg)
+
+If i pick the star is so much clear now.
+
+![](38_image_restoration.jpg)
+
+![](39_image_restoration.jpg)
+
+
+Modern reasarch with machine learning
+- Remove Camera Shake from a single Photograph (automatic deshaking of the camera)
