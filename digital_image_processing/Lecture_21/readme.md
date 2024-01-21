@@ -243,5 +243,72 @@ This is called the filtered backprojected transform. (taking place of the actual
 This is the mathematically correct thing to do.
 
 
+Overall:
+1. Compute 1-D FFT of each projection
+2. Multiply each projection $G(\omega, \theta_k) by $|\omega|$
+3. Take 1-D IFFT
+4. Integrate (sum all) angles  to get I(x,y)
 
-![](40_image_reconstruction.jpg)
+
+So what's the $|\omega|$ looks like?
+- we usually multiply by a gaussian window
+  
+![](42_image_reconstruction.jpg)
+
+To prevent possible FT, numerical issues, artifacts.
+
+Examples
+
+```
+imshow(iradon(radon(im, th), th),[])
+```
+
+for step 20º projections
+
+![](43_image_reconstruction.jpg)
+
+For step 10º projections
+
+![](44_image_reconstruction.jpg)
+
+For step 1º projection
+- there are some artifacts in the circunference
+  
+![](45_image_reconstruction.jpg)
+
+![](46_image_reconstruction.jpg)
+
+
+
+Matlab has a built-in phantom of some size
+```
+%Matlab
+p = phantom(128)
+imshow(p)
+```
+
+it's an approximation of the human body.
+
+![](47_image_reconstruction.jpg)
+
+
+### Further implementation notes.
+Matlab implements all in the FFT domain.
+But most CAT SCANS do everything in the spatial domain with convolutions.
+
+
+We included the window function $h$
+
+![](48_image_reconstruction.jpg)
+
+![](49_image_reconstruction.jpg)
+
+No need to store all the back projection, just add them up as they come in.
+
+- Since $|\omega|=0$ at $\omega =0$ we loose the DC component in the Filter Back Projection algorithm.
+so just scale them or just guess.
+
+So if you are also interested in the DC value, modern systems use the FAN-BEAM geometry (or more complicated)
+- instead of shooting parallel ray across the patient
+- we apply a cone beam of rays getting closer the source.
+- a different projection algorithm can be derived using a similar reconstruction theorem
