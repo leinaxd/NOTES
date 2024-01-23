@@ -156,6 +156,8 @@ In essense you are coding a grayscale image into a binary image.
 Its like flattening the channel array of an image. 
 Also its like a multi resolution solution. Increase resolution to improve grayscale color.
 
+Your eyes should be able to filter each H pattern and translate to a gray porcentage.
+
 
 The perceptual quality depends on several factors
 - Halftone Matrix size (resolution of your printer)
@@ -193,4 +195,33 @@ The result is something like this
 ![](28_ink.jpg)
 
 
+
+### Color Computer printer
+Here there is a 4x4 H matrix
+- We multiply by 16 to have the range 0 - 255
+
+![](29_ink.jpg)
+
+This maximizes the distance between on-off dots.
+
+CROSSHATCH ARTIFACT vs BLOB ARTIFACT
+- 'Bayer dithering'
+  
+![](30_ink.jpg)
+
+Instead of seeing blobs, i'm seeing a checker pattern
+
+![](31_ink.jpg)
+
+Also what you see is a muaré pattern
+
+![](32_ink.jpg)
+
+Applied to the origial image gives:
+
+![](33_ink.jpg)
+
+Looks like old video games sprites
+
+![](34_ink.jpg)
 
