@@ -225,3 +225,173 @@ Looks like old video games sprites
 
 ![](34_ink.jpg)
 
+
+
+### Error Diffusion Dithering
+In dark regions i consider i should have a sparse set of white dots, but i don't want to recognize any regular pattern.
+- Can we randomly scatter this dots? to be less perceptive to the eye.
+  
+![](35_ink.jpg)
+
+
+In the previous example i was dealing to every block completely independt.
+- instead we can push the error occured at a given pixel forward to reduce the overall average error
+
+### Floyd-Steinberg Dithering
+Suppose i want to quantize pixel star *.
+- Then distribute the error to its neighbor pixels
+  
+![](36_ink.jpg)
+
+The idea is computing the error at the start pixel and it to its neighbors in different proportions.
+It gives you a pseudo-code.
+
+```
+Along each Row:
+- for (pixels):
+    B(x,y) = ( I(x,y) > Th ) % In general Q(I(x,y) )
+    error(x,y) = I(x,y) - B(x,y)
+  %then distribute the error forward into the next pixel
+    I(  x, y+1) = I(  x, y+1) + 1/16 * e(x,y)
+    I(x+1, y-1) = I(x+1, y-1) + 3/16 * e(x,y)
+    I(x+1,   y) = I(x+1,   y) + 5/16 * e(x,y)
+    I(x+1, y+1) = I(x+1, y+1) + 1/16 * e(x,y)
+```
+
+Instead of doing a forward pass, a better path is a serpent one.
+
+![](37_ink.jpg)
+
+
+
+Lets suppose we have a block that is all 64.
+- Now i should decide which color to turn the circled pixel
+- so 64 is below my threshold of 128 so it would turn it into a zero.
+- My error would be 64 = 64-0
+
+![](38_ink.jpg)
+
+That means that i have to distribute 64 into its neighbors
+- e = 64/16 = 4
+  
+![](39_ink.jpg)
+![](40_ink.jpg)
+
+
+Next step is quantize agains agaisnt 128.
+- all pixels are still black.
+- The error to distribute is 128-92 = 36
+
+![](41_ink.jpg)
+
+Eventually one pixel is going to flip because the accumulated error.
+- Until some error gets negative
+- Eventually errors accumulate and diffuse to bump pixels above the threshold
+
+```
+%matlab
+dither()
+```
+
+Back to the Diagonal image
+
+![](42_ink.jpg)
+
+If i zoom in, the distribution of white dots is exactly what i want, but its not regular.
+
+![](43_ink.jpg)
+
+Now with a real image
+
+![](44_ink.jpg)
+
+Text looks a lot better.
+
+![](45_ink.jpg)
+
+
+### Stucki dithering pattern
+
+You can do some variations with other patterns
+for example 3 rows and 4 columns
+
+![](46_ink.jpg)
+
+This is general applicable for color depth.
+
+### Off topics, Copper plating
+- cool computer graphic Approaches to non-photorealistic rendering.
+- from a grayscale to black and white.
+
+Careful selection of white/black pen strokes.
+- they are going to draw something that mimics what they see, without being a grayscale reproduction of it
+  
+![](47_ink.jpg)
+
+Wall street journal portrait
+- they are white/black image, but they where carefully selected the dot pattern
+- the jacket makes some line pattern, 
+
+![](48_ink.jpg)
+
+
+So how the artists draw strokes?
+- Digital Facial Engraving ¬Victor Ostromukhov
+
+The dollar bill looks similar to the wall street photograph
+
+![](49_ink.jpg)
+
+The idea is to draw black contour line along surfaces we know to exists in 3D
+- can we get a computer algorithm to do the same thing?
+
+Inspired in how bills are engraved by taking a metal plate and carving out trenches in the plate and then pressing on a piece of paper.
+
+![](50_ink.jpg)
+
+The author has done a computer simulation of copper plating.
+- it uses the knowledge if possible of the underlying 3D geometry to help decide what are the orientations of the lines should be 
+
+![](51_ink.jpg)
+
+Make the copper plate gradients follow the contours of the 3d object.
+
+![](52_ink.jpg)
+
+If you don't have the 3D model, like this photograph, you can still guide the algorithm
+
+![](53_ink.jpg)
+
+The same can be used in color, where you have to guide each color separately
+
+![](54_ink.jpg)
+
+
+### Coherent Line Drawing
+This one is more related to edge detection
+- i want a stylish version of my image
+  
+![](55_ink.jpg)
+
+The idea is to find the important edges and then use different line thicknesses to convey which edges are more or less important
+- so strong edges like between yellow and black in the butterfly are getting strong line weight
+- and fainther edges are given a small line weight
+
+
+![](56_ink.jpg)
+
+This is not dithering or half tonic. 
+
+### Rendering Parametric Sourfaces in Pen and ink ¬George Winkenbach, David Salesin
+- late 90'
+
+How the Artist tend to crosshatch the image in order to have some kind of realistic depth effect
+- all you got is a black pen
+
+![](57_ink.jpg)
+
+Here we have a 3d model again but different strategies for ink illustration
+- we draw lines automatically
+- Different lighting gives you different stroke sparcity of the object
+
+![](58_ink.jpg)
