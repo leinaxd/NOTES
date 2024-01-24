@@ -264,3 +264,159 @@ Where are those differences?
 
 
 If now i'm going to detect
+```
+[wim, ind, cw, w] = embed(im, 1000, .1)
+
+detect(wim, ind, cw, w, .1)
+
+--> 31
+```
+
+The result is a big number, meaning the watermark is in there.
+The threshold is set to 6.
+
+
+### Now lets try to make list of ways to screw the image
+
+```
+function [out, names] = attack (im)
+
+[m, n] = size(m)
+
+names{1} = 'contrast stretch';
+out{1} = imadjust(im);
+
+names{2} = 'Histogram equalization';
+out{2} = histeq(im);
+
+names{3} = 'Drop least significant bits';
+out{3}   = 4*(im/4);
+
+names{4} = 'Enlarge/shrink';
+out{4} = inresize(imresize(im, 1.3), [m,n]);
+
+names{5} = 'Shrihk/enlarge'
+out{5} = imresize(imresize(im,.5), [m,n])
+
+names{6} = 'Crop/Noise'
+out{6} = imresize(im(5:end-5, 5:end-5), [m,n])
+
+names{7} = 'Low Noise';
+out{7} = imnoise(im, 'gaussian',0,0.001);
+
+names{8} = 'Heavy Noise';
+out{8} = imnoise(im, 'gaussian',0,0.05);
+
+names{9} = 'Jpeg moderate compression';
+imwrite(im, 'temp.jpg', 'quality', 50);
+out{9} = imread('temp.jpg');
+
+names{10} = 'High compression';
+imwrite(im, 'temp.jpg', 'quality', 25);
+out{10} = imread('temp.jpg');
+
+```
+
+
+Now lets apply all these attacks to our watermarked image
+
+```
+[at, names] = attack(wim)
+
+attackshow(at, names)
+
+attackreport(im, 1000, .1)
+```
+
+```
+function attackshow(out, names)
+for i=1:length(names)
+  imshow(out{i})
+  title(names{i})
+  pause
+end
+```
+
+```
+function out = attackreport(im, k, alpha)
+
+[out, in, cw, w] = embed(im, k, alpha);
+diff = double(out) - double(im);
+diff = diff(:);
+disp('-------------------------)
+disp(['Average difference:' , num2str(mean(diff)) ]);
+disp(['Maximum difference:' , num2str(max(diff)) ]);
+
+[attacked names] = attack(out)
+```
+
+Original image
+- avg diff = 0.003
+- max diff = 19
+
+Contrast stretch
+- detection score: 23.361
+
+![](20_watermarking.jpg)
+
+Histogram equalization
+- detection score: 10.55
+![](21_watermarking.jpg)
+
+Drop least significant bits
+- detection score: 31.84
+  
+![](22_watermarking.jpg)
+
+Enlarge/Shrink
+- detection score: 30.13
+  
+![](23_watermarking.jpg)
+
+Shrink/Enlarge
+- it should be a little bit blurried than before, because of pixel interpolation
+- detection score: 31.83
+  
+![](24_watermarking.jpg)
+
+Crop resize
+- detection score: 7.61
+
+Adding up low noise
+- detection score: 31.586
+  
+![](25_watermarking.jpg)
+
+
+Adding lot of noise
+- detection score: 17.25
+  
+![](26_watermarking.jpg)
+
+Moderate compression
+- detection score: 31.77
+  
+![](27_watermarking.jpg)
+
+Heavy compression
+- detection score: 31.59
+![](28_watermarking.jpg)
+
+10x collusions
+- detection score: 9.67
+- take 10 different watermarks and average to dilute the mark
+
+The watermark has survived all the attacks.
+
+- you can still make the mark a little bit stronger
+
+A strong watermark cloud can be viewed at the bottom left corner of the image
+
+![](29_watermarking.jpg)
+
+The payload is usually low, because the watermark is strong.
+
+![](30_watermarking.jpg)
+
+
+Collusion attack where you average the image from the same sources is the dangerous one, however this method still works fine.
