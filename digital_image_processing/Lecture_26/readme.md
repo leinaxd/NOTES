@@ -24,3 +24,25 @@ http://dx.doi.org/10.1109/TIP.2004.83...
 
 # Lecture 26: Photomontage and inpainting
 
+Last time we talked abouut image compositing and forensic.
+
+Now we want to find a dividing line to blend both images
+
+![](1_photomontage.jpg)
+
+we are not trying to disguise the dividing line we are calling the 'seam'.
+
+In this occasion we are trying to find the least obtrusive seam possible  
+
+
+The goal is to find a good seam (dividing line) between 2 images so that intensity differences across the seam is imperceptible
+- The idea is to compare the colors of adjacent pixels across the line
+
+![](2_photomontage.jpg)
+
+So the 'COST' of drawing a line between pixels i and j, are the difference:
+- ||Pixel of source - Pixel of target|| for each side should be minimized
+  
+![](3_photomontage.jpg)
+
+Another possible idea is to modify this respect to respect to image gradients
