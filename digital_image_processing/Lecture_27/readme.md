@@ -269,3 +269,200 @@ Applied the original seam carving algorithm
 Applied the backwards seam carving algorithm
 
 ![](38_retargeting.jpg)
+
+
+### Patch based algorithms
+Suppose we have a really complicated image, 
+
+![](39_retargeting.jpg)
+
+you will see that using seam carving will immediately go bad. The reason is that there's no low cost seam.
+
+This image has a lot of repetetitive patterns.
+- Maybe we should do is keep every part of the image, but get a smaller representation
+
+![](40_retargeting.jpg)
+
+
+- Suppose you have to resize a building with many windows. maybe you want to squeeze it back and have fewer windows.
+
+
+ ### Bidirectional Similarity
+ - I have an original Image $I$
+ - And a retargeted image $I'$
+
+There are 2 principles.
+- I' should be **Complete** (should contain as much visual information form I as possible)
+- I' should be **Coherent** (No new visual information that wasn't in I)
+
+We don't want to introduce any artifacts
+
+We want to perform a cost function that encapsulate those principles.
+- The distance or difference between both images is
+
+![](41_retargeting.jpg)
+
+- I'm going to look to a whole bunch of patches in the original image
+- And i find the bset corresponding patches in the new image
+- And i compute that average distance
+
+This is the completeness criteria.
+- Everything in the old image should be represented in the new image.
+- Every patch should be represented in the new image.
+
+
+The Coherence Criteria
+- Take patches in the newly generated image
+- and look for best patches in the old original image.
+
+![](42_retargeting.jpg)
+
+So i have 2 directions, and that's why this is called bidirectional similarity.
+
+Patches are blocks of pixels at multiple scales (sizes).
+
+Minimize this cost function is not that simple.
+
+Suppose i want to make the image a little bit smaller, 
+- i can initialize the new image with a rescaled version of the original image.
+- and then i can refine those pixels intensities to be aligned with my cost function.
+
+Its not that hard to update.
+
+How do i know how much every pixel in the new image contributes to the cost function?
+
+
+Pixej 'j' is going to contribute to a bunch of patches over there.
+- for a 3x3 patches, that pixel is going to contribute to 9 patches
+- so i have 9 cost function terms dependent of pixel 'j'
+  
+![](43_retargeting.jpg)
+
+I don't know which patches over an image I are going to have pixel 'j' in their best matching block.
+
+HOW DOES PIXEL 'j' in I' CONTRIBUTE TO THIS COST FUNCTION?
+- it will be a member of $w^2$ w x w patches in I'
+
+And the way this is going to contribute to the cost function is the following.
+- for every block it contains that pixel in I'
+- there's going to be a best matching block in I
+- and then i'm comparing both colors in both positions 
+
+
+![](44_retargeting.jpg)
+
+If not i'm looking at the other patch in I', there's some other block in I
+- and we want to compare
+
+![](45_retargeting.jpg)
+
+
+Kind of what i have is, 
+- the contribution is the sum over all this blocks,
+- of some pixel value over image I
+- minus a pixel in image I'
+
+![](46_retargeting.jpg)
+
+The other way, which is completeness is less certain
+
+Here is my pixel J in I
+- it is possible that it never matches in image I'
+- Or it could be indeed matched
+- 
+![](47_retargeting.jpg)
+
+
+![](48_retargeting.jpg)
+
+Then the original function was to sum both weights.
+
+Then, to find $I'(j)$ take derivative of D with respect of that pixel and set it equal zero.
+- Its going to be a bunch of averages of the original image
+- Bunch of terms because the completeness term and a bunch of terms for the coherent term.
+- And then some weigthed average.
+
+![](49_retargeting.jpg)
+
+
+The idea is if knew which blocks do match between the two images it's easy to generate a new color.
+
+
+The general approach is an Iterative Algorithm to produce I'.
+1. Initialize I' with a rescaled version of I
+2. Match blocks from I' to I
+3. Match blocks from I to I'
+4. Update with formula above
+5. Iterate 2
+
+Works well but it's time consuming.
+
+### Patch Match
+A fast implementation of minimizing this bidirectional similarity cost function.
+- you are constantly matching patches which are time consuming.
+- A lot of time you don't have to match all patches.
+- Sometimes you can approximate those matches.
+
+This approaches enables:
+- Resizing an image
+- Recomposing
+- Reshufling
+
+In this example, it shows that when resizing it preserve the structure removing repetitive windows.
+`youtube: Adobe Photoshop CS6 - content aware fill, move, patch`
+
+![](50_retargeting.jpg)
+
+
+This paper is doing interactive reshufling
+
+![](51_retargeting.jpg)
+
+Move those pixels in there, and fix the image
+
+![](52_retargeting.jpg)
+
+
+Moving the ceil of that building is like saying those pixels are nailed in I', fixed.
+- Then iterate along to reconstruct the rest of the image
+
+You can also copy those pixels multiple times.
+
+![](55_retargeting.jpg)
+
+
+Can be used to inpainting and remove some person in the image
+- so i can also prohibit to use those pixels in image I skipping their patches before going to I'.
+
+![](53_retargeting.jpg)
+
+![](54_retargeting.jpg)
+
+
+Retargeting, i have some constraints.
+- the boundary of the image has to be like maybe 5 or 10 pixels wide window around the original image.
+- That fixes some pixels in I'
+- and then all pixels have to follow in to make a same size image.
+
+![](56_retargeting.jpg)
+
+Another thing they do is to force those lines to remain in the new image.
+
+![](57_retargeting.jpg)
+
+![](58_retargeting.jpg)
+
+![](59_retargeting.jpg)
+
+
+You can also force some perspective lines to be fixed, and keep the boy before resizing
+- Many of the bottles have dissapeared
+  
+![](60_retargeting.jpg)
+
+![](61_retargeting.jpg)
+
+
+It still not fully automatic.
+
+It can also be applied to video.
