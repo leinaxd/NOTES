@@ -24,3 +24,30 @@ The topic of today is a computer vision problem called 'active shape models'
 Active Shape Models is a different type of object detection.
 - for example, licence plate detection.
 - Not template based.
+
+
+Template base object runs a patch over the image.
+- For example a plate over the car image.
+
+![](1_vision.jpg)
+
+That work pretty well for rigid object (they don't change in size)
+
+
+If you are searching for faces instead, many people have different face features. 
+- So this will be usefull for not rigid shapes.
+
+![](2_vision.jpg)
+
+For this to work i need to collect many faces.
+- i need to manually assign points to define the face.
+- we are trying to find common locations that i can put into correspondance 
+ 
+![](3_vision)
+
+
+IDEA:
+- Given an image and a mask
+- Using a convlutional neural net to search the car plate over the image,
+- The mask is telling you the right object position. The true target.
+- The task of the neural net is to predict a binary mask for the location of the plate.
