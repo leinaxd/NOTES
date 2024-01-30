@@ -153,3 +153,158 @@ map = zeros(ydim, xdim, length(qrng));
 ...
 ```
 
+Now Here is the altered image. Looks the same as the original one.
+
+![](9_forensics.jpg)
+
+I Take the altered image and start saving with different JPEG quality factors.
+- and look at the difference between the original image and the altered one.
+- When the compression factor is the same (90%), the alteration looks the same
+- Once i lower compression quality, the ghost is revealing itself.
+- If the image has almost no quality, then you also loose that information.
+- 
+![](10_forensics.jpg)
+
+
+
+## CAMERA BASED TECHNIQUES
+
+Every camera will form an image in a unique way.
+Can we tell based on image formation parameter if that image was conformed with a given camera signature.
+
+Bayer Pattern, a way that most camera store digital images.
+- the sensor array has different sensitive pixels.
+  
+![](11_forensics.jpg)
+
+To make an RGB it averages neighbor values.
+- in the center i know the red value.
+- Then i can average those 4 green values to get that blue component for that red pixel.
+- Next to it i can interpolate the 4 blue values.
+    
+![](12_forensics.jpg)
+![](13_forensics.jpg)
+
+![](14_forensics.jpg)
+
+Non-directed sense channels are interpolated.
+
+This process is also called 'Demosaicing'
+- The camera probably is smarter than these in a smarter way.
+
+Each camera has its own way of **demosaicing**, usually/probably some kind of linear filter.
+- The center pixel is red, and it's filtered through convolution.
+  
+![](15_forensics.jpg)
+
+So that means, that each channel is correlated.
+- Every pixel R value is ideally correlated with some of its neighbors.
+- Each pixel is not independent
+
+If that correlation is not as we think it is, we can say that the image was tampered.
+- i can estimate what is the camera is using.
+
+
+Take a few pictures with the camera i'm trying to tell, and we can try to estimate the interpolation filters.
+- if a candidate image, doesn't have the correlation pattern we expect. Then we expect to be tampered.
+
+
+### Sensor Noise, Photo-responsive non-uniform noise (PRNU)
+Every CCD array has some noise in them.
+- It can be modeled by a multiplicative noise, Spatialy variant.
+- But it doesn't change for the same camera.
+- Plus an additive noise i can't control
+
+![](16_forensics.jpg)
+
+If you took too many pictures, you can estimate that multiplicative noise.
+
+
+### Lens types, Chromatic aberation
+When light comes into the lens,
+- Different wavelength are bent differently
+
+![](17_forensics.jpg)
+
+![](18_forensics.jpg)
+
+There's some fringe coming to the lens even when there's no blue or red light.
+
+![](19_forensics.jpg)
+
+
+### Lens distortion
+It happens with wide-angle lenses, meaning thet the way straight lines appear to be bent outwards or inwards. 
+
+
+![](20_forensics.jpg)
+
+
+### Principal point
+Is the focus around which distortion occurs, is something you can estimate.
+- its like an intrinsic property of the camera.
+```
+%Matlab
+camera calibration toolbox
+```
+
+
+![](21_forensics.jpg)
+
+
+If the image wasn't tampered, then the principal point should basically occur in the same place everywhere.
+
+
+### Camera Skew
+Are the pixels of the image fundamentally square or not.
+- are you watching from the size?
+
+![](22_forensics.jpg)
+
+![](23_forensics.jpg)
+
+You can detect this skewness by looking to a bunch of lines that should be parallel.
+
+--- 
+
+All of this things are related to the intrinsic properties of the camera.
+- All of these are difficult to match for an inserted chunk of image.
+- Optic related stuff.
+
+
+## Light and Physics related issues.
+Last category we are going to talk is stuff related to light and physics
+
+- People are really bad at judging things that are involving reflections and vanishing points.
+
+
+In this image is hard to tell which one of those reflections is correct, top or bottom
+
+![](24_forensics.jpg)
+
+It can be analyzed mathematically.
+- so if i connect the position in the object and the reflection.
+  
+![](25_forensics.jpg)
+
+
+Are those reflections, consistent with the reality?
+
+Here the top one is correct as it converges to a single point. 
+
+![](26_forensics.jpg)
+
+
+
+Another example are shadows.
+
+With the same principle, If you connect the location of the object, with the location of the shadows.
+- they should converge to the same light source.
+
+The guy in the middle, has a wrong shadow.
+
+![](27_forensics.jpg)
+
+Human are bad judges for shadows, which of the images has the wrong shadow? (image c is the wrong one)
+
+![](28_forensics.jpg)
