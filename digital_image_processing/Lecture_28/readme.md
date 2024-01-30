@@ -308,3 +308,77 @@ The guy in the middle, has a wrong shadow.
 Human are bad judges for shadows, which of the images has the wrong shadow? (image c is the wrong one)
 
 ![](28_forensics.jpg)
+
+
+Here's some example.
+
+![](29_forensics.jpg)
+
+To know if the image has been tampered, a model was proposed. For example to know how is the shadow in his nose.
+
+![](30_forensics.jpg)
+
+The environment has also be modeled.
+
+![](31_forensics.jpg)
+
+They had a mug shot to make a very concrete model of the guy.
+
+![](32_forensics.jpg)
+
+They found out that all shadows were consistent from a single light source.
+
+Humans are bad at noticing problems, that's why you need some sort of algorithm.
+
+In video footage, is motion consistent with physics or gravity?
+- You can look things like
+- Mass
+- Acceleration
+- Traveled distance
+
+
+What is the motion of the ball?
+
+![](33_forensics.jpg)
+
+
+we can construct a model
+
+![](34_forensics.jpg)
+
+
+This video was faked for example.
+
+![](35_forensics.jpg)
+
+Those misiles were fake too. 
+`dr do photos'
+
+![](36_forensics.jpg)
+
+
+Also text can be faked, which can ve auditored through its ink pattern.
+
+![](37_forensics.jpg)
+
+
+There's also images created with AI.
+`ganbreeder`
+
+![](38_forensics.jpg)
+
+Even they are good pictures, they don't obey laws of physics.
+
+Like 'this person does not exists'
+
+- The statistics of this kind of images are still different from photos.
+
+
+![](39_forensics.jpg)
+
+They don't have aberration, sensing noise, Jpeg weirdness.
+
+
+Can you train a neural network to distiguish fake from true networks?
+
+
