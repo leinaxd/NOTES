@@ -176,4 +176,188 @@ so now i have to figure how to snap that into the person.
 
 ### FITTING THE MODEL TO NEW DATA
 
+i'm going to assume i know some points that i want to match to.
+- Assume you have a $2n$ vector $y$ and you want to fit the model.
+- You want to find the best translation, rotation, scale $(t,s,\theta)$
+- and model parameters $b$
+
+So i want to minimize, the original vector, and what i would get if i picked some 'b' 
+
+![](19_vision.jpg)
+
+with M as:
+
+![](20_vision.jpg)
+
+
+So first i create the model (deformable part), and then try to resize and rotate to snap it into the image.
+
+The natural thing to do is start with the mean shapes.
+
+Algorithm 3. Matching the model to target
+1. Initialize $b=0$
+2. Generate Model points $x=\mu + P\ b$
+3. Find the best scale, rotation and translation, this gives me new Y. (algorithm 1)
+4. Project Y into x space, bring the rotation, scale and translation to the compatible with X. ($y=M^{-1}Y$)
+5. Project those points into the model parameters, which is undoing the (2.) part. $b=P^T(y-\mu)$
+6. Iterate to step 2. until stop changing. (convergence)
+
+
+How do we know what image points $Y$ should belong to the model.
+- Where are the corners of the eye.
+- We can try image edges to pull the model into those points.
+
+Suppose i have this model boundary.
+- The model is made up of a bunch of points.
+- I can image the model connected with a curve
+
+My hypothesis is that The way i choose those points in the first place, hopefully correspond to edges of the image.
+- maybe the image edge is not exactly aligned with the model.
+- What i can do is for that point i can compute the normal to the model boundary
+- And i can search along that normal until i hit a point that has a high gradient
+
+
+![](20_vision.jpg)
+
+Finally putting all together
+
+### Active Shape Model
+
+Algorithm 4.
+
+1. Initialize my shape model $b=0$, $x=\mu$ (non deformable parameter)
+2. Search around each point $x_i$ in the mean shape, for the best nerby image point $y_i$. (search for points that are close to the mean shape that are edges)
+3. Fit my new parameters which are scale, translation and rotation $(s, t, \theta, b)$ to $y_i$ which is algorithm 3. (how to find the best match of the model)
+4. Enforce some constraint that each deformable part has to be kind $|b_i| \lt 3 \lambda_i$. so shapes are kind of 'reasonable'
+   
+Its possible when i project some shape into the model that it may have values on these eigenvectors that are really big. thinking as standard deviation, we can search for points along 3 eigenvalues away.
+
+5. then iterate.
+
+Hopefully things will snap together.
+
+You could do better in step 2. by instead of searching for gradients in one direction instead for both directions.
+
+At each point sample (say) 2n+1 pixels along gradients on both sides. 
+
+![](21_vision.jpg)
+
+Maybe in my ear i have gradients in both directions.
+
+The idea is for each point, we have both (x,y) location, and a 2n + 1 grayscale vector.
+- Do PCA on the whole concatenated vector
+
+Instead of describing each person by just a bunch of special points, i could also add in a whole gray scale vector on top of that and then
+i can simultaneously learn how the positions of the points and these gray scale intensities would be expected to change.
+
+
+
+This algorithm is much different than taking a licence plate and correlating across the image, 
+instead i've these knobs that i can turn to change the shape and the scale.
+
+
+Here's another example but as that guy uses glasses this algorithm fails.
+- glasses were not seen in the training set.
+
+![](22_vision.jpg)
+
+Another person has double mask.
+
+
+Those models are used in medical related to radiation therapy.
+- When you get threated to a cancer radiation
+- you get CAN scanned
+
+The doctor has to outline where's the organ, and where is the tumor.
+
+![](23_vision.jpg)
+
+The problem is, from a CAT scan. Someone has to look to an image like this and decide how to outline the tumor.
+- This process takes so long, and it may be automatized with that algorithm.
+
+![](24_vision.jpg)
+
+The shapes of the organs in 3D can be complicated, there's a lot of stuff to worry about.
+
+![](25_vision.jpg)
+
+
+So why won't we apply this shape model
+
+- So we need training data (we need lot of cancer CT scans data)
+- All ages, all sizes
+- First thing that they notice is that the number of points
+- How do we match different sizes of organs
+  
+![](26_vision.jpg)
+
+What is we resample Organ's shape
+- In one step we have to interpolate to make sure that every training data that we have
+- was resample at the same number of slices and the same number of points around each slice.
+
+![](27_vision.jpg)
+
+And that's how they arrive to **shape models**.
+
+Here's an example for the prostate cancer.
+- What we are seeing now is the averate prostate of all patients.
+  
+![](28_vision.jpg)
+
+As we change the **b** parameters we get some sense of a meaninful variation in the data.
+
+![](29_vision.jpg)
+![](30_vision.jpg)
+
+All these features are automatically discovered by the model.
+- The algorithm tries to change all these parameters to find one suitable to your new data.
+
+
+Once you have a single organ model, you can also think
+- how all organs in your body are coupled together.
+- You can build independant models for the prostatte, the bladder, the rectum
+- and try to fit each of them by themselves
+  
+![](31_vision.jpg)
+
+
+The problem is that there's nothing that would prevent your shape model for compiting for the same pixel.
+- The bladder and the prostate shapes you converge to
+- might interpentrate right
+- they're independently thin
+
+There's a lot of variation of how these three organs looks.
+- and you kind of like build a **Joint Shape Model**, where you can just throw all points into a one big vector.
+- the shape model doesn't know any better, it just treats it like one big vector.
+
+And then you can see the three modes of variation for these 3 organs simultaneously, 
+- to fit all these organs all at one.
+
+![](32_vision.jpg)
+
+To make sure when we trained these knobs, the organs don't go into places they shouldn't inside the body
+- you can observe there's kind of cage of bones in your pelvis, that kind of constrains where organs can be.
+- So they improve the algorithm by automatically detecting those bones and drawing those color planes to say
+- all the organs that you segment have to be inside that box.
+
+![](33_vision.jpg)
+
+Uses DSP to label which bone is which.
+- From the cat scan
+- using thresholding, define where the bones are
+- do some morphological operations to fill inthe bones
+- and then, we do some kind slice to slice matching
+- to keep track to which bone is which. (see each row)
+- eventually those bones are going to fuse inside your pelvis.
+
+
+More work, Bilinear models
+- Not just a PCA models with knobs which change of shapes between patients
+- Variation in style and content
+- There's a content parameter, is your bledder full or empty? make a patient independant about that
+  (Intra-patient, same patient can have different bladder sizes)
+  
+- And style, which is particular to each patient, Everyone has a different writting
+  
+![](34_vision.jpg)
 
