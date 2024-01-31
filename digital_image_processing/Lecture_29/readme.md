@@ -93,5 +93,87 @@ So now, we have $S$ sets of aligned Training sets.
 
 Each of them is described by a 2n-vector of feature points.
 
-
+### Principal Component Analysis  (PCA)
 Clearly these 2n points are not all independant
+. I can exploit that correlation
+
+So we want to reduce the dimensionality of this set of vectors $Z$ to a number $K<< 2N$
+- Many dimensions are hard to visualize, consider then a cloud of points in 2D
+- Along the line is the directions which the data varies the most.
+- And the perpendicular is the direction which data isn't varing at all
+
+![](9_vision.jpg)
+
+This also can be seen as a change of coordinates.
+- if i only give you one number, i can give you the projection of each point in the new coordinated system.
+- If i have to give you just one coordinates i will give you the one who minimizes the error
+
+![](10_vision.jpg)
+
+Algorithm of PCA:
+1. Compute Mean of data as $\mu = \frac{1}{N} \sum_{i=1}^S z^i \ \in\ 2n\times1$
+2. Compute the covariance Matrix of data as $\Sigma=\frac{1}{s-1} \sum_{i=1}^s (z^i-\mu)(z^i-\mu)^T\ \in\ 2n\times 2n$
+    Note, the term $\frac{1}{s-1}$ is what to make to the estimator unbiased for gaussian distribution
+3. Compute Eigenvalues and Eigenvectors of $\Sigma$, $(\lambda_i, v_j)$ such that $\lambda_1 \le \lambda_2 \le.. \sum v_j = \lambda_j v_j$
+   Lambda is telling me how important is that direction $v_j$.
+4. Compute Total Variance $T=\sum_{j=1}^s \lambda_j$
+
+It turns out i don't need that many eigenvectors at all.
+
+5. I can choose the K largest eigenvalues, to account for the $p%$ of the total variance.
+   $\sum_{j=1}^K \frac{\lambda_j}{T} \geq 0.99$
+
+Now we can approximate any of the original shapes $Z$ as 
+
+![](11_vision.jpg)
+
+Now i can specify any shape with K numbers by adding up the mean and b.
+
+If i plot the data in the new coordinates i discover that i don't really need the second axis.
+
+![](12_vision.jpg)
+
+The K-dimensional vector **b** defines a small number of parameters for the deformable shape model.
+
+For example, i can have 40 people, with 100 parameters, and i boiled up to just 3 parameters.
+
+
+This is a demo of shape detection
+- The blue dots are maybe the x-y positions of the feature points.
+  
+![](13_vision.jpg)
+
+As i tune the values of **b** i get different face expressions.
+
+![](14_vision.jpg)
+
+So what i do is choosing the right orientation to match the mask
+
+![](15_vision.jpg)
+![](16_vision.jpg)
+
+The mask starts in some random position and then kind of snaps into the face.
+
+
+What you find is that the mask automatically follows the person's face.
+
+![](17_vision.jpg)
+
+
+So how do you actually snap the mask to a person's head.
+
+
+Choosing **b** corresponds to a candidate shape. 
+The small set of values from the **b**-vector are like "knobs" we can turn to get the best fit.
+
+The mods (eigenvectors) $v_i .. v_k$ are often intuitive. (for faces they may correspond to $\lambda_1$ for smile, or $\lambda_2$ shaking its head)
+
+The following question is, how do i take my model (knobs) and fit them to an actual new image.
+- if you think about this, there's no pixel intensities manipulations.
+- i was just choosing locations in my image.
+
+so now i have to figure how to snap that into the person.
+
+### FITTING THE MODEL TO NEW DATA
+
+
