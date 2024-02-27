@@ -30,4 +30,8 @@ Cobol People proposed a standard of how programs should access a database
 - Network data model
 - Tuple at a time time queries
 
-### Integrated Data Manadgement System (IDMS) 1970
+-> Integrated Data Manadgement System (IDMS) 1970
+
+
+## Network data model
+![](1.jpg)
