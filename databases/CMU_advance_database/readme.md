@@ -27,3 +27,4 @@ https://www.youtube.com/watch?v=SdW5RKUboKc&list=PLSE8ODhjZXjasmrEd2_Yi1deeE360z
 ---
 
 ## lecture 2
+- Backgrounda
