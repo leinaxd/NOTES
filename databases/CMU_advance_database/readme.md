@@ -33,4 +33,7 @@ https://www.youtube.com/watch?v=SdW5RKUboKc&list=PLSE8ODhjZXjasmrEd2_Yi1deeE360z
   - High level disk organization
   - Concurrency Control
   - Logging and Recovery
-
+  - Disk Oriented DBMS overhead
+- In Memory DBMSs
+  - Data Organization
+  - High Level example
