@@ -4,6 +4,7 @@ What is a Database?
 
 What are the database Functions?
 - Store Data
+  - Data sharding (split data across many devices)
   - What kind of data?
     - structured
     - unstructured
