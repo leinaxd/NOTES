@@ -128,3 +128,105 @@ The systems assumes that a transaction could **stall** at any time whenever it t
 So in a disk or any system, if it's using lockinga, it's going to maintain this locking information in separate data structure. In a memory hash table, in the lock manager to avoid those the lock information getting swapped out to disks that way i don't have to determine whether i can ever hold the lock on a tuple to go got the disk and figure out, go fetch that lock information, everything is going to be in memory.
 
 ## Logging and Recovery
+Other problems with in-memory systems is Logging and recovering.
+
+Most DBMS use **Steal + No-Force** Buffer pool policies, so all modifications have to be flushed to disk to the WAL before
+a txn can commit.
+
+Each log entry contains the before and after image of record modified
+
+Lots of work to keep track of LSNs all throughout the DBMS
+
+Now in memory systems we don't have dirty pages anymore, so maybe we don't want to use the exact same protocol.
+And maybe our log entry don't need to store the exact same information as we have in disk oriented systems
+
+we don't need to keep track of the logs sequence numbers, again maintaining the undo information, again dirty pages didn't get rid of disks, everything fits in memory.
+
+## Disk Oriented DBMS overhead
+There was an MIT study back in 2008, where they took an old tv database system, and they've instrumented
+so they can measure the number of instructions that the data system was spending in differents parts of 
+the current querry execution while you are running TPC-C.
+
+The idea is to break down the system into different components and just **measure** how much **time** we are spending in each of them.
+
+- Okay,this is for a database that everything **fits into memory**, nothing is flushed to disk
+- What is the **cost** of **accessing** data that's in **memory**?
+
+![](7.jpg)
+
+- The First overhead is in the buffer manager this is about 34% of the CPU instructions spent doing updates
+or looks ups into the page table. Keep track of all the metadata you have for the eviction policy.
+
+- Then 14% of the time is spent doing latching, for this could be by the data structure such as the page table with the lock manager ran anytime, the low level constructor we need protect.
+
+- 16% of the time is spent locking, so this particular system it was called 'sure' and uses **two-phases locking**, so this is the overhead of updating the lock information for transactions while they run.
+
+- 12% of the instructions are spent in the log manager, so this is not the cost of running out the disk, this is the cost of preparing the log records that we're going to write down.
+
+- 16% are spent doing a comparison of keys, doing traversals in the B+ tree, but this is sort unavoidable,
+if i'm trying to find the record that i want through the D+ tree, this is the cost of comparing keys.
+
+- 7% so this is going to leave us with a paltry 7% of the CPU instructions actually doing what they would call
+real work like executing the logic for transactions, getting back to the data and then performing the commit operation.
+
+So this is showing that if you take a disk system and you give it all memory that it wants you are not going to get potentialy the best performance, because everything could still have pain the penalty for all this internal architecture that assumes the data in not on disk, and there's all this protection mechanisms for that assumption.
+
+## In-memory DBMSs
+Assume that the primary Storage location of the database is **permanently in memory**
+Early ideas  proposed in 1980s but it is now feasible because DRAM prices are low and capacities are high
+
+First comercial In-memory DBMS were relased in 1990
+- Times Ten
+- Data Blitz
+- Altibase
+
+### Data Organization
+An In-Memory DBMS does not need to **store** the database in slotted pages but it will still organize tuples
+in **blocks** or **pages**.
+- direct **memory pointers** vs **record ids**
+- **Fixed length** vs **variable length** data pools
+- Use **checksums** to detect software errors from trashing the database
+
+The OS organize in memory too.
+
+If everything lays in memory there's a thread that anybody can wrongly write the database data.
+
+### High Level Example
+- We have a query that access a tuple
+- then go through an index to look it up.
+
+Now our index, instead of returning back a **record id** or **page ID** in an offset,
+We're now gonna get a **Block id** and an offset.
+- And the Block id could either be the **direct memory** address of a fixed length block
+- or it could be an additional mechanism that allows us to look it up and see you've convert that block id
+  to a memory location
+  
+![](8.jpg)
+
+So the primary search locations database again is in memory, or every tuple in memory, 
+- But we're going to **organize** them in this **fixed length records**
+
+It doesn't matter what we are assuming a row or a column.
+
+When we want to do a lookup to find the tuple within the offset of that block we just do some simple memory arithmetic to take the size of the tuple, multiplied by our offset and then tell us where to be jump in memory to that block and regret it.
+
+
+![](9.jpg)
+
+Now to handle **variable length data**, this is going to be much different than what we would do in a disk
+based system.
+- Instead of storing the data in line of the fixed length data block 
+- for most of the time restore a pointer to some other memory location
+- in a very length data pool
+- where that's a direct access to the data that corresponds to this attribute within this tuple
+
+The idea is that we can guarantee that all tuples, and the fixed length data blocks are fixed length
+and then for everything that's variable length we shove into the very lengthy data block.
+
+Again this is different from the slotted page design you would see in a disk coordinate system, 
+because in there, we're trying reduce the number of disk reads, so therefore we try to pack in all
+variable length data for a tuple within the tuple itself all the fixed length data.
+Doesn't always happen and if its spillover to another page, we can do that but most of the time.
+
+In this world, **in memory system** were actually want to **store** the **variable length data**, **separately**.
+- So that way we can do deterministic lookups, to find memory addresses for tuples
