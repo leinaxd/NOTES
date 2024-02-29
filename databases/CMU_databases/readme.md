@@ -19,3 +19,6 @@ What are the database Functions?
 - Back up
 - local/Web allocated
   - Networking
+
+Tools
+- Profiling stages (disk, ram access, network speed)
