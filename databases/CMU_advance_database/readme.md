@@ -49,4 +49,6 @@ https://www.youtube.com/watch?v=SdW5RKUboKc&list=PLSE8ODhjZXjasmrEd2_Yi1deeE360z
     - Deadlock prevention
   - Timestamp Ordering
     - Basic T/O
-    - Optimistic Currency Control (OCC)
+    - Optimistic Concurrency Control (OCC)
+  - Observation
+  - Concurrency Control Evaluation
