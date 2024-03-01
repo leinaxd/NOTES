@@ -557,3 +557,216 @@ So if we pass the validate phase, no conflicts then we enter the **Write phase**
    (only one transaction at a time)
 
 ## Concurrency Control Evaluation
+paper: starting into the abyss: an evaluation of concurrency control with one thousands cores
+Compare in memory concurrency control protocols at high levels of parallelism
+- single test bed system (evaluate different protocols)
+- Evaluate protocols using core counts beyond what is available on today's CPU
+
+Running in extreme environments exposes what are the main bottlenecks in the DBMS
+
+### 1000 cores CPU simulator
+DBX1000 database system
+- in memory DBMS with pluggable lock manager
+- No networks access, logging, or concurrent indexes.
+
+MIT Graphite CPU Simulator
+- Single socket, tile-based CPU
+- Shared L2 cache for groups of cores
+- Tiles communicate over 2D mesh network
+
+### Target Workload
+Yahoo! Cloud Serving Benchmark (YCSB)
+- 20 millon tuples
+- Each tuple is 1kba (total database is 20gb)
+
+Each transaction reads/modifies 16 tuples
+Varying skew in transactions access patterns
+Serialization isolation level.
+
+### Schemes to be compared
+2 phases locking
+- DL_DETECT 2PL w/Deadlock Detection
+- NO_WAIT 2PL w/Non-waiting Prevention
+- WAIT_DIE 2PL w/Wait and die Prevention
+Databases involved:
+- MySQL
+- SQLserver
+- IBM DB2
+- SYBASE
+- SQLite
+
+Timestamp
+- TIMESTAMP Basic T/O Algorithm
+- MVCC   Multi Version T/O
+- OCC  Optimistic Concurrency Control
+Databases involved:
+- PostgreSQL
+- Oracle
+- MEMSQL
+- Informix
+- HyPer
+- Cockroach lab
+- Sap Hana
+
+### Results
+The first experiment is the baseline performance
+- read only protocol.
+
+What are you seeing is
+- at the x-axis the number of cores
+- so 200 cores means 200 transactions running at the same time
+- Read only workflows with Uniform Memory access
+
+- Deadlock detection and No-wait protocols, scale linearly and perfoms the best
+  as this protocols are so simple therefore the overhead is minimal
+
+![](25.jpg)
+
+The next one to see is the corner at 800 cores.
+- wait and die, and MVCC start to dip down
+
+This is due the overhead of allocated unique timestamps for transactions as they're running. 
+When you are running with a millon of transactions. 
+for this table architecture, at the timestamp allocation and coordinating across all the different threads becomes a bottleneck
+
+![](26.jpg)
+
+
+And lastly you see that OCC actually performs the worst.
+This is the combination between having to copy to private workspace for every single transaction
+that back into the system, that actually becomes a big bottleneck.
+
+---
+
+So what we see now is a write intensive workload
+- this is on a medium-contention workload where 60% of transactions are going to try to access a hot spot of 20% of the database.
+
+The first thing you see is that
+- deadlock detection is actually the worst protocol used for this environment
+- in the last slice (reading) it was performing the best
+  
+![](27.jpg)
+
+- Then the No-wait and Wait-die actually do the best
+  this is because those protocols are so simple,
+  Anytime there's a conflict and there would be a deadlock these protocols
+  inmmediately just kill the transaction.
+  You don't try to spend any time trying to figure out should i wait or hopping the other transactions is
+  giving away his slot. No waits.
+
+- In the middle we have Basic T/O, MVCC and OCC
+  they are roughly all doing about the same.
+  Occ is doing slower,  because his extra overhead of copying things into the workspace
+
+---
+
+So now we get this final graph which is the most important about the paper.
+- we are running a writing system workload where 90% of transactions are updating 10% of the database
+
+Now we see that all protocols, crashed out to zero, when we get out to thousands cores.
+- So none of these protocols are actually scaling
+
+And the reason is that is all this transactions overhead having to check for conflicts
+or copying things around.
+- There are so many conflicts that you just can't make any progress to get things completed
+
+![](28.jpg)
+
+One interesting thing to see is **No Wait** is kind doing along okay (relative to the other protocols until 800 threads)
+- it just hasn't any overhead as soon it detect deadlock it just terminate one thread. (and restart it)
+
+The other thing to pay attention is that **OCC** is the worst for a few of cores
+- but at the end, it was the one who scales the best.
+  Once you enter into the validation step, you are certain that one transaction is going to commit.
+
+Lastly we have to note, that we are actually at the 32/64 cores.
+- That means we are at the best of those systems.
+- Time will come when more Cores requires a better conflict resolution system.
+
+---
+
+Finally we have a break down of how different protocols perfomed.
+- No wait is spending a lot of time aborting transactions
+- While other protocols spent their time waiting, trying to acquire a lock
+  
+![](29.jpg)
+
+
+### Bottlenecks
+Lets quickly asses some bottlenecks we've found
+
+Lock_Thrashing:
+- DL_DETECT
+- WAIT_DIE
+
+
+Timestamp Allocation:
+- All T/O algorithms + WAIT_DIE
+
+Memory Allocation:
+- OCC  + MVCC
+
+#### Lock trashing
+Lock trashing is a phenomenon that you would have in 2 phases locking system
+- if a transaction ends up waiting longer that aquiring locks
+- then this causes other transactions waiting behind it
+- end up waiting longer to acquire the locks at the first transaction holding
+- and therefore that causes others behind to wait even longer.
+
+- This is a convoy effect where cause one transaction wait longer, cause everyone else wait longer
+- and gets exhacerbated as you add more transactions.
+
+Can measure this phenomenon by removing deadlock detection/prevention overhead.
+- force transactions to just do nothing but acquire locks in primary key order
+- Deadlocks are not posible.
+
+Here the fader variable is representing the amount of skew in the workload.
+- or a small transactions trying to access a small number of tuples.
+
+- The most extreme cases is stated 0.8
+- and theta zero means no contention
+
+![](30.jpg)
+
+#### Timestamp allocation
+In a really large number of core counts, having a transaction
+to autoacquire a unique timestamp, actually could be a big bottleneck
+
+Mutex
+- Worst option
+
+Atomic Addition:
+- Requires Cache invalidation on write
+
+Batched Atomic Addition
+- Needs a back off mechanism to prevent fast burn
+
+
+Hardware Clock
+- not sure if it will exist in future CPUs
+- Intel has a hardware clock, so you can have some instruction, but not clear if that's how intel is playing around
+
+Hardware Counter
+- Not implemented in existing CPU
+
+This graph is showing to you that the one of these bottlenecks come into play running these
+- different time allocation schemes.
+- Making the batch atomic one probabbly enough for what we need
+- We are talking of trying to allocate a million time stamps for a second
+
+![](31.jpg)
+
+
+#### Memory Allocations
+Main issue here, is as we have to copy things into private workspaces for some protocols, that copy could be expensive.
+
+Defaults libc **malloc** is slow. Never use it!
+- we will discuss this further later.
+- Use GE malloc instead
+- or TC malloc
+
+
+## Parting thoughts
+- The design of a in-memory DBMS is significantly different than a disk oriented system
+- The world has finally become comfortable with in-memory data storage and processing
+- Increases in DRAM capacities have stalled in recent years compared to SSD
