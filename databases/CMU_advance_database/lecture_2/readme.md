@@ -409,10 +409,151 @@ they can't hold it, and then it makes a decision about what it should do other t
 we do make sure we do the operations in the right order so that there's no cycle dependencies.
 
 ## Timestamp Ordering
-**Basic T/O**
-- checks for conflicts on each read / write
-- copy tuples on each access to ensure repeatable reads
+This category uses timestamps to figure out the right order that transactions should be allowed to complete.
 
-**Optimistic Currency Control (OCC)**
-- Store all changes in private workspace
-- Check for conflicts at commit time and then merge
+**Basic Timestamp Ordering (T/O)**
+- we are going to check for conflicts on each read and write,
+- and use timestamps to determine wheter there is a conflict
+- and then we're going to copy tuples into a private workspace for each transaction as they read them
+  to ensure if they go back and read the same tuple again, get the same value.
+  Otherwise, you could be reading something that was written in the future and that should't have happened.
+
+Suppose we have a transaction **T1** which **reads on A**, then **writes on B**, and finally **writes on A**
+- when the transaction **starts**, we hace to assign the **timestamp**,
+  because we're going to use that to determine the serial ordering of transactions.
+- There are different schemes you can use, i'm going to use the **logical counter**.
+  (hardware clock)
+  And we update that counter, every time we start a transaction.
+- so the transaction starts, and it's going to give the timestamp 10001
+
+![](13.jpg)
+
+Now inside the database, for every single record we're storing, we are going to maintain two additional
+fields.
+- Read timestamp: the highest timestamp of the last transaction that successfully read this tuple.
+- Write timestamp: the last timestamp of the last time wrote this tuple.
+The idea is that these timestamps are always going forward in time.
+
+- So the first thing to do is **read on A**
+- So go check the **Write** timestamp and see if whether it's timestamp is greather than ours.
+  (meaning we're trying to read something in the future, that we wouldn't allowed to read)
+- Next you have to update the **Read timestamp** to check if whether it's timestamp is less than ours
+  if it is, we go ahead and update it.
+
+![](14.jpg)
+
+- This is telling to other transactions, that we may want to update this tuple that there's was a transaction timestamp at 10001 that has read it.
+- So make sure we don't write something in the past.
+
+- Then we move into **Write on B**
+- We first check to see if the write timestamp it's in the future from where we are at
+- and therefore we would overriding future data with past data which is not allowed.
+- And we check the read time and make sure, someone didn't read this record in the future
+- and if we write into they would end up missing it.
+- so in this case here, out timestamp checks out for both of these **reads** and **writes**
+- and go ahead and update that **write timestamp** field.
+
+
+![](15.jpg)
+
+And then i'll say that our transaction is passing through a stall.
+- it's computing the 1 billionth digit of pi.
+- And during this time, a transaction is comming along and modifies **record A**
+
+![](16.jpg)
+
+Now we'll see that we have a real issue, because now when i want to **write A**
+- That timestamp is greather than our timestamp **10001**,
+- that shouldn't be allowed to do this,
+- this would be trying to overwrite a logical record that was updated in the future
+- with a physical record in the past.
+- So this case is violating the time symbol ordering, and our transaction has to get killed.
+- and aboard it and we roll back any changes.
+
+![](17.jpg)
+
+
+**Optimistic Concurrency Control (OCC)**
+First proposed in 1981 at CMU by H.T. Kung
+
+- In addition to copying the things you read into your prior workspace
+- You're also going to make copies of any tuples you modify.
+- and all your rights go into private workspace.
+- and then when you go commit, then you do validation as checked as whether there were any conflicts.
+- and if not you can merge all your private workspace changes back into the global database.
+
+- **Store all changes in private workspace**
+- **Check for conflicts at commit time and then merge**
+
+Timestamp ordering, scheme where transactions copy data
+- read / write into a private workspace that is not visible to other transactions
+- when a transaction commits, the DBMS verifies that there were no conflicts.
+
+
+Here is a simple transaction.
+- **Read on A**
+- **Write on A**
+- **Write on B**
+- In our database, we don't need the read timestamp record. Just the **write timestamp**
+- When transaction starts, unlike basic timestamping protocol, we're not going to assign a timestamp.
+- We are going to make a copy into a **private workspace**
+
+![](18.jpg)
+
+OCC has three phases.
+- The first one is the read phase of the transaction.
+
+- So we are going to copy that record into a private workspace, so we always read the record at same value
+
+![](19.jpg)
+
+- Now we do a **Write on A**
+- we are not going to modify the global database, but our private workspace
+
+![](20.jpg)
+
+We don't have a **write timestamp** yet, because we didn't have assigned one.
+- so we are going to save an infinity
+- and we are going to save the value 888
+
+![](21.jpg)
+
+Same happens next with **write on B**
+- we copy,
+- and timestamp to infinity
+- and save new value
+
+![](22.jpg)
+
+So now it's should be time to commit, but we are not doing that yet. There's 2 additional phases
+
+Validate Phase: 
+- we look up into the workspace
+- see what records we have modified
+- and go see if there's either transaction that are still running but have read this data
+- and therefore they didn't see our updates because there was in a private workspace
+- or there's transactions in the past that i've already commited that have modified this
+- therefore we didn't actually see their changes as well.
+- Either you are doing backwards validation, (a forward validation we've covered in the introduction class not important right now)
+- the basic idea is making sure that transactions are always commiting in the right order
+
+![](23.jpg)
+
+So if we pass the validate phase, no conflicts then we enter the **Write phase**
+- we now are finally assigned a timestamp
+- and then we update the global database with our changes that we've made from our private workspace
+- with our new timestamp
+- and then at this point, transactions are considered done and commits.
+
+![](24.jpg)
+
+
+### Observation
+- When there is low contention, optimistic protocols perform better because the DBMS spends less time checking for conflicts.
+  (OCC performs better than 2 phase locking)
+
+
+- At high contentionm, the both classes of protocols degenerate to essentially the same serial execution.
+   (only one transaction at a time)
+
+## Concurrency Control Evaluation
