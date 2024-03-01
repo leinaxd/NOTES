@@ -25,4 +25,13 @@ Tools
 - Profiling stages (disk, ram access, network speed)
 
 
-# Lecture 1: introduction
+## Lecture 1: introduction
+- course overview
+  - course outline
+  - Textbook
+  - Projects
+  - Bustub
+  - databaseresearch
+- what is a database
+  - database example
+  - Flat File Strawman
