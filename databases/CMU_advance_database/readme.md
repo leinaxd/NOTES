@@ -43,3 +43,10 @@ https://www.youtube.com/watch?v=SdW5RKUboKc&list=PLSE8ODhjZXjasmrEd2_Yi1deeE360z
   - Bottlenecks
   - Concurrency Control
   - Compare and Swap
+- Concurrency Control Schemes
+  - Two phase Locking
+    - Deadlock Detection
+    - Deadlock prevention
+  - Timestamp Ordering
+    - Basic T/O
+    - Optimistic Currency Control (OCC)
