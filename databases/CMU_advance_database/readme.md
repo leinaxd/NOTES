@@ -37,3 +37,9 @@ https://www.youtube.com/watch?v=SdW5RKUboKc&list=PLSE8ODhjZXjasmrEd2_Yi1deeE360z
 - In Memory DBMSs
   - Data Organization
   - High Level example
+  - Indexes
+  - Query Processing
+  - Logging and Recovery
+  - Bottlenecks
+  - Concurrency Control
+  - Compare and Swap
