@@ -52,3 +52,5 @@ https://www.youtube.com/watch?v=SdW5RKUboKc&list=PLSE8ODhjZXjasmrEd2_Yi1deeE360z
     - Optimistic Concurrency Control (OCC)
   - Observation
   - Concurrency Control Evaluation
+    - 1000 cores cpu evaluation
+    - Results
