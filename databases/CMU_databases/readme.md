@@ -1,7 +1,9 @@
 # CMU_databases
 
-What is a Database?
+Pareto rule 20% of the curse cover the 80% of the commonly used skills.
+- for 25 length videos, 5 is that 20%, so pay attention to that first 5 lectures.
 
+What is a Database?
 What are the database Functions?
 - Store Data
   - Data sharding (split data across many devices)
@@ -35,3 +37,24 @@ Tools
 - what is a database
   - database example
   - Flat File Strawman
+  - Data Integrity
+  - Flat File Implementation
+- Database Management System
+  - Early DBMS
+- Data Models overview
+  - Data Model
+  - Schema
+  - Relational
+- Data Manipulation Languages (DML)
+  - Relational Algebra
+    - SELECT
+    - PROJECTION
+    - UNION
+    - INTERSECTION
+    - DIFFERENCE
+    - PRODUCT
+    - JOIN
+  - Relational Extra Operators
+  - Observation
+    - Relational model: Queries
+- Conclusion
