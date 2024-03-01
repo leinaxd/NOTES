@@ -23,3 +23,6 @@ What are the database Functions?
 
 Tools
 - Profiling stages (disk, ram access, network speed)
+
+
+# Lecture 1: introduction
