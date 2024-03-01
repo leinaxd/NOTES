@@ -321,6 +321,98 @@ The DBMS can store locking information about each tuple together with its data.
 Mutexes are too slow to protect tuples, instead we are going to use this atomic operation called 'compare and swap'.
 
 ### Compare and swap
-This is covered in other lectures, so this is just an overview.
+Compare and Swap is an Atomic instruction that every modern CPU will provide you.
+- concept from 1970'
+- It's a single instruction that's going to do a look up in a memory location **M**
+- And it's going to check if that memory location has a certain value **V** that provided
+- If that's value **V** is equal to the value you're checking in then
+- you are allowed to install a new value **V'** to update.
+- Otherwise, the operation fails
+
+![](10.jpg)
+
+In this example, in c++ with linux libc.
+- We are given a memory address, we're giving a compare value and a new value.
+- So the current memory address, that **M** points to contains the value 20.
+- So in a single instruction, we are going to see whether 20 is equal to 20 
+- If yes, install new value 30, otherwise fail.
+
+This is used as a lock free or latch free operation efficiently.
+
+### Concurrency Control Schemes
+The two types of categories of concurrency protocols that we are going to work are:
+
+**Two Phase Locking (2PL)**
+- Pessimistic scheme, where the data system is going to assume transactions are going to conflict
+- And therefore they have required locks on any object before they are allowed to access them.
+  
+**Timestamp Ordering (T/O)**
+- An optimistic scheme, where you assume conflicts are rare,
+- so transactions do not need to first acquire locks on database objects
+- and instead, check for conflicts at commit time.
 
 
+
+### Two Phase Locking
+We have a transaction **T1**, and it wants to do is a **read** on **A** followed by a **write** on **B**
+- we have to acquire all locks for any object that we want to read or write.
+- So we get the **Lock A**  and **Lock B**
+- So the first part of the transaction is called the **growing phase**, this is where we are acquiring locks
+- And then as soon we **release** one block, now we are in the **shrinking phase**,
+- we are **not allowed** to acquire any new locks
+- but we can do operations on the only objects we still have all the locks fora
+  
+![](11.jpg)
+
+Note that in this simple example there's only one type of lock on A and B.
+- but in a real system, you have different lock modes. (shared mode, multiple transactions read the same object,
+  an exclusive mode) to say only one transaction can lock
+
+In a real system, based on SQL,
+- you wouldn't have explicit **lock** and **unlock** commands, those are handled automatically.
+
+Rigorous 2 Phase Locking
+- So typically you don't release the locks until the transaction actually commits.
+
+So we are not doing that now, we can unlock 'A', then do the writing on 'B' and still follows the original 
+2 Phase Locks Protocol.
+
+
+
+Let's say now, we have another transaction **T2**
+- it wants to do a **write on B** followed with a **write on A**
+- Say that those transactions are running at the same time.
+
+1. In **T1**, we get the **lock on A** while in **T2**, we get the **lock on B**
+2. In the next step, **T1** does a **read on A** while **T2** is doing a **write on B**
+3. But now we are getting into trouble, because, **T1** wants a **lock on B** while **T2** wants a **lock on A**
+
+![](12.jpg)
+
+So they have to stall.
+- They are essentially waiting for the other transaction to give up the lock.
+- we have a deadlock, and we need to do something to break this.
+
+#### Deadlock detection
+This is where you have a separate background thread, that's just periodically wake up, 
+- Check, whether the transactions are running.
+- Each transaction maintains a queue of the transactions that hold the locks that is waiting for.
+- If deadlocks found, use a heuristic to decide what transaction to kill in order to break the deadlock.
+  (i.e. kill the one that has done the less amount of work)
+  
+#### Deadlock prevention
+Instead of having a separate thread, you just have a way to make sure when transaction tries acquire a lock,
+they can't hold it, and then it makes a decision about what it should do other than just waiting
+- Check wheather another transaction already holds a lock when another transactions request it.
+- If Lock is not available, the transaction will either (1) wait (2) commit suicide (3) kill the other transaction
+
+we do make sure we do the operations in the right order so that there's no cycle dependencies.
+
+## Timestamp Ordering
+**Basic T/O**
+- checks for conflicts on each read / write
+- copy tuples on each access to ensure repeatable reads
+
+**Optimistic Currency Control (OCC)**
+- Store all changes in private workspace
+- Check for conflicts at commit time and then merge
