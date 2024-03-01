@@ -54,3 +54,8 @@ https://www.youtube.com/watch?v=SdW5RKUboKc&list=PLSE8ODhjZXjasmrEd2_Yi1deeE360z
   - Concurrency Control Evaluation
     - 1000 cores cpu evaluation
     - Results
+    - Bottlenecks
+      - Lock trashing
+      - Timestamp allocation
+      - Memory Allocations
+- Parting thoughts
