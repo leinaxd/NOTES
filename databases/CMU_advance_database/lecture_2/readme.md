@@ -230,3 +230,97 @@ Doesn't always happen and if its spillover to another page, we can do that but m
 
 In this world, **in memory system** were actually want to **store** the **variable length data**, **separately**.
 - So that way we can do deterministic lookups, to find memory addresses for tuples
+
+### Indexes
+How we're actually store indexes? which data structure?
+- Spoiler is B+ trees is going to be the best datastructure to use
+- Originally B+ trees were designed for disk based databases, they're still really good for in memory data as well.
+
+The other difference between indexes in that
+- in a disk based system you would also write log records and write out pages for the index disk so you can
+  recover them after the system restarts.
+- An in-memory system, we're not actually going to record any log record to not write indexes out of the disk.
+  Because, the cost of rebuilding the index after restart is going to be super low.
+
+
+Specialized main-memory indexes were proposed in 1980s when cache and memory access speeds were roughly 
+equivalent.
+
+
+But then Cache got faster than main memory.
+- Memory optimized indexes performed worse than the B+ trees because they were not cache aware.
+
+Indexes are usually rebuilt in an in-memory DBMS after restart to avoid logging overhead.
+
+### Query Procesing
+- In the disk based operating system the disk I/O was always the most expensive thing.
+  Who cares how you computed the data, or organize the access of the data once it was in memory.
+- In an in-memory based system, we are going to care now the overhead of doing function calls and branches,
+  so you need more carefull, how you organize the system and do query processing.
+- Sequential scans are also not significantly faster in an in-memory system
+  maybe there's certain algorithms to join other things that we don't have to worry making optimal that schedule    access, because random access will be enough.
+  
+The best strategy  for executing a query plan in a DBMS changes when all of the data  is already in memory.
+- Sequential scans are no longera significantly fater than random access.
+
+The traditional **Tuple-at-a-time** iterator model is too slow because of functions calls.
+- this problem is more significant in OLAP DBMS
+
+### Logging and Recovery
+Now that all is in-memory, there's no dirty pages to flush into disk.
+- we can be more conservative
+- we can end up recording less data, than we need in a disk based system.
+- So standard techiniques like Root camp, we'll use the batch of logs and amortize **fsync**, that's applicable
+  to disk based systems too.
+- but being able to use a more lightweight logging scheme is a definite advantage for an in-memory system.
+
+No dirty pages-
+we don't need to do any undos-
+writing into the disk as part of a checkpoint
+
+The DBMS still needs a WAL on non-volatile storage since the system could halt at anytime.
+- Use **groupt commit** to batch log entries and flush them together to amortize **fsync** cost.
+- May be possible to use more lightweight logging schemes (i.e. only store redo information)
+
+Since there are no 'dirty pages', there is no need to track LSNs  throught the system
+
+### Bottlenecks
+If the disk I/O is no longer the slowest resource, what are the other bottlenecks we have to take account of?
+- Locking/latching
+- Cache-line misses
+- Pointer chasing
+- Predicate evaluations
+- Data Movement & Copying
+- Networking (between application & DMBS)
+
+How to deal with these other issues when we design a database system
+
+### Concurrency Control
+Concurrency control is the protocol that allows you **execute** multiple **transactions** at the same time.
+- And each of these **transactions** are going to have this illusion that they're executing on the system by themself.
+- so they don't worry about reading the effects of other transactions occuring at the same time.
+  
+Provides **Atomicity** + **Isolation** in ACID
+
+For in-memory DBMS, the cost of a **transaction acquiring** a **lock** is the same as accessing data.
+- in a disk loading system, all the locks would be stored in memory, kind of data structure. and separated from actual tuples.
+
+The other important thing to understand is that in a disk running system, the stalls are due to transactions trying to access the data that wasn't in memory, so you have to get out to disk and get them.
+- now those kinds of stalls are going away.
+- yes there are going to be memory stalls, but they are going to be much more infrequent than just stall.
+
+But what we are going to have is a way more cores, and now the contention is going to be in the system of 
+many transactions to read and write to the same objects at the same time. And they are not stalling, because there's a disk
+
+New **bottleneck** is contention caused from **transactions** trying to **access data** at the **same time**.
+
+The DBMS can store locking information about each tuple together with its data.
+- this helps CPU cache locality
+- Mutexes are too slow. Need to use **compare and swap (CAS)** instructions
+
+Mutexes are too slow to protect tuples, instead we are going to use this atomic operation called 'compare and swap'.
+
+### Compare and swap
+This is covered in other lectures, so this is just an overview.
+
+
