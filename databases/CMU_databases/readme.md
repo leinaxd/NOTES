@@ -68,4 +68,13 @@ Tools
   - Basic Sintax: SELECT
   - Basic Sintax: JOINS
   - AGGREGATES
-  
+  - Multiple Aggregates
+  - Distinct Aggregates  
+  - Aggregates Notes
+  - GROUP BY operator
+  - HAVING CLAUSE
+- STRING operations
+  - Pattern Matching
+  - Specific String Operations
+  - STRING CONCATENATION
+- DATE TIME operations
