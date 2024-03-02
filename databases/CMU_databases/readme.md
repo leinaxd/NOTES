@@ -58,3 +58,14 @@ Tools
   - Observation
     - Relational model: Queries
 - Conclusion
+
+## Lecture 2: Intermediate SQL
+- Relational Languages
+  - SQL History
+  - Relational Languages
+- Today Agenda
+  - Example Database
+  - Basic Sintax: SELECT
+  - Basic Sintax: JOINS
+  - AGGREGATES
+  
