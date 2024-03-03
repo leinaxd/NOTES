@@ -78,3 +78,13 @@ Tools
   - Specific String Operations
   - STRING CONCATENATION
 - DATE TIME operations
+- Output Redirection
+  - Output Control
+  - LIMIT Control
+- Nested Queries
+  - Nested Queries Operators
+- Window Functions
+- Common Table Expressions (CTE)
+  - CTE Recursion
+- Conclusion
+- Homework
