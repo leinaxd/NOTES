@@ -88,3 +88,9 @@ Tools
   - CTE Recursion
 - Conclusion
 - Homework
+
+## Lecture 3 DATABASE STORAGE I
+
+- Overview
+  - Course outline
+- Disk based architecture
