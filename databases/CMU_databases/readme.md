@@ -94,3 +94,9 @@ Tools
 - Overview
   - Course outline
 - Disk based architecture
+  - Storage Hierarchy
+  - Access Time
+  - Sequential Vs Random Access
+  - System Design Goals
+- Disk Oriented DBMS
+- Why Not Use OS
