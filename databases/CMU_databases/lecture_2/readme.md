@@ -305,3 +305,180 @@ DAYS
 243
 ```
 
+## Output Redirection
+Store query results in another table.
+- **Table** must **not** already be **defined**.
+- Talbe will have the same **number** of **columns** with the same types as the input.
+
+![](20.jpg)
+
+The **INTO** keyword in SQL-92 says, 
+- Select all of the distincts course id cid, from enrolled.
+- And put them into the **CourseIds** table.
+
+The **MySQL** version is easier to follow.
+- it just creates a new table, with same content as the cid selection statement.
+
+There's also a version in SQL-92 to bulk insert:
+
+![](21.jpg)
+
+### Output Control
+Allows you to format your new table.
+
+![](22.jpg)
+
+**ORDER BY <col*> [ASC|DESC]**, Order the output tuples by the values in one or more of their columns.
+- allows you the ability of sorting.
+
+Also the ORDER BY 1 is possible, it orders by the first colun
+
+![](23.jpg)
+
+Also you can have a list of ordering criterion.
+
+![](24.jpg)
+
+
+### LIMIT CONTROL
+
+**LIMIT <count> [offset]**, limits the number of tuples returned in output
+- can set an offset to return a 'range'
+
+![](25.jpg)
+
+
+![](26.jpg)
+
+### NESTED QUERIES
+They are queries containing other queries.
+
+They are often difficult to optimize.
+
+Inner Queries can appear (almost) anywhere in query.
+
+![](27.jpg)
+
+This is kind what we want to do.
+
+![](28.jpg)
+
+We use the clause **IN**
+- Note the inner sid is for the enrolled student id
+- while the outher sid is form the students record
+
+![](29.jpg)
+
+#### NESTED QUERIES OPERATORS
+**ALL**, must satisfy for all rows in the sub-query
+
+**ANY**, must satisfy for at least one row in the sub-query
+
+**IN**, equivalent to '=ANY()'
+
+**EXISTS**, at least one row is returned.
+
+
+![](30.jpg)
+
+
+In this example, we try to find the highest id and his name
+- But this statement only works in SQLite.
+  
+![](31.jpg)
+
+Actually we can do it so, by the means of the **IS** clause.
+- which is doing an equal statement for the highest id.
+
+![](32.jpg)
+
+Actually it is handled by the **IN** statement
+- it's an **IS** but for a table
+  
+![](33.jpg)
+
+
+**NOT EXISTS** is giving you all courses with no enrolled student
+
+![](34.jpg)
+
+![](35.jpg)
+
+
+## WINDOW FUNCTIONS
+
+Performs a Sliding calculation across a set of tuples that are related.
+- Like an aggregation, but tuples are not grouped into a single value.
+
+![](36.jpg)
+
+Useful for example to analyze time series.
+- you can compute time-average, or sliding averages.
+
+**FUNC-NAME**, are the special aggregation function
+- same as we talked before (avg, min, max)
+  
+**OVER**, How to slice the data, can also sort.
+
+**Special Window functions**, 
+- **ROW_NUMBER()**, returns the number of the current row
+- **RANK()**, returns the Order position of the current row.
+
+![](37.jpg)
+
+
+**OVER** keyword, specifies how to group together tuples, when computing the window function.
+Use **PARTITION BY** to specify group.
+
+In this example we can see how each c_id group gets its row_number
+
+![](38.jpg)
+
+You can also specify an ordering with **ORDER BY**
+
+![](39.jpg)
+
+Now we want to find the student, with the second highest grade for each course
+
+We have to combine a couple of things,
+- the **RANK** is the local position of the partition for each record
+- So you put a partition over course id cid
+- So for each cid group, sort by grade, and get the second of each kind.
+
+![](40.jpg)
+
+### COMMON TABLE EXPRESSIONS (CTE)
+Provides a way to write auxiliary statements for use in a larger query.
+- think of it as a temporary table that you can reference later.
+
+Alternative to nested queries and vies.
+
+![](41.jpg)
+
+You can bind output columns to names before **AS** keyword
+
+![](42.jpg)
+
+In this example we want,
+- Find the student record, with the highest id, that is enrolled in at least one course.
+
+Here the first part is just selecting the **max student id** 
+- and get encapsulated into cteSource(maxId)
+- Then it performs a basic selection to choose the student name with max id
+
+![](43.jpg)
+
+#### CTE RECURSION
+
+![](44.jpg)
+
+
+## CONCLUSION
+- SQL is not a dead language
+  - constantly evolving
+- You should strive to compute your answers as a single SQL statement
+
+
+## Homework
+- Write SQL queries to perform basic data analysis on Northwind data from SFO
+  - write queries locally using SQLite
