@@ -105,6 +105,13 @@ Tools
   - Why Not Use OS (IV)
 - Database Storage
 - Today's Agenda
-
-
+- File Storage
+  - Storage Manager
+    - Database Pages (I)
+    - Database Pages (II)
+- Page Storage Architecture
+  - Database Heap File
+    - Heap File: Linked list
+    - Heap File: Page Directory
+- Page Header
 
