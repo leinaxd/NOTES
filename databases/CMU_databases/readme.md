@@ -115,3 +115,12 @@ Tools
     - Heap File: Page Directory
 - Page Header
   - Page Layout
+    - Tuple Storage
+    - Slotted Pages
+    - Record IDs
+- Example
+- Tuple Layout
+  - Tuple Header
+  - Tuple Data
+  - Denormalized Tuple Data
+- Conclusion
