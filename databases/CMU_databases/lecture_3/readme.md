@@ -365,3 +365,21 @@ Think of it as the TLB, translation lookaside buffer from a CPU,
 Also you can put checksums to verify for corrupted pages.
 
 ## PAGE HEADER
+Every page contains a __header__ of metadata about the page's content
+- page size
+- checksum
+- DBMS version
+- Transaction Visibility
+- Compression information
+
+Some systems require pages to be self-contained (e.g. Oracle)
+
+![](18.jpg)
+
+### PAGE LAYOUT
+well for any page, we can represent data in two different ways.
+- Tuple oriented
+- Log oriented
+
+so what does it look like when we 
+
