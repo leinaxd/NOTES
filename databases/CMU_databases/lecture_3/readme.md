@@ -381,5 +381,309 @@ well for any page, we can represent data in two different ways.
 - Tuple oriented
 - Log oriented
 
-so what does it look like when we 
+so what does it look like when we look inside the page.
+
+
+#### TUPLE STORAGE
+How to store tuples in a page?
+
+Strawman Idea. 
+- Keep track of the number of tuples in a page, and then just append a new tuple to the end.
+- so you know quickly how many tuples have been already written
+
+![](19.jpg)
+
+
+So this is a bad idea, why?
+- if you delete a tuple, you have to move everything up.
+- well, not necessary. You can keep the blank space... but you tuple counter will get mad.
+  - so you could scan the document to find the first empty space
+    
+![](20.jpg)
+
+Instead what you do is
+
+#### SLOTTED PAGES
+The slots array map 'slots' to the tuples starting position offsets.
+- The header, keeps track of:
+  - The number of used slots
+  - The offset of the starting location of the last slot used.
+  - Also, it keeps tracks of basic meta-data: Checksums, access time
+ 
+![](21.jpg)
+
+In this scenario, tuples can be fixed value, or variable-length.
+
+The **slot array** is a mapping layer from a particular **slot** to some **offset** in the **page**.
+- so now we can move the tuples around.
+  
+![](22.jpg)
+
+The **slot array** is going to grow from the **beginning** to the **end**.
+And the **data** is going to grow from the **end** to the **beginning**.
+- At some point we can't store any new information
+
+We can do some 'vacuum' or 'compaction' or 'defragmentation'
+- scan through and reorganize
+
+**Question, how does information entropy changes as you write/delete data? defragmentation gives you minimal entropy**
+
+### RECORD IDS
+The **DBMS** way we identify tuples is through these **RECORD IDS**
+- each tuple is assigned a unique record id
+  - Most common are: **PAGE_ID** and **OFFSET/SLOT**
+  - can also contain file location info.
+- An application **cannot** rely on these ids to mean anything.
+
+Other parts of the system like
+- indexes
+- log records
+are going to address tuples, through these record Ids
+
+Example.
+Give me the professor record named Andy.
+- I look in the index on the name
+- something says, 'there's a professor named Andy'
+- he has a record id of page 123
+- slot 1
+
+The advantage of this is
+- if i start moving data around
+- either moving the page around
+- or moving within the page itself
+- The index and all the stuff doesn't have to being updated
+
+Systems metadata
+- Postgres, has 4 bytes (actually 10 bits for extra metadata)
+- SQLite has 8 bytes
+
+## EXAMPLE
+Postgres uses CTID to represent the physical location of the data.
+
+```
+# postgres
+CREATE TABLE r (id INT PRIMARY KEY, val VARCHAR(6) );
+
+INSERT INTO r VALUES(101, 'aaa'), (102,'bbb'), (103, 'ccc');
+
+SELECT * FROM r;
+ id | val
+----+----
+101 | aaa
+102 | bbb
+103 | ccc
+
+SELECT r.ctid, r.* FROM r;
+ ctid | id  | val
+------+-----+------
+(0,1) | 101 | aaa
+(0,2) | 102 | bbb
+(0,3) | 103 | ccc
+```
+So this is a pair, who has the Page ID and the offset.
+
+Now let's delete the second row.
+```
+DELETE FROM R WHERE id=102;
+
+SELECT r.ctid, r.* FROM r;
+ ctid | id  | val
+------+-----+------
+(0,1) | 101 | aaa
+(0,3) | 103 | ccc
+```
+Now i insert a new tuple.
+- it goes not into slot 2, but into slot 4
+```
+INSERT INTO R VALUES (104, 'xxx');
+
+SELECT r.ctid, r.* FROM r;
+ ctid | id  | val
+------+-----+------
+(0,1) | 101 | aaa
+(0,3) | 103 | ccc
+(0,4) | 104 | xxx
+```
+Postgres has this 'VACUUM' as a garbage collection.
+```
+VACUUM FULL;
+```
+
+The same example in SQLite
+```
+CREATE TABLE r (id INT PRIMARY KEY, val VARCHAR(6) );
+
+INSERT INTO r VALUES(101, 'aaa'), (102,'bbb'), (103, 'ccc');
+
+SELECT sys.fn_PhysLocFormatter(%%physloc%%) AS [File:Page:Slot], r.* FROM r;
++----------------+-----+------+
+| File:Page:Slot | id  | val |
++----------------+-----+------+
+|   (1:74608:0)  | 101 | aaa |
+|   (1:74608:1)  | 102 | bbb |
+|   (1:74608:2)  | 103 | ccc |
++----------------+-----+------+
+
+DELETE FROM r WHERE id=102;
+SELECT sys.fn_PhysLocFormatter(%%physloc%%) AS [File:Page:Slot], r.* FROM r;
++----------------+-----+------+
+| File:Page:Slot | id  | val |
++----------------+-----+------+
+|   (1:74608:0)  | 101 | aaa |
+|   (1:74608:2)  | 103 | ccc |
++----------------+-----+------+
+INSERT INTO r a VALUES(104, 'xxx');
+SELECT sys.fn_PhysLocFormatter(%%physloc%%) AS [File:Page:Slot], r.* FROM r;
++----------------+-----+------+
+| File:Page:Slot | id  | val |
++----------------+-----+------+
+|   (1:74608:0)  | 101 | aaa |
+|   (1:74608:1)  | 103 | ccc |
+|   (1:74608:2)  | 104 | xxx |
++----------------+-----+------+
+```
+So in SQLite, when you update the page, if you have free space it compacts it.
+
+
+Same example in Oracle
+- oracle uses rowid
+```
+CREATE TABLE r (id INT PRIMARY KEY, val VARCHAR(6) );
+INSERT INTO r VALUES (101, 'aaa');
+INSERT INTO r VALUES (102, 'bbb');
+INSERT INTO r VALUES (103, 'ccc');
+
+SELECT rowid, r.* FROM r;
+ROWID                ID    VAL
+------------------- ----- -----
+AAAg2SAABAAAA16pAAA  101   aaa
+AAAg2SAABAAAA16pAAB  102   bbb
+AAAg2SAABAAAA16pAAC  103   ccc
+
+DELETE FROM r WHERE id=102;
+ROWID                OBJ ID   FILENUM   BLOCKNUM   ROWSLOT   ID   VAL
+------------------- -------- --------- ---------- --------- ---- -----
+AAAg2SAABAAAA16pAAA  134546     1       155305        0     101   aaa
+AAAg2SAABAAAA16pAAC  134546     1       155305        2     103   ccc
+
+INSERT INTO r VALUES (104, 'xxx');
+ROWID                OBJ ID   FILENUM   BLOCKNUM   ROWSLOT   ID   VAL
+------------------- -------- --------- ---------- --------- ---- -----
+AAAg2SAABAAAA16pAAA  134546     1       155305        0     101   aaa
+AAAg2SAABAAAA16pAAC  134546     1       155305        2     103   ccc
+AAAg2SAABAAAA16pAAD  134546     1       155305        3     103   ccc
+```
+So ORACLE doens't compact the page after update.
+
+Why do they expose this into the API to the user?
+- people are paid a ton for this piece of software, so companies decides to do that way.
+```
+# postgres
+SELECT r.ctid, r.* FROM r WHERE ctid = '(0,1)';
+```
+You can actually do this, but its not relieable all
+
+Also you cannot name a column table with the 'ctid'
+```
+CREATE TABLE aaa (id INT, ctid INT);
+ERROR ctid conflicts with a system col id.
+```
+
+
+## TUPLE LAYOUT
+A tuple is sequence of bytes.
+- its the job of DBMS to interpet those bytes into attributes types and values.
+
+### TUPLE HEADER
+It looks like this:
+- Each tuple is prefixed with a header that contains meta data about it.
+- Visibility info (concurrency control)
+- Bit Map for null values
+
+![](23.jpg)
+
+We don't need to store meta-data about the schema
+- The types for example are stored within the page or within a catalog of pages.
+
+You have to this in JSON databases or schemas databases like MongoDB,
+- because every single tuple could be different.
+- so you have to store the metadata of what's actually inside.
+
+### TUPLE DATA
+**Attributes** are typically **stored** in the **order** that you specify them when you **create** the table.
+
+![](24.jpg)
+
+In memory systems you want to be cache efficient, 
+- you might want to order to be word aligned.
+
+### DENORMALIZED TUPLE DATA
+Last thing we are going to talk is about:
+- STORING DATA from different TABLES inside the SAME PAGE.
+
+Most systems don't do this
+- break self-cointainment
+- We don't want different meta-data from different tables
+
+Where it does show up is when we **denormalize** tables, or **prejoin** tables.
+- We are not talking about __normal forms__
+- or __functional dependencies__ in this class
+
+**Normalization** is how do we **split** our **database** across different **tables**
+- and this naturally happens when you have foreings keys (artists and albums)
+ 
+
+
+There're some cases where we actually want to 
+- embed one table inside another.
+
+If you want to avoid the overhead it may be doing a join.
+- so you might want to inline all albums and artists in the same tuple.
+
+In that case we could have data packed into 2 different tables beside the same page
+
+![](25.jpg)
+
+Normally i would store my tuples like this:
+
+![](26.jpg)
+
+But if most of the time i want to join these tables together.
+So maybe what i want to do is to embed on table inside the other.
+
+![](27.jpg)
+
+This is called **Denormalization**. (i think about of it as a pre-joining)
+
+
+Can physically **denormalize** related tuples and store them together in the same page.
+- Potentially reduces the amount of I/O for common workload patterns
+- Can make updates more expensive
+
+
+Old Idea
+- R IBM 1970 uses (but then abandon it as it becomes so hard to maintain)
+- Several NoSQL DBMS do this without calling it physical denormalization.
+
+Is found in:
+- Google's Cloud Spanner (proto bufs)
+- arkaban (had done this automatically)
+  - they got bought by foundation BB then bought by apple
+  - so this not exists anymore
+- mongoDB,
+  - when you define a JSON document you can pre-join a pack in with related attributes within the JSON document itself.
+ 
+## CONCLUSION
+Database is organized in pages
+Different ways to track pages
+Different ways to store pages
+Different ways to store tuples
+
+Next class:
+- Value representation
+  - going inside the byte tuples
+- Storage Models
+  - how we organize tuples within a table itself
+
+
 
