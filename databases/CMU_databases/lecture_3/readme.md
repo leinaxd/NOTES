@@ -223,3 +223,145 @@ How to **organize** the database as a **sequence of pages**?
 How we actually are going to **store** inside these files?
 What do the **tuples** actually **look like** inside those pages.
 
+## FILE STORAGE
+The DBMS stores a Database as one or more files in the disk.
+- Like SQLite (1 file)
+- postgreSQL (many files as it doesn't hit the file size limit of the OS)
+- the file is unintelligible
+- but nonetheless, it is saved in the OS format, ext3/ext4/NTFS. whatever OS writting system provides us.
+  
+Early systems in 1980 used custom filesystems on **raw** storage.
+- So no NTFS, no EXT3/4... the file format was proprietary
+- some enterprise DBMS still support this
+- you can get as much as a 10% of improvement, but the maintenance cost rises as a rocket.
+
+### STORAGE MANAGER
+The storage Manager is responsiblea for maintaining a database's file.
+- some do their own scheduling for reads and writes to improve spatial and temporal locality of pages.
+
+Within these files, we are going to organize them as a collection of pages.
+- Tracks data read/written to pages.
+- Tracks the available space.
+
+#### DATABASE PAGES (I)
+A page is a **Fixed size** block of data.
+- it can contain **tuples**, **meta-data**, **indexes**, **log records**.
+- Most systems do **not mix** page **types**.
+- Some systems require a page to be **self-contained**.
+
+Each page is given a **unique identifier**, a page ID
+- The DBMS uses an **indirection layer** to **map page ids** to **physical locations** at some offset.
+
+If i lose one page, it doesn't affect any of the other pages.
+
+#### DATABASE PAGES (II)
+There are 3 different types of pages in DBMS
+- Hardware Page (~3KB)
+- OS Page (~4KB)
+- **Database page (~512B-16kB)**
+
+By hardware page, we mean at what level the device can guarantee a 'failsafe write'.
+
+![](13.jpg)
+
+The main thing we are going to care about.
+- the **harbor page** is the **lowest level** what we do **atomic writes**.
+- typically 4kb
+
+EXAMPLE,
+- So if you are trying to write 16KB and the system crash in the middle of the operation.
+- You might have 8 KB right.
+
+## PAGE STORAGE ARCHITECTURE
+Different DBMS manage pages in files on disk in different ways.
+- **Heap File Organization** (most common one)
+- Sequential/Sorted File Organization
+- Hashing File Organization
+
+At this point in the hierarchy we don't need to know anything about what is inside of the pages.
+
+### DATABASE HEAP FILE
+A **heap file** is an **unordered collection** of pages where **tuples** that are **stored** in random order.
+- CREATE
+- GET
+- WRITE
+- DELETE PAGE
+- Must support also iterate over all pages
+
+Need Meta-data to keep track of what pages exists and which ones have free space.
+
+Two ways to represent a heap file.
+- Linked list (dumb way, nobodoy uses it)
+- Page Directory
+
+Within my file i have a bunch of pages,
+- where does this pages exists and whether they have free space or not.
+
+#### HEAP FILE: LINKED LIST
+Maintain a **HEADER PAGE** at the beginning of the file that stores **two pointers**.
+- HEAD of the free page list.
+- HEAD of the data page list.
+
+Each page keeps track of number of free slots in itself
+
+![](14.jpg)
+
+So again, this is a linked list.
+
+It doesn't matter where those pages are stored, whether they're contiguous or not.
+
+And because we need to go possible iterate in reverse order, we need pointers in the way back as well
+
+![](15.jpg)
+
+If it's ordered you might search faster.
+
+well this is a bad idea... going through the entire document for searching your data...
+
+
+#### HEAP FILE: PAGE DIRECTORY
+So we have a special **page directory** now, 
+- in the Header of our File
+- that's going to maintain the mapping from **Page IDs** to the location of data pages.
+
+![](16.jpg)
+
+We can also maintain a meta-data in this directory.
+- so track free space in a particular page
+
+So now when i go to insert some data, i don't have to scan that list.
+- i just look up the directory file and get everything that i need.
+
+![](17.jpg)
+
+The DBMS has to make sure that the directory pages are in sync with the data pages.
+
+My hardware can't actually guarantee that i can't write two pages at exactly the same time..
+- so let's say that i delete a bunch of data here
+- and i want to update my page directory, saying the new amount of free space.
+- i write some stuff but **before i write** in down to my directory i **crash**.
+- so i read this page is empty/full, but it was actually not.
+
+So later on we will talk about a bunch of mechanisms.
+- how to maintain a log
+- write some special files so if we crash we would know how to recover from that.
+
+I think this is implemented as a hash table.
+
+Each page is exactly the same size.
+
+
+-> So why different systems uses differnts pages?
+- There are trade offs,
+- internally, i have to have this page directory __in memory__.
+- but now if i want to represent a larger amount of data with one page ID.
+- then that size of that table goes down.
+
+Think of it as the TLB, translation lookaside buffer from a CPU,
+- if i'm trying to match all bunch of pages, but my page tables gets really large
+- i'm gonna have cache misses.
+
+
+Also you can put checksums to verify for corrupted pages.
+
+## PAGE HEADER
