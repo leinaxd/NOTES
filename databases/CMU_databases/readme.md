@@ -99,4 +99,12 @@ Tools
   - Sequential Vs Random Access
   - System Design Goals
 - Disk Oriented DBMS
-- Why Not Use OS
+- Why Not Use OS (I)
+  - Why Not Use OS (II)
+  - Why Not Use OS (III)
+  - Why Not Use OS (IV)
+- Database Storage
+- Today's Agenda
+
+
+
