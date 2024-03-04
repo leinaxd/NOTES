@@ -124,3 +124,6 @@ Tools
   - Tuple Data
   - Denormalized Tuple Data
 - Conclusion
+
+## LECTURE 4: DATABASE STORAGE (Part II)
+
