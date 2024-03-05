@@ -115,3 +115,95 @@ The DBMS's catalog contains the schema information about tables that the system 
 The various pieces of the DBMS are going to tell us how to extract individual data values from the sequence of bytes.
 
 
+## DATA REPRESENTATION
+Those one are the typical datatypes, at different types you may expect working with.
+
+INTEGER / BIGINT / SMALLINT / TINYINT
+- C/C++ Representation
+FLOAT / REAL vs NUMERIC / DECIMAL
+- IEEE-754 standard / Fixed point decimals
+VARCHAR / VARBINARY / TEXT / BLOB
+- Header with length, followed by  data bytes
+TIME / DATE / TIMESTAMP
+- 32/64 bit integer of (micro) seconds since Unix epoch
+
+### VARIABLE PRECISION NUMBERS
+Inexact, uses the native c/c++ types.
+- FLOAT, REAL / DOUBLE
+
+Store directly as specified by IEEE-754
+
+Typically faster than arbitrary precision numbers but may have rounding errors
+
+![](9.jpg)
+
+### FIXED PRECISION NUMBERS
+Numeric Data types with potentially arbitrary precision and scale. Used when rounding errors are unaceptable.
+- NUMERIC / DECIMAL
+- we guarantee specific precision.
+  
+There are many different implementations.
+- Store in an exact, variable-length binary representation with additional meta-data
+- Can be less expensive if you give up arbitrary precision
+
+Example, Postgres: Numeric.
+- ndigits, how many precision digits
+- weight, is where is the decimal point given your array
+- scale, is by how much your weighted array should be multiplied
+- sign, could positive, negative or NaN
+- *digits, its a char array.
+  
+![](10.jpg)
+
+This is more expensive than using simple float values.
+- they are fast, and there're dedicated hardware.
+
+Example, MySQL: Numeric
+- intg, number of digits before the decimal point.
+- frac, number of digits adter the decimal point.
+- len, number of bytes
+- sign, positive/negative
+- buf, int32 array
+  
+![](11.jgp)
+
+Note that the buffer here is int32
+
+### LARGE VALUES
+Most DBMS don't allow a tuple to exceed the size of a single page.
+- what if a single tuple exceeds a single page?
+- a long string for example
+
+
+To store values that are larger than a page, the DBMS uses separate **OVERFLOW** storage pages.
+In this case we pick the overflowed value, to point to a **overflowed page**.
+- it can also span into multiple pages
+  
+![](12.jpg)
+
+It takes different names in different systems
+- postgres: TOAST (>2KB)
+- MySQL: Overflow(>0.5 size of page)
+- SQL server: Overflow (>size of page)
+
+#### LARGE VALUES: EXTERNAL STORAGE
+An alternative way of handling these large objects is
+- store externally to the DBMS
+
+![](13.jpg)
+
+They are treated as a **BLOB** type.
+- Oracle: BFILE data type
+- Microsoft: FILESTREAM data type
+
+The DBMS **cannot manipulate the contents of an external file**.
+- No durability protections, if the file dissapears / changes directory the DBMS cannot recover from that.
+- No Transactions protections, if other's is trying to modify this file. there's no guarantee of inconsistences.
+
+External files are for media, like videos, images, music.
+- it doesn't fit into the datamodel other than an attribute
+
+PAPER:
+- To BLOB or Not To BLOB. Large Database Storage in a Database System
+
+## SYSTEM CATALOGS
