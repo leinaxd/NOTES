@@ -126,4 +126,8 @@ Tools
 - Conclusion
 
 ## LECTURE 4: DATABASE STORAGE (Part II)
-
+- Disk Oriented Architecture
+- Log Structured File Organization
+  - Log Structured Compaction
+- Today's Agenda
+  - Tuple Representation
