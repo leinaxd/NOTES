@@ -131,3 +131,9 @@ Tools
   - Log Structured Compaction
 - Today's Agenda
   - Tuple Representation
+- Data Representation
+  - Variable Precision Numbers
+  - Fixed Precision Numbers
+  - Large Values
+    - External Storage
+- System Catalogs
