@@ -206,4 +206,236 @@ External files are for media, like videos, images, music.
 PAPER:
 - To BLOB or Not To BLOB. Large Database Storage in a Database System
 
-## SYSTEM CATALOGS
+## SYSTEM CATALOGS (I)
+A DBMS stores meta-data about databases in its internal catalogs, 
+- how to encode and decode tuples
+- Tables, columns, indexes, views
+- Users, Permissions
+- Internal statistics
+
+Almost every DBMS stores the database's catalog inside itself. (i.e. as tables)
+- wrap object abstraction around tuples
+- Specialized code for 'bootstrapping' catalog files
+
+### SYSTEM CATALOGS (II)
+you can **query** the DBMS internal **INFORMATION_SCHEMA** catalog to get information about the database
+- ANSI standard set of read-only views that provide info about all the tables, views, columns and procedures in the database.
+
+DBMS also have non-standard shortcuts to retrieve this information
+
+### ACCESSING TABLE SCHEMA
+For listing all tables in the current database
+
+![](14.jpg)
+
+For listing all tables in the student table
+
+![](15.jpg)
+
+
+## DATABASE WORLOADS
+The different types of database workloads are as follow:
+
+**ONLINE TRANSACTION PROCESSING (OLTP)**
+- Fast **SHORT RUNNING** Operations that only read/update a small amount of data each time
+- i.e. reading your bank account, deposit, etc... it's a small transaction.
+  
+**ONLINE ANALYTICAL PROCESSING (OLAP)**
+- Complex queries that read a lot of data to compute aggregates
+- Analytical tables, requiring to scan a lot of tables, they produce aggregates, joins
+- used in business intelligenca, decision support
+- they are 'ad-hoc' not usually repeated queries
+
+  
+**HYBRID TRANSACTION + ANALYTICAL PROCESSING (HTAP)**
+- OLTP + OLAP together on the same database instance
+
+The spectrum that we have is:
+- in the x-axis is the workload focus on writting/reading
+- in the y-axis we have the operation complexity.
+  - simple: insert/delete new values
+  - complex: joins, complex aggregation, windowing functions
+    
+![](16.jpg)
+
+If you order a product (OLTP) you want to write fast.
+The analytical approach usually performs multiple reads from many tables. (i.e. for computing aggregates)
+
+### BIFURCATED ENVIRONMENT
+The way it usually looks in practice is.
+- a set up of two separated environments
+
+![](17.jpg)
+
+In one side, you have multiple **OLTP silos**, all these databases accepting concurrent workloads
+In the other end, you have a really big **OLAP warehouse** where you dump all data for analysis.
+
+![](18.jpg)
+
+In the middle we have this process called **EXTRACT TRANSFORM LOAD (ETL)**, where we take all this data from different silos,
+maybe formatting differently, maybe there are redundant data (two students stored in multiple databases by different names 'andy and andrew')
+
+
+Based on the result that we get from the warehouse, we may take action in the data silos.
+- what products are the most sold? recommend more of that
+
+This idea is called **HTAP** hybrid transactional and analytical processing
+
+### OBSERVATION
+Why it's important those types of workloads?
+- The relational model doesn't specify that we have to store all of a tuple's attributes together in a single page.
+- This may not actually be the best layout for some workloads
+
+The notion of **row**, different from **tuple** or **record** is 
+- The row storage layout, assumes that all different attributes in a tuple are stored consecutively
+
+
+### WIKIPEDIA EXAMPLE
+SCHEMA
+- We have an **user account**, with userID and name
+- we have the different **pages**, with pageID, title and revision history (who has edited the page)
+- and we have the **revision** data, with revID, userID, pageID, content and date
+  
+![](19.jpg)
+
+There's one reference that's an optimization wikipedia does 
+- to get the most recent version for a page
+
+![](20.jpg)
+
+
+#### WIKIPEDIA EXAMPLE: OLTP 
+On-Line Transaction Processing
+- Simple queries that read/update a small amount of data that is related to a single entity in the database.
+
+This is usually the kind of application that people build first
+- Simple aspects of the application.
+
+![](21.jpg)
+
+#### WIKIPEDIA EXAMPLE: OLAP
+On the other side, when your app grows, 
+- you might want to do some analytical insighta
+
+These example searches the amount of people with an '.gov' account
+- there were a Wikipedia scandal of governaments erasing their embarrassing archive
+
+![](22.jpg)
+
+
+## DATA STORAGE MODELS
+DBMS can store tuples in different ways that are better for OLTP or OLAP
+- we have been assuming the **n-ary storage model** (aka. row storage) so far.
+
+### N-ARY STORAGE MODEL (NSM)
+Ideal for OLTP workloads where queries tend to operate only on an individual entity and insert heavy workloads.
+
+So we have the Header, and then the contiguously arranged attributes in a page.
+
+![](23.jpg)
+
+And if we want to execute a query.
+- we send the query into the system
+- it's going to hit an **INDEX**,
+  - like a page directory where the page directory maps pages ids to physical locations
+  - The index is mapping values (i.e. username or something) to a **page id** and **record id** pair.
+  
+![](24.jpg)
+
+Well that was the OLTP side, what if we get all of those logins from '.gov' hosts.
+- we have to scall through all the pages,
+- we have to perform first the filtering 'U.hostname'
+
+![](25.jpg)
+
+- The next thing is to look for the U.lastlogin piece
+- to do the extract and the count part
+
+![](26.jpg)
+
+
+So what's going to happen with all of the other columns that we don't touch?
+
+### NSM SUMMARIZE
+**ADVANTAGES**
+- Fast inserts, updates, deletes
+- Good for queries that need the entire tuple
+
+**DISADVANTAGES**
+- **Not good** for scanning large portions of the table and/or a **subset of attributes**
+
+### DECOMPOSITION STORAGE MODEL (DSM)
+The DBMS stores the values of a **single attribute** for **all tuples** contiguously in **a page**.
+- also known as a 'column store'
+
+Ideal for OLAP workloads where read-only queries perform large scans over a subset of the table's attributes
+
+For example searching for the host-name, we get all of those values in one page,
+we are going to do the same for the others attributes.
+
+![](27.jpg)
+
+So now, we just need the logname and the hostname to solve our query.
+
+![](28.jpg)
+
+#### TUPLE IDENTIFICATION
+How do we reconstruct the record?
+
+![](29.jpg)
+
+CHOICE 1: Fixed length Offsets
+- each value is the same length for an attribute
+
+CHOICE 2: Embedded Tuple Ids
+- Each value is stored with its tuple id in a column
+
+----
+The key idea is that if you split things into columns, 
+- you can use these positional offsets to jump directly
+- to the offsets you need to reconstruct the tuples
+
+If you have variable length strings,
+- you can pad out strings to a particular length
+- if you have a lot of repetition, you migth use a dictionary code (compression techinique)
+
+----
+
+The other option is to store the ids together with the value.
+- in the picture everything is ordered, but any column could be sorted out differently
+
+it may allow you to apply a better compression.
+- i.e. rather to store dates, you can store deltas of time.
+
+#### DSM: SUMMARY
+**ADVANTAGES**,
+- Reduces the amount of wasted I/O because the DBMS only reads the data that it needs
+- Better Query processing and data compression
+
+**DISADVANTAGES**,
+- Slow Point queries, inserts, updates and deletes
+- because of tuple splitting/stitching
+
+#### DSM: HISTORY
+1970s - CANTOR DBMS
+1980s - DSM PROPOSAL
+1990s - SybaseIQ (in-memory only)
+2000s - Vertica, VectorWise, MonetDB
+2010s - Everyone
+
+![](30.jpg)
+
+## CONCLUSION
+The storage manager is not independant of the DBMS
+
+It is important to choose the right storage model for the target workload
+- OLTP = ROW STORE
+- OLAP = COL STORE
+
+
+Today we have dealt with:
+- How the DBMS represents the database in files on disk
+  
+Next class we will deal with the other problem.
+- How the DBMS manages its memory and move data from disk
+
