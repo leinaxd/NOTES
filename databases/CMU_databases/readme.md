@@ -153,3 +153,12 @@ Tools
      - DSM: Summary
      - DSM: History
 - Conclusion
+## LECTURE 5: BUFFER POOLS
+- Introduction
+  - Database Storage
+  - Disk Oriented DBMS
+  - Access time
+  - Today's Agenda
+- Buffer Pool Organization
+- Locks  Vs Latches
+- Page Table Vs Page Directory
