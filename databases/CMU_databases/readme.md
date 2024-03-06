@@ -136,4 +136,20 @@ Tools
   - Fixed Precision Numbers
   - Large Values
     - External Storage
-- System Catalogs
+- System Catalogs (I)
+  - System Catalogs (II)
+  - Accessing to table schema
+- Database Workloads
+  - Bifurcated Environments
+  - Observation
+  - Wikipedia Example
+  - Wikipedia Example: OLTP
+  - Wikipedia Example: OLAP
+ - Data Storage Models
+   - N-ary Storage Model (NSM)
+     - NSM: Summarize
+   - Decomposition Storage Model (DSM)
+     - Tuple Identification
+     - DSM: Summary
+     - DSM: History
+- Conclusion
