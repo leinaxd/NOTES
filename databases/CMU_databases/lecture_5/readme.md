@@ -511,3 +511,20 @@ It's important to remember the
 
 ### TASK 2 - BUFFER POOL MANAGER
 Use your  LRU Replacer to manage the allocation of pages
+- Need to maintain internal data structures to track allocated + free pages.
+
+- we will provide you components to read/write data from disk
+
+- Use whatever data structure you want for the page table
+
+General Hints:
+- Make sure you get the order of operations correct when pinning.
+
+### TASK 3 - MULTIPLE BUFFER POOLS
+
+Approach 1. Object ID
+- Embed an object identifier in records ids and maintain a mapping from objects to specific buffer pools.
+
+Approach 2. Hashing
+- Hash the page id to select which buffer pool to access
+![](31.jpg)
