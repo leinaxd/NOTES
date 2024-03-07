@@ -424,3 +424,90 @@ So rather to tracking the most recent timestamp that something is accessed.
 There's this trade off between how much meta-data we're storing vs the precision of measuring those intervals.
 
 ### BETTER POLICIES: LOCALIZATION
+The DBMS chooses which pages to evict on a per transaction/query basis.
+- This minimizes the **pollution** of the buffer pool from each query.
+- keep track of the pages that a query has accessed
+
+global optimization vs single query decision
+
+Example, Postgres maintains a small ring buffer that is private to the query.
+
+### BETTER POLICIES: PRIORITY HINTS
+different, Priority hints based on access patterns. 
+- if we think back into the index example,
+- the DBMS knows the access patterns for accessing a sorted attribute
+
+![](27.jpg)
+
+The DBMS knows about the context of each page during quering execution
+
+It can provide hints to the buffer pool on whether a page is important or not
+
+For example, if our query is always going to increase, then we just have to keep track of the last leaf.
+- Conversely if we have Q2, then the scan we want to perform might have a different access path
+
+![](28.jpg)
+
+The thing both have in common, is that both starts in that root page.
+- so one hint you were able to provide is
+- to keep that root page around, both types of queries are going to need it
+
+### DIRTY PAGES
+**FAST**, If a page in the buffer pool is __not dirty__, then the DBMS can simply 'Drop' it.
+
+**SLOW**, If a page is dirty, then the DBMS must write back to disk to ensure that its changes are persisted.
+
+Trade off between fast evictions vs dirty writting pages that will not be read again in the future.
+
+
+### BACKGROUND WRITING
+The DBMS can periodically  walk through the page table and write dirty pages to disk.
+
+When a dirty page is safely written, the DBMS can either evict the page or just unset the dirty page.
+
+Need to be careful that we don't write dirty pages before their log records have been written.
+
+### OTHER MEMORY POOLS
+The DBMS needs **memory** for things **other things** than just tuples and indexes.
+
+These other memory pools may not always backed by disk. Depends on implementation.
+- Sorting + Join Buffers
+- Query Caches
+- Maintainance Buffers
+- Log buffers
+- Dictionary Caches
+
+## CONCLUSION
+The DBMS can almost always manage memory better than OS
+
+Leverage the semantics about the query plan to make better decisions:
+- Evictions
+- Allocations
+- Pre-fetching
+
+
+-> Next class
+we are going to talk about **HASH TABLES**
+
+## PROJECT Nº 1
+Build your first component of your storage manager.
+- LRU replacement policy
+- Buffer Pool Manager Instance
+- Parallel Buffer Pool Manager
+
+We will provide you the disk manager and page layouts
+
+![](29.jpg)
+
+### TASK 1 - LRU REPLACEMENT POLICY
+Build a data structure that tracks the usage of pages using the LRU policy
+
+General Hints
+- your LRUReplacer needs to check the 'pinned' status of 'Page'
+- If there are no pages touched since last sweep, then return the lowest page id
+
+It's important to remember the 
+- Pin status of the page, you don't want to evict pinned pages
+
+### TASK 2 - BUFFER POOL MANAGER
+Use your  LRU Replacer to manage the allocation of pages
