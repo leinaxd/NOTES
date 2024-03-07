@@ -527,4 +527,10 @@ Approach 1. Object ID
 
 Approach 2. Hashing
 - Hash the page id to select which buffer pool to access
+
+-> As we just have one type of object we are doing hashing.
+- Just take the page id and instead of hashing, mod n with the number of buffer pool instances you have.
+  
 ![](31.jpg)
+
+
