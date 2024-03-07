@@ -168,4 +168,21 @@ Tools
 - Pre-Fetching
   - Sequential Scan
   - Index Scan
-- Scan Sharing
+- Scan (cursor) Sharing (I)
+- Scan Sharing (II)
+- Buffer Pool Bypass
+- Buffer Replacement Policies
+  - Least Recently Used Policy
+  - Clock Strategy
+  - Problems
+  - Better Policies: LRU-K
+  - Better Policies: Localization
+  - Better Policies: Priority Hints
+  - Dirty Pages
+  - Background Writing
+- Other Memory Pools
+- Conclusion
+- Project Nº1
+  - Task 1 - LRU Replacement Policy
+  - Task 2 - Buffer Pool Manager
+  - Task 3 - Multiple Buffer Pools
