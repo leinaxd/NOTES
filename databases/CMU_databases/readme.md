@@ -153,6 +153,7 @@ Tools
      - DSM: Summary
      - DSM: History
 - Conclusion
+  
 ## LECTURE 5: BUFFER POOLS
 - Introduction
   - Database Storage
@@ -186,3 +187,16 @@ Tools
   - Task 1 - LRU Replacement Policy
   - Task 2 - Buffer Pool Manager
   - Task 3 - Multiple Buffer Pools
+    
+## LECTURE 6: HASH TABLES
+- Introduction
+  - Data Structures
+  - Design Decisions
+- Hash Tables
+  - Static Hash Tables
+    - Assumptions
+    - Practical Hash Table
+- Today's Agenda
+- Hash functions
+  - Benchmarks
+- Static Hashing Schemes
