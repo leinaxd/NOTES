@@ -160,5 +160,12 @@ Tools
   - Access time
   - Today's Agenda
 - Buffer Pool Organization
-- Locks  Vs Latches
-- Page Table Vs Page Directory
+  - Locks  Vs Latches
+  - Page Table Vs Page Directory
+  - Allocation Policies
+  - Buffer Pool Optimizations
+    - Multiple Buffer Pools
+- Pre-Fetching
+  - Sequential Scan
+  - Index Scan
+- Scan Sharing
