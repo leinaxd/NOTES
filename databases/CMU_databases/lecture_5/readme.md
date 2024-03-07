@@ -1,4 +1,5 @@
 # Lecture 5: BUFFER POOLS
+Will there be a database containing all the databases and features of each one?
 
 # INTRODUCTION
 How the DBMS manages its memory and move it back-forth from the disk
@@ -226,4 +227,200 @@ Is the index built specifically for this query?
 - no, indexes are maintained by the system,
 - but they can be built to answer many queries.
 
-## SCAN SHARING
+## SCAN (CURSOR) SHARING (I)
+The idea is that **queries** can **reuse** the **data** that is retrieve from storage or computations.
+- also called 'syncronized scans'
+- This is different from result caching
+
+Queries are reading pages from disk and putting them into memory,
+- and another queries need to use the same page, so
+
+Allows multiple queries to attach to a single cursor that scans a table.
+- queries do not have to be the same
+- can also share intermediate representations
+
+
+The **Cursor** is just an iterator over the pages in the table
+- If a query wants to scan a table, and another query is already doing this,
+- then the DBMS will **attach** the **second** query's **cursor** to the existing cursor.
+  
+Examples:
+- Fully supported in IBM DB2, MSSQL and postgres
+- Oracle only supports __cursor sharing__ for identical queries.
+
+![](16.jpg)
+
+
+### SCAN SHARING (II)
+So how this works, Suppose we have this query:
+- Select the sum of all of the values from some table A.
+
+![](17.jpg)
+
+So we fetch page 0,
+- then page 1,
+- then page 2,
+- then we have to evict something, lets say its page 0
+- then fetch page 3.
+
+![](18.jpg)
+
+Then it comes a new query, 
+- to do the average to the same page.
+- so we could start Q2 up there
+
+![](19.jpg)
+
+and start scanning from the begining, but we have already look at those pages for Q1.
+- an alternative is to attach Q1 and Q2 cursors
+- and start from the same position in the scan
+
+
+![](20.jpg)
+
+And finally **Q2** has to **back** to the **beginning** to cover those first pages alone.
+
+This is possible, just because SQL is not an ordered model.
+
+
+The **LIMIT** clause can cause a problem, 
+- because now, issuing this query multiple times i potentially get multiple answers
+  
+![](21.jpg)
+
+
+## BUFFER POOL BYPASS
+It's an optimization technique that:
+- fetches the page
+- uses that page
+- evict that page right away.
+
+The sequential scan operator is not going to **persist** the fetched pages in the buffer pool to avoid overhead.
+- Memory is local to running queries
+- Works well if operator needs to read a large sequence of pages that are contiguous on disk
+- Can also be used for temporary data (sorting, joins)
+
+Called 'Light Scans' in Informix
+
+![](22.jpg)
+
+
+Well, those are all the optimizations that we are going to talk about at the level of buffer pool.
+
+## OS PAGE CACHE
+The next piece are strategies for replacing pages in the Buffer Pool it this fills up.
+
+Most Disk Operations go through the OS API.
+- mmap
+unless you tell it not to, the OS maintains its own filesystem cache (i.e. the page cache).
+- basically it is, when you request to read a page from disk,
+- that request is going to go to the OS
+- if it's not already loaded is going to fetch it from disk
+- load into the page cache,
+- and return a pointer to that page.
+
+You are ending up with a redundant copy of the page here.
+- one stored in the OS page cache.
+- one in the Buffer Pool implemented.
+
+So what most DBMS do is this I/O **DIRECT** flag, to bypass the OS's page cache.
+- Redundant copies of page
+- Different eviction policies
+- Loss of control over file I/O
+
+## BUFFER REPLACEMENT POLICIES
+When The DBMS needs to free up a frame to make room for a new page, 
+- it must decide which page to **evict** from the Buffer Pool
+
+There are many strategies to consider.
+- Correctness
+- Accuracy
+- Speed
+- Meta-data overhead
+
+
+### LEAST RECENTLY USED POLICY (LRU)
+The most straightforward optimization strategy.
+- is evict the oldest.
+  
+Maintain a single timestamp of when was last accessed each page
+
+When the DBMS needs to evict a page, select the one with the oldest timestamp.
+- Keep pages in sorted order to reduce the search time on eviction.
+
+
+### CLOCK STRATEGY
+A variation of LRU, that doesn't need a separate timestamp per page.
+- each page has a reference bit.
+- When a page is accessed, is se to 1.
+
+
+Organize the page in a **circular buffer** with a 'clock hand'
+- upon sweeping, check if page's bit is set to 1.
+- if yes, set to zero. if no, then evict.
+
+Suppose those are our pages in our Buffer Pool
+- we are going to access this page 1
+- so we update that bit to 1
+  
+![](23.jpg)
+
+and we are going to have this clock hand, that's going to sweep around the pages
+- if the hand is pointed to a reference 1, then it changes to zero.
+  
+![](24.jpg)
+
+and we move to the next step.
+- we found a reference 0, so page 2 is evicted.
+  
+![](25.jpg)
+
+The argument is,
+- if it was not used recently, so it's not important for us to keep around.
+
+Suppose we replaced it for page 5, 
+- and in the meantime
+- page 3 and page 4 got accesse
+- so we update their reference bits.
+
+![](26.jpg)
+
+And we keep moving the clock around
+
+When a page is added, the clock is on that spot.
+- we don't need to place that bit to 1
+- the reference bit if for knowing if the page was visited again while was waiting the other pages.
+
+for simplicity we are going to say that we evict pages on demand
+- but if you are going to pre-fetch, then you might want to evict ahead of time
+
+### PROBLEMS
+There are some issues with **LRU** and **CLOCK** replacement policies.
+- They are susceptible to **Sequential Flooding**
+
+A query performs a secuential scan that reads every page
+- this pollutes the buffer pool with pages that are read once and never again.
+
+In some workloads the most recently page used is the most unneeded one.
+
+
+As said before,
+- Pages that are recently used are going to be used again soon.
+- is good for skewed access patterns
+- but bad for sequential scans
+
+### BETTER POLICIES: LRU-K
+Track the history of last K references to each page as timestamps and compute the interval between subsequent accesses.
+
+The DBMS then uses this history to estimate the next time that a page is going to be accessed
+
+So rather to tracking the most recent timestamp that something is accessed.
+- we are going to look the history of the last K references.
+- let's assume k is 2 for now.
+- Then you compute the interval between subsequent accesses
+- if it's a long time it's safe to throw it out.
+- if it's a much shorter time, we might want to keep it around
+
+There's this trade off between how much meta-data we're storing vs the precision of measuring those intervals.
+
+### BETTER POLICIES: LOCALIZATION
