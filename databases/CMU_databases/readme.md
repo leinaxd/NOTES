@@ -208,3 +208,5 @@ Tools
   - Robin Hood Hashing
   - Cuckoo Hashing
   - Observation
+- Dynamic Hashing Schemes
+  - Chained Hasging
