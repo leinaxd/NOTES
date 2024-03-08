@@ -299,3 +299,116 @@ You now need to maintain a tree.
 If now i insert a million values, and all of them go inside the same bucket.
 - in order to find anything you have to scan this long list.
 
+Is is easier to implement a **concurrent** hash table using **chain hashing** vs **linear probing**?
+- no particular reason, we are using atomic comparison before inserting.
+
+### EXTENDIBLE HASHING
+Chained hashing approach where we split buckets,
+- instead of linked list grow forever.
+
+Multiple slots locations can point to the same bucket chain.
+
+Reshuffle bucket entries on split and increase the number of  bits to examine.
+- Data movement is localized to just the split chain.
+
+In the following picture,
+- we represent the first 2 bits of the hash values
+- we have this global counter, which is telling us, how many bits we need to care about for each page.
+
+![](23.jpg)
+
+Let's find Key A
+
+![](24.jpg)
+
+If we now insert KEY B
+
+![](25.jpg)
+
+Now we want to insert KEY C
+- but the problem is that our bucket is now full.
+- so we need an incremental **RESIZING**
+- Increment our global Counter to 3
+
+![](26.jpg)
+  
+- and split the bucket into smaller buckets
+
+![](27.jpg)
+
+Also, if you delete elements, you can shrink the list.
+
+Every time you need to add a bit to consider.
+- it doubles the size of the Mapping array
+
+### LINEAR HASHING
+The hash table maintains a **pointer** that tracks the next bucket to split.
+- rather than splitting a particular bucket.
+- when any bucket overflows, split the bucket at the pointer location.
+
+Use multiple hashes to find the right bucket for a given key.
+
+Can use different overflow criterion.
+- Space utilization-
+- Average Length of overflow Chains.
+
+Linear Hashing increments the mapping array incrementaly.
+- the resizing happens one bucket at a time.
+
+We are doing this, with multiple hash functions. (2 is sufficient) to find the right bucket.
+- we use different overflow criterion,
+- when the bucket fills up you can use different conditions to decide when to trigger this.
+
+It gives you a smoother growth policy.
+
+![](28.jpg)
+
+If we want to insert key 17,
+- but this bucket is full.
+  
+![](29.jpg)
+
+We have to perform a split
+- we add an overflow bucket.
+
+![](30.jpg)
+
+And now we actually have to perform the splitting.
+- The split pointer was pointing at first row
+- we are going to add a new slot at the end. (number 4)
+- and we define a second hash function.
+
+Then we RERUN all of the keys in the first (pointed) bucket (key 8 and 20)
+- 8 stays there.
+- while 20 goes into that new bucket we created.
+  
+![](31.jpg)
+
+And then we are going to advance our split pointer.
+
+now what's going to happen is,
+- for all subsequent calls we need to decide if keys are above or below this split point or line.
+- If the key is below the line, we use the second hash function
+
+![](32.jpg)
+
+Over time we are going to move the split pointer down
+
+Eventually that overflowed bucked will eventually split.
+
+
+
+The idea is,
+- Splitting the buckets based on the split pointer will eventually get to all overflowed buckets.
+  - when the pointer reaches the last slot, delete the first hash function and move back to the beginning
+
+
+## CONCLUSION
+Fast data structures, that support O(1) look ups that are used all throughout DBMS internals.
+- trade off between speed and flexibility
+
+Hash tables are usually now what you want to use for a table indices.
+
+## NEXT CLASS
+B+ Trees,
+- The greatest data structure of all times
