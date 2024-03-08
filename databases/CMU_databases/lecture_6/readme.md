@@ -257,3 +257,45 @@ The solution might be to create a new table with a new seed,
 - maybe rehash everything back with that new seed.
 
 you have to keep track of your path, to check if there were a cycle in there
+- did you came back to the value you started with?
+- where there any internal loop?
+
+## DYNAMIC HASH TABLES
+All of the previous hash table require the DBMS to know the number of elements it wants to store.
+- otherwise, it must **rebuild** the table if it needs to **grow/shrink** in **size**.
+
+**DYNAMIC HASH TABLES**, We want a way to resize the table on demand.
+- Chained Hashing
+- Extendible Hashing
+- Linear Hashing
+
+### CHAINED HASHING
+Maintain a linked list of buckets for each slota in the hash table.
+
+Resolve collisions by placing all elements with the same hash key into the same bucket.
+- to determine whether an element is present, hash to its bucket and scan for it.
+- Insertions and deletions are generalizations of lookups
+
+You can grow the hash table infinitely by adding new buckets to the linked list
+
+you can still use tombstones, but is much easier to deal with, because nothing needs to be rehashed.
+
+![](20.jpg)
+
+Here we are seeing a collision between hash(A) and hash(C)
+
+![](21.jpg)
+
+So now, it present another collision with hash(D)
+- but we can extend our bucket and allocate new memory for it
+
+![](22.jpg)
+
+You now need to maintain a tree.
+- you might want to balance the tree
+- or sorted
+
+
+If now i insert a million values, and all of them go inside the same bucket.
+- in order to find anything you have to scan this long list.
+
