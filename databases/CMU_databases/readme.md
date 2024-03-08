@@ -200,3 +200,11 @@ Tools
 - Hash functions
   - Benchmarks
 - Static Hashing Schemes
+  - Line Probe Hashing
+    - Insertions
+    - Deletions
+    - Rehashing
+    - Non-Unique Keys
+  - Robin Hood Hashing
+  - Cuckoo Hashing
+  - Observation
