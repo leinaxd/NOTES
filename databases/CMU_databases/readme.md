@@ -210,3 +210,7 @@ Tools
   - Observation
 - Dynamic Hashing Schemes
   - Chained Hasging
+  - Extendible Hashing
+  - Linear Hashing
+- Conclusion
+- Next class
