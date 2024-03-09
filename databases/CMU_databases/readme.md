@@ -234,3 +234,7 @@ Tools
     - Variable Length Keys
     - Intra node search
 - OPTIMIZATIONS
+  - Prefix Compression
+  - Deduplication
+  - Bulk Insert
+- Conclusion
