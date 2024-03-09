@@ -377,3 +377,61 @@ APPROACH 3, INTERPOLATION,
 
 
 ## OPTIMIZATIONS
+- PREFIX COMPRESSION
+- DEDUPLICATION
+- BULK INSERT
+- MANY MORE...
+
+### PREFIX COMPRESSION
+If we have sorted keys in the same leaf node, they are likely to have the same prefix.
+- instead of storing the 3 keys,
+- we can extract the prefix instead
+  
+![](25.jpg)
+
+Instead of sorting the entire key each time,
+- extract the common prefix and store uniquely suffix for each key.
+- many variations
+  
+### DEDUPLICATION
+Non-uniquely indexes we can end up storing multiple copies of the same key in leaf nodes.
+
+![](26.jpg)
+
+The leaf node can store the key once and then maintain a list of tuples with that key.
+
+### BULK INSERT
+The fastest way to build a new B+Tree for an existing table,
+- is to first sort the keys
+- and then build the index from the bottom up.
+
+Suppose we have this pre-existing data.
+- first step is to sort the keys.
+
+![](27.jpg)
+
+![](28.jpg)
+
+And then we build the upper levels based on these values.
+
+![](29.jpg)
+
+This Bulk insert / bulk load, allow us to be more efficient than other method.
+
+
+Are there efficient ways to merge B+Trees?
+- yes, starting with the leaf layer, we already have 2 ordered key sets.
+- so you can pull it and merge.
+
+Does the Bulk insert, mean inserting in the table?
+- a bulk insert means, a bulk insert into a B+Tree
+- a pre-existing data you want to insert into the tree.
+- better than inserting one key at a time.
+    
+## CONCLUSION
+The venerable B+Tree is (almost) always good choice for your DBMS.
+- both as clustered and non-clustered secondary index.
+
+Next class.
+- Index concurrency control.
+- concurrent inserting and deletions indexes.
