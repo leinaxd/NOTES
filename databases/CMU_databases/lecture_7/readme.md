@@ -198,3 +198,182 @@ Now, suppose we want to perform a wildcard (star) search.
  
 
 To split  inner node, redistrtribute entries evenly, but push up middle key.
+
+
+**B+TREE - DELETE**
+- Start at the root,
+- Find leaf **L** where entry belongs.
+- Remove this entry
+- If **L** is at least half-full, then done.
+- If **L** has only **M/2-1** entries, then
+  - Try to redistribute, borrowing from silbing (same parent as **L**)
+  - If re-distribute fails, merge **L** and silbing.
+- If Merge Ocurred, must delete entry (pointing to **L** or silbing) from parent **L**.
+
+**B+TREE - DUPLICATE KEYS**
+APPROACH 1. APPEND RECORD ID.
+- Add the tuple's unique Record ID as part of the key to ensure that all keys are unique
+- The DBMS can still use partial keys to find tuples
+
+APPROACH 2. OVERFLOW LEAF NODES
+- Allow Leaf nodes to spill into overflow nodes that contains the duplicated keys.
+- This is more complex to maintain and modify.
+
+
+**B+TREE - APPEND RECORD ID**
+- we are storing the key and the record ID
+- now if we are going to insert '6'
+- we really are inserting '<6, (page, slot)>'
+
+![](14.jpg)
+
+First we are going to split the bin.
+
+![](15.jpg)
+
+We update the pointers
+- we move parent key up
+- we insert the '6'
+  
+![](16.jpg)
+
+Actually you didn't even have to update the pointers, we can just look at the first element of the bucket, to know the range.
+
+
+
+The alternative was OVERFLOW LEAF NODES:
+
+So again we are inserting a 6.
+
+![](17.jpg)
+
+Then we fill it up with additional values.
+
+![](18.jpg)
+
+But we can't do binary search now, the order was broken.
+
+
+### CLUSTERED INDEXES
+The table is stored in the sort order specified by the primary key.
+- can be either heap or index organized storage.
+
+Some DBMS always use a clustered Index.
+- If a table does not contain a primary key, the DBMS will automatically make a hidden primary key.
+
+Other DBMS cannot use them at all.
+
+#### CLUSTERED B+TREE
+
+If we want to perform a search,
+- we're going to traverse the leftmost leaf page.
+- and that's going to give us, tuples from all leaf pages.
+
+So this is an index structure,
+- here we are going to direct our search.
+- we have the data entries at the bottom.
+- and below, we refer to these data records which are stored in pages.
+- this is going to give us a sorted order for the table.
+
+If it's clustered, then our pages are going to be organized, or sorted,
+- based on the primary key.
+- This is going to be better than an external sorting algorithm,
+- because it's already sorted in the index.
+
+
+![](19.jpg)
+
+You can imagine the pointers, going in increasing order across these pages.
+- and our scan direction is going to be left to rigth
+
+
+In the other hand,
+- if we don't have a clustered index.
+- So the table is not sorted by whatever the key is.
+- so we are retrieving tuples from the index look up
+- in the order that they appear in the page layout.
+
+And this could be very inefficient, because it may lead to a bunch of random accesses in the data.
+
+This time the pointer would look like a mess
+
+![](20.jpg)
+
+The keys are in sorted order, but the pointers are our of order.
+- we might end up fetching pages multiple times
+
+it's not very efficient scaning a range.
+- have a look of how the access patter would look like.
+
+So one way to get around this is, 
+- if the DBMS rather than accessing tuples immediately,
+- performs some kind of scan to accumulate
+- all of the pages we are going to need in advance
+- and then we are going to sort them based on the PAGE ID
+
+![](21.jpg)
+
+
+### B+TREE DECISION CHOICES
+Book: Modern B+TREE Techniques
+- Node Size
+- Merge Threshold
+- Variable Length Keys
+- Intra-Node Search
+
+#### NODE SIZE
+There's this rule for choosing the node size.
+
+The **slower** the storage device is, the larger the optimal node size for a B+Tree
+- HDD: 1MB
+- SSD: 10KB
+- In-Memory: 512B
+
+Optimal sizes can varya depending on the workload.
+- Leaf nodes scans vs Root to Leaf Traversals
+
+So slower devices have better sequential read performance. The larger node size maximizes the secuential reading.
+
+#### MERGE THRESHOLD
+Some DBMS do not always merge nodes when they are half full.
+
+Delaying a merge operation may reduce the amount of reorganization.
+
+It may also be better to just let smaller nodes exist and then periodically rebuild the entire tree.
+
+#### VARIABLE LENGTH KEYS
+APPROACH 1, POINTERS,
+- Store the keys as pointers to the tuple's attribute
+
+APPROACH 2, VARIABLE LENGTH NODES,
+- The size of each node in the index can vary
+- Requires careful memory management
+
+APPROACH 3, PADDING,
+- Always pad the key to be max length of the key type.
+
+APPROACH 4, KEY MAP/INDIRECTION,
+- Embed an array of pointers that map to the key + value list within the node.
+
+
+#### INTRA NODE SEARCH
+Once we are inside a node, how we actually find the keys in the node.
+
+APPROACH 1, LINEAR
+- Scan node keys from beginning to end.
+
+![](22.jpg)
+
+APPROACH 2, BINARY, (requires keys, to be sorted)
+- Jump to middle key, pivot left/right depending on comparison
+
+![](23.jpg)
+
+APPROACH 3, INTERPOLATION,
+- Approximate location of desired key based on known distributions of keys.
+- knowing the edges, we can linear interpolate the location of our key 8
+  
+![](24.jpg)
+
+
+## OPTIMIZATIONS
