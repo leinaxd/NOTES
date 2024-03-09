@@ -226,3 +226,11 @@ Tools
   - B-Trees vs B+Trees
   - Selection Conditions
   - Example
+  - Clustered Indexes
+    - Clustered B+Tree
+  - B+Trees Decision Choices
+    - Node Size
+    - Merge Threshold
+    - Variable Length Keys
+    - Intra node search
+- OPTIMIZATIONS
