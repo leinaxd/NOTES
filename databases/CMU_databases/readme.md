@@ -214,3 +214,15 @@ Tools
   - Linear Hashing
 - Conclusion
 - Next class
+
+# LECTURE 7: TREE INDEXES
+- Introduction
+  - Table Indexes
+- Today's Agenda
+  - B+ Trees Overview
+- B+Trees
+  - Properties
+  - Nodes
+  - B-Trees vs B+Trees
+  - Selection Conditions
+  - Example
