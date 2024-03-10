@@ -379,6 +379,7 @@ Now we have a problem.
 
 so we need to hold the latch on the parent node, to prevent someone else from accessing.
 
+![](27.jpg)
 
 #### OBSERVATION
 What was the first step that all the update examples did on the B+TREE?
