@@ -205,15 +205,188 @@ If i have more latches that i need to store,
 Two threads might need to access different slots, 
 - but only one will be able to proceed
 - if there's a lock on the page.
+
+Higher congestion choose slot latches, low congestion is faster to latch the page
   
 ### PAGE LATCHES
 - Each page has its own reader-writter latch that protects its entire contents
 - Threads acquire either a read or write latch before they access a page.
 
+Imagine we have transaction 1, that wants to find the key 'D'
+- so we are going to hash(D)
+- we have to acquire a latch on that page to read
+- now you begin to scan
+  
+![](11.jpg)
+
+In the meantine, some other transaction T2 appear saying trying to insert E.
+- But T1 already has a latch on that page
+- so we are going to block T2
+
+![](12.jpg)
 
 
+So now, T1 have scaned page 1, and is ready to move into page 2.
+- so he releases that latch on page 1
+- and we are going to request a latch on page 2 for T1.
+
+![](13.jpg)
+
+If you perform a deletion involving shifting, 
+- do you need to acquire latches into multiple pages?
+- Yes, you have to acquire latches in all pages in order.
+- if you are doing tombstones you don't need latches.
+
+
+  
 ### SLOT LATCHES
 - Each slot has its own latch
 - Can use a single-mode latch to reduce meta-data and computational overhead.
 
 
+Again T1 is trying to find D.
+- instead of acquiring a latch for the entire page, we do it for a slot.
+While T2 is trying to insert E.
+- also in page 1.
+  
+![](14.jpg)
+
+Now when T1 tryies to read the next slot is hold in wait.
+
+![](15.jpg)
+
+So on untill both finish their jobs
+
+![](16.jpg)
+
+### COMPARE AND SWAP
+Instead of using latching, you could use the Hardware instruction.
+- COMPARE AND SWAP
+
+```
+_sync_bool_compare_and_swap(address=&M, compare_value = 20, new_value=30)
+```
+
+- if values are equal, installs new given value
+- otherwise operation fails.
+
+
+## B+TREE CONCURRENCY CONTROL
+We want to allow multiple threads to read and update a B+TREEa at the same time
+
+We need to protect against two types of problems.
+- Threads trying to modify the contents of a node
+- One thread traversing the tree while the another thread splits/merges the nodes.
+
+
+Imagine you have a transaction T1, that wants to delete Key 44.
+- basically we traverse from the root to the inner nodes to the leaf.
+- and we are going to delete key 44.
+    
+![](17.jpg)
+
+But now, the last leaf node is empty.
+- we have to rebalance the tree.
+- we are going to borrow a key from our sibling 'H'
+- and move it over
+- and also update the higher nodes values.
+  
+![](18.jpg)
+
+
+But let's say that before we actually rebalance the tree, 
+- we go to sleep.
+
+Now Thread 2 is coming, and wants to find key 41.
+- but thread 1 is going to move over that value.
+- Thread 2 is about to find value 41 in node 'H'
+  
+![](19.jpg)
+
+Now let's say Thread 2 is going to sleep.
+- and Thread 1 is awake, and continues to rebalance key 41 into the 'I' bucket.
+
+![](20.jpg)
+
+And now Thread 2 is going to wake up,
+- and move to bucket 'H'
+- but he doesn't find his key.
+- because it was moved to 'I' by T1.
+
+This is showing one kind of problem, if we don't use any latches or protections around.
+
+
+### LATCH CRABBING/COUPLING
+it's a protocol to allow multiple threads to access or modify a B+TREE at the same time.
+
+**BASIC IDEA**,
+- Get Latch for parent
+- Get Latch for child
+- Releas latch for parent if 'safe'
+
+A SAFE NODE is one that will not split or merge when updated.
+- not full (on insertion)
+- More than half-full (on deletion)
+
+It improves concurrency substancially vs allowing one thread at a time.
+
+**FIND**, start at the root node and go down, repeatedly.
+- Acquire **R** latch on child
+- Then unlatch parent
+
+**INSERT/DELETE**, start at root and go down, obtaining **W** latches as needed.
+Once child is latched, check if it is safe.
+- if child is safe, release all latches on ancestors
+
+
+### EXAMPLES
+
+Example 1: FIND 38
+
+![](21.jpg)
+
+Example 2: DELETE 38
+ 
+![](22.jpg)
+
+- we can't release the latch on A now.
+- we don't know if we have to change something
+
+As we know that we are not merging with C, we can release locks on 'A' and 'B'
+- in which order we should release them?
+- it doesn't matter
+- but it's faster to release them in the order they were asked
+   - releasing first 'A', allows half tree to be used.
+   - then releasing 'B' you release the entire tree.
+
+![](23.jpg)
+
+Ofc, then you delete 38 from the leaf node.
+
+EXAMPLE 3. INSERT 45
+In this case, we know that if 'D' needs to split, 'B' has enought room.
+- so it's safe to release the latch on 'A'
+  
+![](24.jpg)
+
+![](25.jpg)
+
+EXAMPLE 4. INSERT 25.
+Now we have a problem.
+- we have to split 'F'
+
+![](26.jpg)
+
+so we need to hold the latch on the parent node, to prevent someone else from accessing.
+
+
+#### OBSERVATION
+What was the first step that all the update examples did on the B+TREE?
+
+- All of these cases,
+- we are taking a right latch,
+- we are always taking a right latch on the root node.
+
+this can become a bottleneck if you have a lot of concurrent threads they're trying to access to the tree.
+
+Next time we will talk about an improved version of this algorithm
