@@ -238,3 +238,18 @@ Tools
   - Deduplication
   - Bulk Insert
 - Conclusion
+  
+# LECTURE 8: INDEX CONCURRENCY CONTROL
+- Introduction
+  - Share Nothing Systems (no concurrency control)
+  - Concurrency Control
+  - Today's Agenda
+- Locks vs Latches
+  - Latch Modes
+  - Latch Implementation
+    - BLOCKING OS MUTEX
+    - TEST-AND-SET-SPIN LATCH
+    - READER-WRITTER LATCHES
+  - HASH TABLE LATCHING
+    - PAGE LATCHES
+    - SLOT LATCHES
