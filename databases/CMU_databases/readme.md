@@ -1,3 +1,15 @@
+# RELATIONAL DATABASES SUMMARY
+|     DB        | MySQL | PostgreSQL | REDIS | MEMSQL |
+| ------------- | ----- | ---------- | ----- | ------ |
+|(D)isk/(M)emory|   D   |    D       |  M    |    M   |
+
+# NON-RELATIONAL DATABASES SUMMARY
+|     DB        | MongoDB |
+| ------------- | ----- |
+|  Type         |  doc  |
+|(D)isk/(M)emory|   D   |
+
+
 # CMU_databases
 
 Pareto rule 20% of the curse cover the 80% of the commonly used skills.
@@ -277,16 +289,10 @@ Tools
   - DOUBLE BUFFER OPTIMIZATION
   - GENERAL EXTERNAL MERGE SORT
 - USING B+TREES FOR SORTING
-
-
-
-# RELATIONAL DATABASES SUMMARY
-|     DB        | MySQL | PostgreSQL | REDIS | MEMSQL |
-| ------------- | ----- | ---------- | ----- | ------ |
-|(D)isk/(M)emory|   D   |    D       |  M    |    M   |
-
-# NON-RELATIONAL DATABASES SUMMARY
-|     DB        | MongoDB |
-| ------------- | ----- |
-|  Type         |  doc  |
-|(D)isk/(M)emory|   D   |
+  - CLUSTERED B+TREE
+  - UNCLUSTERED B+TREE
+- AGGREGATIONS
+  - SORTING AGGREGATION
+  - ALTERNATIVES TO SORTING
+  - HASHING AGGREGATE
+  - EXTERNAL HASHING AGGREGATE
