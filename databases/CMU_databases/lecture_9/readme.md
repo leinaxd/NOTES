@@ -190,3 +190,113 @@ Data is broken up into **N** pages
 The DBMS has a finite number of **B** buffer pool pages to hold input and output data.
 
 this quantities are customizable (postgres, MySQL, ...)
+
+
+EXAMPLE, 2 ways external merge sort
+- Suppose we have a dataset with 2 pages, stored in disk.
+
+PASS 0, 
+- read all **B** pages of the table into memory.
+- sort pages into runs and write them back to disk.
+
+![](12.jpg)
+
+So we have the original page on disk unchanged, 
+- and we have our first sorted page on disk
+
+The next step is to read page number 1,
+- do our sort
+- and save on disk.
+
+![](13.jpg)
+
+PASS 1, 2, 3, ...
+- The next step is to recursively merge pairs of runs into runs twice as long
+- we are going to use 3 buffer pools (2 for input pages and 1 for output)
+
+![](14.jpg)
+
+Once that page fills up,
+- we are going to reuse the same output buffer pool slot.
+- and we are going to fill it up with the remainder of those 2 pages.
+
+![](15.jpg)
+
+If we have more pages, we just keep repeating the process recursively
+
+
+We may see a more concrete example here.
+- in each pass we read and write every page in the file.
+
+Number of passes.
+- 1 for the initial pass.
+- then ceiling of log_2(N), by splitting the dataset in half each time
+
+![](16.jpg)
+
+So we have this array we want to sort.
+- in the pass 0, we have sorted each page run.
+  
+![](17.jpg)
+
+In the next step,
+- we are merging consecutive runs.
+- we take the minimal value of both pages
+  
+![](18.jpg)
+
+and continue the process.
+- we are writting the page as soon as we fill it up
+  
+![](19.jpg)
+
+The process continues until we fill it up all the pages.
+
+![](20.jpg)
+
+It's a divide and conquer strategies, were we split and merge.
+
+Are these merge  phases being performed sequentially?
+- or do you have multiple threads running concurrently?
+- many systems partition up the work into multiple threads.
+
+If instead of 2 buffer pools, 
+- you have 4-way parallellism
+- you have 4 times the number of buffer pools.
+
+SUMMARY
+- This algorithm only requires 3 buffer pools pages to perform sorting.
+  - 2 inputs - 1 output
+- But even if we have more buffer space available,
+  - **B**>3, it does not effectively utilize them if the worker must block on disk I/O.
+ 
+### DOUBLE BUFFER OPTIMIZATION
+Prefetch the next run in the background,
+- and store it in a second buffer while the system is processing the current run.
+- Reduces the wait time for I/O requests at each step by continuously utilizing the disk.
+
+While one thread is sorting page 1, 
+- page 2 is being fetched ahead of time
+
+![](21jpg)
+
+### GENERAL EXTERNAL MERGE SORT
+Now we have **B** buffer pages rather than 2,
+- We produce **B/N** sorted runs of size **B**
+- in each pass we are going to merge B-1 pass
+
+![](22.jpg)
+
+
+Example,
+- Determine how many passes it takes to sort 108 pages with 5 buffer pool pages:
+  - **N=108, B=5**
+- Pass 0: 108/5 = 22 sorted runs on 5 pages each (last run is only 3 pages)
+- Pass 1: 22/4  = 6 sorted runs of 20 pages each (last run is only 8 pages)
+- Pass 2: 6/4   = 2 sorted runs, first one has 80 pages and second one has 28 pages.
+- Pass 3: sorted file of 108 pages
+
+so $1+[log_{B-1}(N/B)] = 1+[log_4(22)] = 1+[2.229] = 4 passes$
+
+
+## USING B+TREES FOR SORTING
