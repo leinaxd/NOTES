@@ -109,3 +109,84 @@ Next four lectures will be.
 - Operator Algorithms
 - Query Processing Models
 - Runtime Architectures
+
+## QUERY PLAN 
+The operators are arranged  in a tree.
+
+Data Flows from the leaves of the tree up towards the root.
+
+The output of the root node is the result of the query.
+
+
+![](9.jpg)
+
+### DISK ORIENTED DBMS
+We cannot assume that,
+- a table fits entirely in memory,
+- intermediate results are going to fit entirley in memory.
+
+We are going to rely on the buffer pool to implement algorithms that need to spill on disk.
+
+We are also going to prefer algorithms that maximize the amount of sequential I/O.
+
+## TODAY'S AGENDA
+
+- **EXTERNAL MERGE SORT**, sorting algorithm for external memory sort
+- **AGGREGATIONS**, different aggregation operations. (divide and conquer)
+
+
+### WHY TO SORT?
+Why do we need to sort?
+- Relational model/SQL is a set algebra unsorted.
+
+Queries may request that tuples are sorted in a specific way.
+- ORDER BY.
+
+Even if the query doesn't explicity specify an order, we may still want to sort, to do the following.
+- Trivial support **duplicate** elimination (DISTINCT)
+- **Bulk Loading** sorted tuples into a B+TREE index is faster
+- Aggregations (GROUP BY)
+
+
+### SORTING ALGORITHMS
+IF THE DATA **FITS IN MEMORY**, THEN WE CAN USE **ANY** STANDARD SORTING ALGORITHM'S
+- like quick sort
+
+IF DATA DOESN'T FIT IN MEMORY, then we have to use a technique that is aware of the cost of reading and writting to disk-pages.
+
+
+## EXTERNAL MERGE SORT
+Divide and Conquer algorithm that splits data into separate runs, sorts them individually and then combines them into longer sorted runs.
+
+**PHASE 1**, sorting
+- Sort chunks of data that fit in memory
+- then write back the sorted chunks to a file on disk.
+
+**PHASE 2**, Merging
+- Combine sorted runs into larger chunks.
+
+### SORTED RUN
+A run is a list of key/value pairs.
+
+KEY: 
+- The attributes to compare to compute the sort order
+
+VALUE:
+- Tuple (early materialization)
+- Record ID (late materialization)
+
+![](10.jpg)
+
+Instead of storing all the tuple data,
+- we are going to store the key along with a pointer (record id)
+  
+![](11.jpg)
+
+### TWO WAYS EXTERNAL MERGE SORT
+we are going to merge 2 runs into a new run for each pass
+
+Data is broken up into **N** pages
+
+The DBMS has a finite number of **B** buffer pool pages to hold input and output data.
+
+this quantities are customizable (postgres, MySQL, ...)
