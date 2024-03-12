@@ -27,6 +27,8 @@ Tools
 - Profiling stages (disk, ram access, network speed)
 
 
+
+
 ## Lecture 1: introduction
 - course overview
   - course outline
@@ -263,4 +265,13 @@ Tools
 - B+TREE CONCURRENCY CONTROL
   - BETTER LATCHING ALGORITHM
   - LEAF NODE SCAN
-  - Conclusion
+  - CONCLUSION
+- QUERY PLAN
+  - DISK ORIENTED DBMS
+ 
+
+
+# FEATURES SUMMARY
+|     DB        | MySQL | PostgreSQL | REDIS | MEMSQL |
+|    FEATURE    |-------|------------|-------|--------|
+|(D)isk/(M)emory|   D   |    D       |  M    |    M   |
