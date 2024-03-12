@@ -310,4 +310,70 @@ Cases to consider:
 - Clustered B+TREE
 - Unclustered B+TREE
 
+### CLUSTERED B+TREE
+Traverse to the left-most leaf page, and then retrieve tuples from all leaf pages
+
+It's better than External sorting because,
+- there is no computational cost, and all disk access is sequential.
+
+So we have a bunch of pages,
+- which is indexed by a B+TREE
+
+![](23.jpg)
+
+### UNCLUSTERED B+TREE
+Chase each pointer to the page that contains the data.
+
+This is almost always a bad idea, in general one I/O per data record.
+
+It end up doing 'random access' instead of sequential
+
+![](24.jpg)
+
+## AGGREGATIONS
+Collapse values for a single attribute from multiple tuples into a single scalar value.
+
+Two implementation choices.
+- Sorting
+- Hashing, this is going to be better in a lot of cases
+
+### SORTING AGGREGATION
+Image that we want to get all distinct course ids where some student get either an 'A', a 'B' or 'C'
+
+![](25.jpg)
+
+First step in our query planning is 
+- to filter only grades 'B' or 'C'
+- Then we remove the columns we are not going to need.
+- Then we sort
+- and finally we remove duplicates
   
+![](26.jpg)
+
+
+### ALTERNATIVES TO SORTING
+What if we do not need the data to be ordered?
+- Forming groups in **GROUP BY** (no ordering)
+- Removing duplicates in **DISTINCT** (no ordering)
+
+HASHING, is a better alternative in this scenario.
+- Only need to remove duplicates, no need for ordering
+- Can be computationally cheaper than sorting
+
+
+### HASHING AGGREGATE
+Populate an ephemeral hash table as the DBMS scans the table.
+- for each record, check whether there is already an entry in the hash table.
+- DISTINCT, Discard duplicate
+- GROUP BY, Perform aggregate computation
+
+If everything fits in memory, then this is easy.
+- If the DBMS must spill data to disk, then we need to be smarter.
+
+### EXTERNAL HASHING AGGREGATE
+PHASE 1. PARTITION,
+- Divide tuples into buckets based on hash key.
+- Write them out to disk when they get full.
+
+PHASE 2. ReHASH
+- Build in-memory hash table for each partition and compute the aggregation
