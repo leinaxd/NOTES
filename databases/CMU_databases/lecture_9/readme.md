@@ -300,3 +300,14 @@ so $1+[log_{B-1}(N/B)] = 1+[log_4(22)] = 1+[2.229] = 4 passes$
 
 
 ## USING B+TREES FOR SORTING
+Instead of doing a MERGE SORT from scratch, 
+- if we already have stored a B+TREE Index on the sort attributes,
+- then when we can use that to accelerate sorting.
+
+Retrieve tuples in desired sort order by simply traversing the leaf pages of the tree.
+
+Cases to consider:
+- Clustered B+TREE
+- Unclustered B+TREE
+
+  
