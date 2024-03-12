@@ -377,3 +377,75 @@ PHASE 1. PARTITION,
 
 PHASE 2. ReHASH
 - Build in-memory hash table for each partition and compute the aggregation
+
+
+#### PARTITION PHASE
+Use a hash function h1 to split tuples into partitions on disk.
+- a partition is one or more pages that contains the set of keys with the same hash value.
+- Partitions are 'spilled' to disk via output buffers
+
+Assume that we have **B** Buffers,
+- we will use **B-1** Buffers to the partitions and '1' buffer for the input data.
+It's the opposite of the sorting operation,
+- The K-way sort we had B-1 Input buffers and 1 output buffer. 
+
+We are doing the same thing as before.
+- We filter to remove rows we don't need
+- then we remove columns we don't need
+- and now we are doing the patitioning
+
+![](27.jpg)
+
+h1 route us to these B-1 partitions.
+- we see duplicated keys are grouped together.
+
+#### REHASH PHASE
+For each partition on disk.
+- Read it into memory and build an in-memory hash table based on a second hash function h2
+- Then go through each bucket of this hash table to bring together matching tuples
+
+This assumes that each partition fits into memory
+
+So now we have our partitions / buckets.
+
+![](28.jpg)
+
+Now we have to scan to each of this buckets.
+- and build this in-memory hash table.
+- we don't need duplicates
+  
+![](29.jpg)
+
+We inmediately add them to our final result
+- it's not possible for any of the keys, to show up again.
+- we never have to backtrack. all partition are disjoint.
+
+#### HASHING SUMMARIZATION
+During the ReHASH phase, store pairs of the form 'GroupKey -> RunningVal'
+
+When we want to insert a new tuple into the hash table.
+- if we find a matching 'GroupKey', just update the 'RunningVal' appropriately
+- Else Inserta a new 'GroupKey -> RunningVal'
+
+
+For doing some aggregation.
+
+
+For example, 
+- we want the AVG student grade grouped by course.
+- we have to keep track of the count and the sum.
+
+![](31.jpg)
+
+Finally we compute our final result, by dividing the sum by the count
+
+## CONCLUSION
+Choice of sorting vs hashing is subtle and depends on optimizations done in each case.
+- We already discused optimizations for sorting
+  - chunk I/O into large blocks to amortize costs
+  - Double Buffering to overlap CPU and I/O
+ 
+NEXT CLASS
+- Join Operators
+- Sort Merge Join
+- Hash join
