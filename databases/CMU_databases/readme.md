@@ -271,7 +271,13 @@ Tools
  
 
 
-# FEATURES SUMMARY
+# RELATIONAL DATABASES SUMMARY
 |     DB        | MySQL | PostgreSQL | REDIS | MEMSQL |
-|    FEATURE    |-------|------------|-------|--------|
+| ------------- | ----- | ---------- | ----- | ------ |
 |(D)isk/(M)emory|   D   |    D       |  M    |    M   |
+
+# NON-RELATIONAL DATABASES SUMMARY
+|     DB        | MongoDB |
+| ------------- | ----- |
+|  Type         |  doc  |
+|(D)isk/(M)emory|   D   |
