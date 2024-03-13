@@ -251,3 +251,12 @@ If the entire index fits in memory then it's going to be very different than if 
 - Simple
 - Block
 - Index
+
+## SORT MERGE JOIN
+PHASE 1, SORT.
+- Sort Both tables on the join keys.
+- We can use the external merge sort algorithm from last lecture.
+
+PHASE 2, MERGE.
+- Step through the two sorted tables with cursors and emit matching tuples
+- May need to backtrack depending on the join type.
