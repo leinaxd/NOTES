@@ -260,3 +260,57 @@ PHASE 1, SORT.
 PHASE 2, MERGE.
 - Step through the two sorted tables with cursors and emit matching tuples
 - May need to backtrack depending on the join type.
+
+First we are going to sort, 
+- so we get these two sorted cursors over 'r' and 's'
+- if cursor 'r' is greather than the value of cursor 's', we increment cursor 's'
+- same for incrementing cursor 'r'
+- if there's a match, we are going to emit match and then increment cursor 's'.
+  
+![](16.jpg)
+
+
+So let's do a visual example.
+- First step is to sort.
+
+![](17.jpg)
+
+Now we start the cursors at the beginning at each of our sorted tables.
+- in this case we see, a match in both keys,
+- so we append it to our output buffer
+ 
+![](18.jpg)
+
+And we increment cursor 's'.
+- we still have a match, and we are going to append it to the output buffer.
+
+![](19.jpg)
+
+Next step is to move cursor 'r' because is the lower one.
+
+![](20.jpg)
+
+Next step, we are incrementing 'r' again, and we found a problem.
+- the new 'r' is repeated, that means
+- you have to go back cursor 's' to process again 's'
+
+![](21.jpg)
+
+![](22.jpg)
+
+The cost is,
+- The cost of sorting R and S,
+- The cost of Merge
+- Deprecated the cost of going back
+
+![](23.jpg)
+
+So the time we spent now is 0.75sec.
+- its better than the last 50 sec.
+  
+![](24.jpg)
+
+The worst case for merging is when,
+- the join attribute of all the tuples in both relations contains the same value.
+- COST: (M·N) + (sort cost)
+
