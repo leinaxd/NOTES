@@ -577,7 +577,7 @@ If we do not know the size, then we must use a dynamic hash table
 Hashing is almost always better than sorting for operator execution
 
 Caveats,
-- Sorting is better on non-uniform data
+- Sorting is better on non-uniform data (you get a lot of collisions in your hash function)
 - Sorting is better when results needs to be sorted
 
 Good Databases use either or both
