@@ -87,6 +87,46 @@ First you wrap over all the child nodes.
 ![](4.jpg)
 
 As soon you get one tuple, you flow back up.
-
+- This keeps going until all the tuples in R are produced in that first loop.
 ![](5.jpg)
+
+
+We are going to do the same for the right side
+- in the selection scan (4), we are only returning tuples that match.
+  
+![](6.jpg)
+
+
+For every single time, we are going to emit back a tuple to its parent operator.
+
+#### SUMMARIZE
+This is used in almost every DBMS.
+- Allows for **tuple pipelining**
+
+
+Every single tuple you emit is going to be push/pull from its parent operator
+- all the way through the query plan.
+
+
+What that's going to allow us to do is to kind maximize the locality of the data.
+- getting a page and extracting a tuple from it, is really expensive.
+- so we are maximizing the amount of work we are able to perform once we go get it from the disk.
+
+so we are going to propagate this tuple through all the operators that we have in our query plan.
+
+
+
+
+Some operators just block until their children emit all tuples.
+- JOINS
+- SUBQUERIES
+- ORDER BY
+
+In the last example, we have to wait the left branch to finish populating its hash table in order to probe it later.
+
+
+Output control works easily with this approach
+
+![](7.jpg)
+
 
