@@ -11,6 +11,8 @@
 | (D)isk/(M)emory |    D    |
 | (I)TERATOR      |    I    |
 
+Iterator Model = Pipeline model (how the query operator gets propagated)
+
 MAS:
 - Cloudera imapala:
   - Iterator model
