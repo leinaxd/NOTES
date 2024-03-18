@@ -59,3 +59,34 @@ The operator implements a loop that calls **NEXT()** on it's children,
 
 
 
+If we imagine what's going on inside each operator,
+
+![](2.jpg)
+
+At very high level,
+- we have this loops, that implementing the **next** function call for each operator.
+- so emit the first projection operator
+
+We now have a JOIN operator,
+- which is building a hash table for left operator
+- and probing the right side into the table.
+
+
+The projection calls the join.
+- The join calls these two parts (build and probe phases)
+- Se selection operator is just filtering all tuples that doesn't match the predicate
+
+Each of those code blocks are the implementations of the **NEXT**  function call.
+
+![](3.jpg)
+
+
+#### RUNTHROUGH
+First you wrap over all the child nodes.
+
+![](4.jpg)
+
+As soon you get one tuple, you flow back up.
+
+![](5.jpg)
+
