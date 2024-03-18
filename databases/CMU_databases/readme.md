@@ -21,7 +21,9 @@ MAS:
 - SQLServer
   - Iterator Model
 - Greenplum
+  - Iterator Model
 - ORACLE
+  - Iterator Model
 
 # CMU_databases
 
