@@ -1,0 +1,75 @@
+# RELATIONAL DATABASES SUMMARY
+MYSQL:
+  - QUERY: SQL
+  - MAIN_STORAGE: (D)isk
+  - ITERATOR_MODEL: (P)ipeline
+PostgreSQL:
+  - QUERY: SQL
+  - MAIN_STORAGE: (D)isk
+  - ITERATOR_MODEL: (P)ipeline
+SQLite:
+  - QUERY: SQL
+  - MAIN_STORAGE: (D)ISK
+  - ITERATOR_MODEL: (P)ipeline
+REDIS:
+  - QUERY: SQL
+  - MAIN_STORAGE: (M)emory
+
+MEMSQL:
+  - QUERY: SQL
+  - MAIN_STORAGE: (M)emory
+
+NuoDB:
+  - QUERY: SQL
+  - MAIN_STORAGE: (D)isk / (M)emory / (C)loud
+  - ITERATOR_MODEL: (P)ipeline
+
+# NON-RELATIONAL DATABASES SUMMARY
+MongoDB:
+  - QUERY: NoSQL
+  - TYPE:  Documents
+  - MAIN_STORAGE: (D)isk
+  - ITERATOR_MODEL: (P)ipeline
+
+Cloudera Impala:
+  - QUERY: SQL
+  - ITERATOR_MODEL: (P)ipeline
+
+IBM DB2:
+  - QUERY: SQL
+  - ITERATOR_MODEL: (P)ipeline
+
+VERTICA:
+  - ITERATOR_MODEL: (P)ipeline
+  
+SQLServer:
+  - ITERATOR_MODEL: (P)ipeline
+Greenplum:
+  - ITERATOR_MODEL: (P)ipeline
+ORACLE:
+  - ITERATOR_MODEL: (P)ipeline
+
+
+
+
+/*
+- MAIN_STORAGE o - STORAGE_MANAGER? 
+Iterator Model = Pipeline model (how the query operator gets propagated)
+  - ITERATOR_MODEL O OPERATOR_MODEL?
+*/
+
+/*
+
+|     DB          | MySQL | PostgreSQL | SQLite | REDIS | MEMSQL | NUODB | 
+| --------------- | ----- | ---------- | ------ | ----- | ------ | ----- |
+| (D)isk/(M)emory |   D   |    D       |   D    |   M   |   M    |  D/M  |
+| (I)TERATOR      |   I   |    I       |   I    |       |        |   I   |
+
+
+
+|      DB         | MongoDB |
+| --------------- | ------- |
+|    Type         |   doc   |
+| (D)isk/(M)emory |    D    |
+| (I)TERATOR      |    I    |
+*/
