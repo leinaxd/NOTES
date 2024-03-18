@@ -58,8 +58,9 @@ ORACLE:
   - OPERATOR_MODEL: (P)ipeline
 
 VOLTDB:
+  - MAIN_STORAGE: (M)emory
   - OPERATOR_MODEL: (M)aterialization
-
+  
 monetdb:
   - OPERATOR_MODEL: (M)aterialization
 
