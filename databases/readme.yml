@@ -1,6 +1,9 @@
 # OPERATOR MODEL: how the query operator gets propagated
 #    1. (P)ipeline model. Propagates one tuple at a time
 #    2. (M)aterialization model. Propagates all tables at once
+# STORAGE MODEL:
+#    1. (N)ormalized (S)torage (M)odel. Many minimal related tables
+#    2. (D)ormalized (S)torage (M)odel. Store redundancies in an easy access big table
 
 MYSQL:
   - QUERY: SQL
@@ -63,7 +66,8 @@ VOLTDB:
   
 monetdb:
   - OPERATOR_MODEL: (M)aterialization
-
+  - STORAGE_MODEL: (DSM) (column store)
+  
 /*
 - MAIN_STORAGE o - STORAGE_MANAGER? 
 */
