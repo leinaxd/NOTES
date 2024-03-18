@@ -9,34 +9,36 @@
 #    1. (N)ormalized (S)torage (M)odel. Many minimal related tables
 #    2. (D)ormalized (S)torage (M)odel. Store redundancies in an easy access big table
 
-MYSQL:
-  - QUERY: SQL
-  - MAIN_STORAGE: (D)isk
-  - OPERATOR_MODEL: (P)ipeline
-  
-PostgreSQL:
-  - QUERY: SQL
-  - MAIN_STORAGE: (D)isk
-  - OPERATOR_MODEL: (P)ipeline
-  
-SQLite:
-  - QUERY: SQL
-  - MAIN_STORAGE: (D)ISK
-  - OPERATOR_MODEL: (P)ipeline
-  
-REDIS:
-  - QUERY: SQL
-  - MAIN_STORAGE: (M)emory
 
+# Alphabetical ordered by name
+
+Amazon REDSHIFT:
+  - OPERATOR_MODEL: (B)atch
+
+Cloudera Impala:
+  - QUERY: SQL
+  - OPERATOR_MODEL: (P)ipeline
+
+DuckDB:
+  - OPERATOR_MODEL: (B)atch
+
+Greenplum:
+  - OPERATOR_MODEL: (P)ipeline
+
+HYRISE:
+  - OPERATOR_MODEL: (B)atch
+
+IBM DB2:
+  - QUERY: SQL
+  - OPERATOR_MODEL: (P)ipeline / (B)atch
+  
 MEMSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
 
-NuoDB:
-  - QUERY: SQL
-  - MAIN_STORAGE: (D)isk / (M)emory / (C)loud
-  - OPERATOR_MODEL: (P)ipeline
-
+monetdb:
+  - OPERATOR_MODEL: (M)aterialization
+  - STORAGE_MODEL: (DSM) (column store)
 
 MongoDB:
   - QUERY: NoSQL
@@ -44,33 +46,55 @@ MongoDB:
   - MAIN_STORAGE: (D)isk
   - OPERATOR_MODEL: (P)ipeline
 
-Cloudera Impala:
+MYSQL:
   - QUERY: SQL
+  - MAIN_STORAGE: (D)isk
   - OPERATOR_MODEL: (P)ipeline
 
-IBM DB2:
+noise page:
+  - OPERATOR_MODEL: (B)atch
+  
+NuoDB:
   - QUERY: SQL
+  - MAIN_STORAGE: (D)isk / (M)emory / (C)loud
   - OPERATOR_MODEL: (P)ipeline
+
+ORACLE:
+  - OPERATOR_MODEL: (P)ipeline / (B)atch
+
+PostgreSQL:
+  - QUERY: SQL
+  - MAIN_STORAGE: (D)isk
+  - OPERATOR_MODEL: (P)ipeline
+
+PRESTO:
+  - OPERATOR_MODEL: (B)atch
+
+REDIS:
+  - QUERY: SQL
+  - MAIN_STORAGE: (M)emory
+
+SQLite:
+  - QUERY: SQL
+  - MAIN_STORAGE: (D)ISK
+  - OPERATOR_MODEL: (P)ipeline
+
+SQLServer:
+  - OPERATOR_MODEL: (P)ipeline / (B)atch
+
+SNOWFLAKE:
+  - OPERATOR_MODEL: (B)atch
 
 VERTICA:
   - OPERATOR_MODEL: (P)ipeline
-  
-SQLServer:
-  - OPERATOR_MODEL: (P)ipeline
-  
-Greenplum:
-  - OPERATOR_MODEL: (P)ipeline
-  
-ORACLE:
-  - OPERATOR_MODEL: (P)ipeline
+
+VECTOR WISE:
+  - OPERATOR_MODEL: (B)atch
 
 VOLTDB:
   - MAIN_STORAGE: (M)emory
   - OPERATOR_MODEL: (M)aterialization
   
-monetdb:
-  - OPERATOR_MODEL: (M)aterialization
-  - STORAGE_MODEL: (DSM) (column store)
   
 /*
 - MAIN_STORAGE o - STORAGE_MANAGER? 
