@@ -1,32 +1,3 @@
-# RELATIONAL DATABASES SUMMARY
-|     DB          | MySQL | PostgreSQL | SQLite | REDIS | MEMSQL | NUODB | 
-| --------------- | ----- | ---------- | ------ | ----- | ------ | ----- |
-| (D)isk/(M)emory |   D   |    D       |   D    |   M   |   M    |  D/M  |
-| (I)TERATOR      |   I   |    I       |   I    |       |        |   I   |
-
-# NON-RELATIONAL DATABASES SUMMARY
-|      DB         | MongoDB |
-| --------------- | ------- |
-|    Type         |   doc   |
-| (D)isk/(M)emory |    D    |
-| (I)TERATOR      |    I    |
-
-Iterator Model = Pipeline model (how the query operator gets propagated)
-
-MAS:
-- Cloudera imapala:
-  - Iterator model
-- IBM DB2:
-  - Iterator Model
-- VERTICA
-  - Iterator Model
-- SQLServer
-  - Iterator Model
-- Greenplum
-  - Iterator Model
-- ORACLE
-  - Iterator Model
-
 # CMU_databases
 
 Pareto rule 20% of the curse cover the 80% of the commonly used skills.
