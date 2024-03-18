@@ -137,7 +137,7 @@ Each operator processes its input all at once and then emits its output all at o
 - The DBMS can push down hints (e.g. LIMIT)
 - Can send either a materialized row or a single column
 
-The output can be either Whole Tuples (NSM) or subsets of columns (DSM)
+The output can be either Whole Tuples (NSM, normalized storage model) or subsets of columns (DSM, denormalized storage model)
 - you can materialize a full row, or a full column
 
 
@@ -160,10 +160,100 @@ Build the hash table and move to the right side.
 ![](10.jpg)
 
 #### SUMMARIZE
-Better for OLTP workloads because Queries only access a small number of tuples at a time.
+For small number of tuples, we can access all at a time for optimal performance.
+- not that many function calls.
+
+  
+Better for OLTP workloads.
 - Lower Execution / Coordination Overhead
 - Fewer Function calls
 
-Not Good for OLAP queries with large intermediate steps
+Not Good for OLAP queries with large intermediate steps.
+- you have to compute an entire join, materilize that.
+- it can grow quite large.
 
 ![](11.jpg)
+
+This function calls doesn't really matter to (D)isk systems. (they are masked by other stuff)
+- They do matter for In-Memory systems
+
+ 
+Is the materialization model, easy to model if you aggressively pre-fetch pages?
+- probably it makes pre-fetch easier.
+- if everything is a sequential scan.
+- drawback is that depends on how much you have in your buffer pool.
+
+
+### VECTORIZATION MODEL (aka. Batch model)
+Like the Iterator model, where each operator implements a **NEXT()**  function, but...
+
+Each operator emits a **BATCH** of tuples instead of a single tuple.
+
+- The Operator's internal loop processes multiple tuples at a time.
+- The size of the batch can vary based on hardware or query properties.
+
+CONSIDERATIONS IF YOU ARE IN MEMORY.
+- you might want to align your batch sizes with your 'CACHE' size
+- or align it with your memory pages.
+
+Doing so, 
+- you amortize the amount of function calls over several tuples
+- if you are disk bounded, the call overhead doesn't matter that much.
+- it matter if you are partially/full in memory.
+
+#### RUN THROUGH
+It looks like an hybrid between the iterator tuple at a time, and the materialization approach.
+
+![](12.jpg)
+
+Again we have this output buffers.
+- but rather than being entire materilized output, they are going to be a fixed size. (100-200 tuples at a time)
+
+And we are going to call 'child.next' the same way we did for the iterator model.
+- but each time we call next, we are going to get a batch of tuples,
+- rather than a single tuple at a time.
+
+At step (3) we are waiting the full batch to load, so then you commit the next batch.
+- the parent (2) has to wait the entire hash table to update, before it can move into the next branch.
+  
+![](13.jpg)
+
+
+![](14.jpg)
+
+Can you run into problems where you have sort of these partially utilized batches sitting around in different operators?
+- No, we flush the data at the end.
+- If the output page is for the size of the page, we are allocating one page for those operators.
+
+#### SUMARIZE
+Ideal for OLAP models, because it reduces the number of invocations per operator
+- Aggregations 
+- Ad-hoc joins
+
+For transactional workloads OLTP,
+- you want to start working on tuples as soon as possible.
+- waiting to fill up these buffers gives you this additional overhead.
+  
+Allows operators to more easily use vectorized (SIMD) instructions to process batches of tuples.
+- Single Instruction Multiple Data (SIMD)
+- CPU instructions that allows you operate into several data at once.
+- SIMD is usefull for using the column model (DSM) used for example for average.
+  
+![](15.jpg)
+
+
+### OBSERVATION.
+All examples shown had, this top-down paradigm.
+
+APPROACH 1. TOP-TO-BOTTOM
+- Start with the root node, and pull data from its childrens
+- Tuples are always passed with function calls
+- aka 'pull model' as you pull data from your function calls.
+
+APPROACH 2. BOTTOM-TO-TOP.
+its less implemented as it's hard to reason about. but has its advantages.
+- Start with leaf nodes and push data to their parents
+- Allows for tighter control of __caches__/registers in pipelines.
+- the childrends are pushing their results to its parents.
+
+## ACCESS METHODS
