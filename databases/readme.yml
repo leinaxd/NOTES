@@ -1,4 +1,4 @@
-
+```
 MYSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
@@ -51,7 +51,7 @@ ORACLE:
 
 
 
-
+```
 /*
 - MAIN_STORAGE o - STORAGE_MANAGER? 
 Iterator Model = Pipeline model (how the query operator gets propagated)
