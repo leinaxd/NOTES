@@ -126,7 +126,44 @@ In the last example, we have to wait the left branch to finish populating its ha
 
 
 Output control works easily with this approach
+- LIMIT (breaking main loop)
 
 ![](7.jpg)
 
 
+### MATERIALIZATION MODEL (aka operator time model)
+Each operator processes its input all at once and then emits its output all at once.
+- The operator 'Materializes' its output as a single result
+- The DBMS can push down hints (e.g. LIMIT)
+- Can send either a materialized row or a single column
+
+The output can be either Whole Tuples (NSM) or subsets of columns (DSM)
+- you can materialize a full row, or a full column
+
+
+
+#### RUN THROUGH
+Basically,
+- The root operator is going to call its child's output
+
+![](8.jpg)
+
+So long so forth until you get the left output.
+- But instead of returning 1 tuple at a time
+- you return all tuples at once.
+- you save them in the 'out' buffer
+  
+![](9.jpg)
+
+Build the hash table and move to the right side.
+
+![](10.jpg)
+
+#### SUMMARIZE
+Better for OLTP workloads because Queries only access a small number of tuples at a time.
+- Lower Execution / Coordination Overhead
+- Fewer Function calls
+
+Not Good for OLAP queries with large intermediate steps
+
+![](11.jpg)
