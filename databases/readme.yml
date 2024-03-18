@@ -60,6 +60,8 @@ ORACLE:
 VOLTDB:
   - OPERATOR_MODEL: (M)aterialization
 
+monetdb:
+  - OPERATOR_MODEL: (M)aterialization
 
 /*
 - MAIN_STORAGE o - STORAGE_MANAGER? 
