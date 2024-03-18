@@ -1,4 +1,4 @@
-# RELATIONAL DATABASES SUMMARY
+
 MYSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
@@ -24,7 +24,7 @@ NuoDB:
   - MAIN_STORAGE: (D)isk / (M)emory / (C)loud
   - ITERATOR_MODEL: (P)ipeline
 
-# NON-RELATIONAL DATABASES SUMMARY
+
 MongoDB:
   - QUERY: NoSQL
   - TYPE:  Documents
@@ -59,14 +59,14 @@ Iterator Model = Pipeline model (how the query operator gets propagated)
 */
 
 /*
-
+# RELATIONAL DATABASES SUMMARY
 |     DB          | MySQL | PostgreSQL | SQLite | REDIS | MEMSQL | NUODB | 
 | --------------- | ----- | ---------- | ------ | ----- | ------ | ----- |
 | (D)isk/(M)emory |   D   |    D       |   D    |   M   |   M    |  D/M  |
 | (I)TERATOR      |   I   |    I       |   I    |       |        |   I   |
 
 
-
+# NON-RELATIONAL DATABASES SUMMARY
 |      DB         | MongoDB |
 | --------------- | ------- |
 |    Type         |   doc   |
