@@ -1,15 +1,22 @@
+# OPERATOR MODEL: how the query operator gets propagated
+#    1. (P)ipeline model. Propagates one tuple at a time
+#    2. (M)aterialization model. Propagates all tables at once
+
 MYSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
-  - ITERATOR_MODEL: (P)ipeline
+  - OPERATOR_MODEL: (P)ipeline
+  
 PostgreSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
-  - ITERATOR_MODEL: (P)ipeline
+  - OPERATOR_MODEL: (P)ipeline
+  
 SQLite:
   - QUERY: SQL
   - MAIN_STORAGE: (D)ISK
-  - ITERATOR_MODEL: (P)ipeline
+  - OPERATOR_MODEL: (P)ipeline
+  
 REDIS:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
@@ -21,40 +28,41 @@ MEMSQL:
 NuoDB:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk / (M)emory / (C)loud
-  - ITERATOR_MODEL: (P)ipeline
+  - OPERATOR_MODEL: (P)ipeline
 
 
 MongoDB:
   - QUERY: NoSQL
   - TYPE:  Documents
   - MAIN_STORAGE: (D)isk
-  - ITERATOR_MODEL: (P)ipeline
+  - OPERATOR_MODEL: (P)ipeline
 
 Cloudera Impala:
   - QUERY: SQL
-  - ITERATOR_MODEL: (P)ipeline
+  - OPERATOR_MODEL: (P)ipeline
 
 IBM DB2:
   - QUERY: SQL
-  - ITERATOR_MODEL: (P)ipeline
+  - OPERATOR_MODEL: (P)ipeline
 
 VERTICA:
-  - ITERATOR_MODEL: (P)ipeline
+  - OPERATOR_MODEL: (P)ipeline
   
 SQLServer:
-  - ITERATOR_MODEL: (P)ipeline
+  - OPERATOR_MODEL: (P)ipeline
+  
 Greenplum:
-  - ITERATOR_MODEL: (P)ipeline
+  - OPERATOR_MODEL: (P)ipeline
+  
 ORACLE:
-  - ITERATOR_MODEL: (P)ipeline
+  - OPERATOR_MODEL: (P)ipeline
 
-
+VOLTDB:
+  - OPERATOR_MODEL: (M)aterialization
 
 
 /*
 - MAIN_STORAGE o - STORAGE_MANAGER? 
-Iterator Model = Pipeline model (how the query operator gets propagated)
-  - ITERATOR_MODEL O OPERATOR_MODEL?
 */
 
 /*
