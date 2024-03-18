@@ -1,6 +1,10 @@
+# HOW TO CHOOSE YOUR BEST SUITED DATABASE BASED ON THEIR FEAUTURES?
+#
 # OPERATOR MODEL: how the query operator gets propagated. (aka Processing model)
-#    1. (P)ipeline model. Propagates one tuple at a time
-#    2. (M)aterialization model. Propagates all tables at once
+#    1. (P)ipeline model. Propagates one tuple at a time.
+#    2. (M)aterialization model. Propagates all tables at once.
+#    3. (B)atch model. Propagate a batch of tuples at a time.
+#
 # STORAGE MODEL:
 #    1. (N)ormalized (S)torage (M)odel. Many minimal related tables
 #    2. (D)ormalized (S)torage (M)odel. Store redundancies in an easy access big table
