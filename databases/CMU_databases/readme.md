@@ -1,14 +1,27 @@
 # RELATIONAL DATABASES SUMMARY
-|     DB        | MySQL | PostgreSQL | REDIS | MEMSQL |
-| ------------- | ----- | ---------- | ----- | ------ |
-|(D)isk/(M)emory|   D   |    D       |  M    |    M   |
+|     DB          | MySQL | PostgreSQL | SQLite | REDIS | MEMSQL | NUODB | 
+| --------------- | ----- | ---------- | ------ | ----- | ------ | ----- |
+| (D)isk/(M)emory |   D   |    D       |   D    |   M   |   M    |  D/M  |
+| (I)TERATOR      |   I   |    I       |   I    |       |        |   I   |
 
 # NON-RELATIONAL DATABASES SUMMARY
-|     DB        | MongoDB |
-| ------------- | ----- |
-|  Type         |  doc  |
-|(D)isk/(M)emory|   D   |
+|      DB         | MongoDB |
+| --------------- | ------- |
+|    Type         |   doc   |
+| (D)isk/(M)emory |    D    |
+| (I)TERATOR      |    I    |
 
+MAS:
+- Cloudera imapala:
+  - Iterator model
+- IBM DB2:
+  - Iterator Model
+- VERTICA
+  - Iterator Model
+- SQLServer
+  - Iterator Model
+- Greenplum
+- ORACLE
 
 # CMU_databases
 
@@ -337,3 +350,5 @@ Tools
 - TODAY'S AGENDA
 - PROCESSING MODEL
   - ITERATOR MODEL
+    - RUNTROUGHT
+    - SUMMARIZE
