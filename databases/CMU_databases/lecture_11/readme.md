@@ -257,3 +257,198 @@ its less implemented as it's hard to reason about. but has its advantages.
 - the childrends are pushing their results to its parents.
 
 ## ACCESS METHODS
+An **access method** is the way that the DBMS accesses the data stored in a table.
+- Not defined in relational algebra
+- but it's something we want to consider when implementing the physical operators
+  
+Three basic approaches.
+- SEQUENTIAL SCAN
+- INDEX SCAN
+- MULTI-INDEX SCAN / 'bitmap' scan
+
+So how are we going to access the data stored in **R** and **S**?
+
+![](16.jpg)
+
+### SEQUENTIAL SCAN
+For each page in the table,
+- retrieve it from the buffer pool.
+- Iterate over each tuple and check whether to include it
+
+The DBMS maintains an internal **CURSOR** that tracks the last page/slot if examined.
+
+![](17.jpg)
+
+you have to scan the entire table 
+- just to find the value you are looking for.
+
+#### OPTIMIZATIONS
+PREFETCHING, 
+- get pages from disk that you are going to need in the near future.
+
+BUFFER POOL BYPASS, 
+- rather than going to the usual buffer pool mechanism,
+- you have a separated buffer area
+- that you can fill up for intermediate results for your query.
+
+PARELLELIZATION,
+- next class
+- how to paralellize all aspect of a query.
+
+ZONE MAPS,
+- Precomputes some aggregates per page
+
+LATE MATERIALIZATION,
+
+HEAP CLUSTERING,
+
+
+#### ZONE MAPS (aka small materializaton aggregate SMA)
+Pre computed aggregates for the attribute values in a page.
+- DBMS checks the zone to map first
+- to decide whether it want to access that page.
+
+![](18.jpg)
+
+You are looking at all the attribute values on a page.
+- and you precomputing some kind of  aggregates about it
+- so you don't need necesesarily access the page
+- you can check and decide
+- whether or not you want to access the page before you have to go and get it.
+
+If you are applying some query like this,
+- where you are filtering all values greather than 600.
+- we can just look at the zone map
+- and don't even have to access the data in the page,
+- as the maximum value in the page is 400
+
+![](19.jpg)
+
+Typically they are stored in a **separated** zone maps **page**.
+- otherwise you can store them in the header of each page.
+- but you already are paying the cost to go into the I/O
+- and get the page.
+
+
+![](20.jpg)
+![](21.jpg)
+
+
+Advantages,
+- let you prune out pages early
+
+Disavantages,
+- every time you update a value, you have to update all aggregates too.
+- worst writting overhead
+  
+#### LATE MATERIALIZATION
+Denormalized Storage Managers (DSM), can Delay stitching together tuples until the upper parts of the query plan.
+- Columns Store Model. All values in individual columns.
+
+When we are accessing a page,
+- we get all the values for a particular column from a whole bunch of different tuples.
+- so we get those values,
+- and let's say we are doing a SELECTION
+
+For example, all we need for this output is C.
+- if we were an N-ary or row based storage model,
+- then we have get all the 'A', 'B', 'C' columns together.
+
+![](22.jpg)
+
+As we are in a DSM storage model
+- we can just grab the column that we need.
+
+![](23.jpg)
+
+Also we grab the offsets of the columns that match.
+- so we are going to pass those **offsets** up to the parent,
+- rather the actual values themselves.
+
+Next we are going to perform a JOIN operation with the 'B' column
+- and moving those offsets further up to their parent.
+  
+![](24.jpg)
+
+Finally we are going to retrieve those values,
+- using their offsets
+- and compute the average aggregate.
+
+#### HEAP CLUSTERING
+???????????????
+
+
+### INDEX SCAN
+we talked about this in previous lectures...
+
+The DBMS picks an index to find the tuples that the query needs.
+- rather than having to scan the whole table,
+- if you have an index sitting around
+- you can leverage to get just the tuples that you want
+
+Which index to use, depends on:
+- What attributes the index contains
+- What attributes the query references
+- The attribute's value domains
+- How the Predicate is composed
+- Whether the index has unique or non-unique keys.
+
+In lecture 13 we are going to talk about how to decide between all different options.
+
+#### RUN THROUGH
+Let's say we have this example query.
+- imagine a single tuple with 100 tuples.
+- and 2 indexes.
+  - Index 1. AGE
+  - Index 2. DEPT
+
+![](25.jpg)
+
+Which index do we want to use?
+- whetever is the most selective.
+- it depends on the exact data that we have.
+  - If Age < 30 is more selective or
+  - 'dept=cs' is the more selective.
+
+SCENARIO 1.
+- we choose the DEPT index
+  
+![](26.jpg)
+
+SCENARIO 2.
+- we choose the AGE index.
+
+![](27.jpg)
+
+### MULTI-INDEX SCAN
+If there are **multiple indexes**, use all of them
+- compute sets of RECORD IDs using each matching index
+- combine these sets based on the query's predicates
+  - if it's an OR predicate use an union
+  - if it's an AND predicate use an intersection
+- Retrieve the records and apply any remaining predicates-
+
+Postgres call this BITMAP SCAN
+
+#### RUN THROUGH
+With an index on AGE and an index on DEPT
+1. We can retrieve the RECORD IDs satisfying 'AGE<30'
+2. Then we can retrieve the RECORD IDs satisfying 'DEPT=CS'
+3. Take their internal intersection
+4. Retrieve records and check 'COUNTRY = US'
+
+
+![](28.jpg)
+
+The SET INTERSECTION can be done with,
+- Bitmaps
+- Hash tables
+- Bloom filters
+
+So basically you are producing the records IDS from each index independently
+
+![](29.jpg)
+
+And then perform the final intersection
+- and finall selection step.
+
