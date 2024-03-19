@@ -335,3 +335,11 @@ Tools
     - SUMMARIZE
   - OBSERVATION
 - ACCESS METHODS
+  - SEQUENTIAL SCAN
+    - OPTIMIZATIONS
+      - ZONE MAPS (aka small materialization aggregate SMA)
+      - LATE MATERIALIZATION
+      - HEAP CLUSTERING
+  - INDEX SCAN
+    - RUN THROUGH
+  - MULTI-INDEX SCAN
