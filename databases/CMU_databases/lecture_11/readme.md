@@ -420,6 +420,12 @@ SCENARIO 2.
 
 ![](27.jpg)
 
+In order to know which index is the most selective,
+- you have to take some statistics about the different tables and attributes stored
+- for example histogram of ages. that are basically counters.
+
+There are some ANALYZE commands you can do to force the DBMS to perform those statistics updates.
+
 ### MULTI-INDEX SCAN
 If there are **multiple indexes**, use all of them
 - compute sets of RECORD IDs using each matching index
@@ -452,3 +458,154 @@ So basically you are producing the records IDS from each index independently
 And then perform the final intersection
 - and finall selection step.
 
+## MODIFICATION QUERIES
+The operators that modify the database, are responsible for checking constraints and updating indexes.
+- INSERT
+- UPDATE
+- DELETE
+
+UPDATE / DELETE:
+- Child operators pass RECORD IDs for target tuples in the Query plan.
+- Must keep track of previously seen tuples
+
+INSERT:
+- CHOICE 1. Materialize Tuples inside the operator
+- CHOICE 2. Operator inserts any tuple passed in from child operators
+
+CHOISE 2. It allows you to implement the clause SELECT INTO,
+- select all values to a specifict table,
+- then you insert them into another table
+
+### UPDATE QUERY PROBLEM
+Imagine you have this situation.
+- we have a PEOPLE table.
+- we have an index by SALARY.
+- we are updating people and say salary.
+  - we are giving all 100 dollar rise
+  - if they make less than 1100 currently
+    
+![](30.jpg)
+
+So our scan in the bottom say,
+- for every tuple **t** in people
+- we are going to emit that tuple to its parent.
+
+The parent is going to,
+- remove the tuple from the index
+- update the tuple
+- put it back then.
+
+![](31.jpg)
+
+So we start scanning from the beginning.
+- we start with our first employee called 'ANDY'
+  
+![](32.jpg)
+
+We are going to call the parent to update 'ANDY's salary.
+- ANDY's new salary is 1099
+- and he gets inserted back into the index.
+    
+![](33.jpg)
+
+As we proceed through the index.
+- we might find that ANDY have appeared again.
+
+![](34.jpg)
+
+But we should not raise him twice.
+- this problem is called **THE HALLOWEEN PROBLEM**
+
+#### THE HALLOWEEN PROBLEM
+
+Anomaly where an update operation changes the physical location of a tuple,
+- which causes a scan operator to visit the same tuple multiple times.
+- can occur on  clustered tables or index scan
+
+First discovered by IBM researchers while working on System R on halloween day in 1976
+- name doesn't has nothing to do with the problem.
+
+
+## EXPRESSION EVALUATION
+Expression evaluation is how the DBMS,
+- is going to represent a WHERE clause as an **expression tree**.
+
+![](35.jpg)
+
+The nodes in the tree represent different expression types.
+- Comparisons (=, >, <, !=)
+- Conjunctions (AND), Disjunctions (OR)
+- Arithmetic operators (+, -, *, /, %)
+- Constant Values
+- Tuple Attribute References
+
+We want to transform our clause into an AND tree.
+- we want both of those conditions to be true.
+  
+![](36.jpg)
+
+
+
+The way to think about is,
+- within an execution context.
+- we parametrize the values of the query.
+
+Let's say we have a prepared statement,
+- that allows us to pass in an arbitrary value
+- The context tells us, how to evaluate the different operators at different layers of the tree.
+
+![](37.jpg)
+
+We start at the equal.
+- we go into the left side, we get the S.value attribute
+- the TABLE SCHEMA tells us how to fetch the 'VALUE' attribute.
+
+![](38.jpg)
+
+Then you backtrack, 
+- and move to the right side
+
+![](39.jpg)
+
+We finally get our query parameter to be 999,
+- and we add a constant of 1.
+
+Then we backtrack to the root.
+- and as it is true, you retrieve that tuple.
+
+![](40.jpg)
+
+
+This is very flexible, 
+- as it allows you to evaluate an arbitrary number of predicates.
+- but is very slow.
+
+The DBMS traverses the tree and for each node that it visits,
+- it must figure it out, what the operator needs to do.
+
+Consider the predicate WHERE 1=1
+- this is obviously true.
+- there are different ways to avoid computing this overhead.
+
+![](41)
+
+many times you can simplify the expression.
+- for example we know that 1=1 equals true.
+- sort of things a compiler might do.
+- or if you are going to evaluate 1+1, you can preprocess into a 2 computation before sending the query.
+
+A better approach is to evaluate the expression directly.
+- think it as a JIT (just in time) compilation.
+
+
+
+## CONCLUSION
+The same **Query Plan** can be **executed** in **different ways**.
+
+Most DBMS will want to use **Index scans** as much as possible
+
+**Expression trees** are **flexible** but **slow**
+
+
+Next class:
+- Parallel Query Execution
