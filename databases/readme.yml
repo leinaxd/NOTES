@@ -1,5 +1,8 @@
 # HOW TO CHOOSE YOUR BEST SUITED DATABASE BASED ON THEIR FEAUTURES?
 #
+# WORKLOADS:
+#    1. OLTP. High Performance into individual writting and readings
+#    2. OLAP. High Performance into computing aggregates or data analysis
 # OPERATOR MODEL: how the query operator gets propagated. (aka Processing model)
 #    1. (P)ipeline model. Propagates one tuple at a time.
 #    2. (M)aterialization model. Propagates all tables at once.
