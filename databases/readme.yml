@@ -8,17 +8,31 @@
 # STORAGE MODEL:
 #    1. (N)ormalized (S)torage (M)odel. Many minimal related tables
 #    2. (D)ormalized (S)torage (M)odel. Store redundancies in an easy access big table
-
+# ACCESS METHODS: how tuples are readen from disk
+#    1. (S)EQUENTIAL (S)CAN
+#        OPTIMIZATIONS:
+#        1. (P)refetching. Fetching pages from disk ahead of time
+#        2. (B)uffer (P)ool (B)ypass. Temporal Buffer pool page
+#        3. (P)arallelization
+#        4. (Z)one (M)aps. Precomputed aggregates per page.
+#        5. (H)eap (C)lustering
+#        6. (L)ate (M)aterialization
+#    2. (I)ndex (S)can
+#    3. (M)ulti (I)ndex (S)can
 
 # Alphabetical ordered by name
 
 Amazon REDSHIFT:
   - OPERATOR_MODEL: (B)atch
-
+  - ACCESS_METHOD: 
+    - SECUENTIAL_SCAN: (Z)one (M)aps
+    
 Cloudera Impala:
   - QUERY: SQL
   - OPERATOR_MODEL: (P)ipeline
-
+  - ACCESS_METHOD: 
+    - SECUENTIAL_SCAN: (Z)one (M)aps
+    
 DuckDB:
   - OPERATOR_MODEL: (B)atch
 
@@ -31,11 +45,15 @@ HYRISE:
 IBM DB2:
   - QUERY: SQL
   - OPERATOR_MODEL: (P)ipeline / (B)atch
-  
+  - ACCESS_METHOD: 
+    - SECUENTIAL_SCAN: (Z)one (M)aps
+    
 MEMSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
-
+  - ACCESS_METHOD: 
+    - SECUENTIAL_SCAN: (Z)one (M)aps
+    
 monetdb:
   - OPERATOR_MODEL: (M)aterialization
   - STORAGE_MODEL: (DSM) (column store)
@@ -51,6 +69,10 @@ MYSQL:
   - MAIN_STORAGE: (D)isk
   - OPERATOR_MODEL: (P)ipeline
 
+NETEZZA:
+  - ACCESS_METHOD: 
+    - SECUENTIAL_SCAN: (Z)one (M)aps
+
 noise page:
   - OPERATOR_MODEL: (B)atch
   
@@ -61,7 +83,9 @@ NuoDB:
 
 ORACLE:
   - OPERATOR_MODEL: (P)ipeline / (B)atch
-
+  - ACCESS_METHOD: 
+    - SECUENTIAL_SCAN: (Z)one (M)aps
+    
 PostgreSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
@@ -81,13 +105,16 @@ SQLite:
 
 SQLServer:
   - OPERATOR_MODEL: (P)ipeline / (B)atch
+  - ACCESS_METHOD: 
+    - SECUENTIAL_SCAN: (Z)one (M)aps
 
 SNOWFLAKE:
   - OPERATOR_MODEL: (B)atch
 
 VERTICA:
   - OPERATOR_MODEL: (P)ipeline
-
+  - ACCESS_METHOD: 
+    - SECUENTIAL_SCAN: (Z)one (M)aps
 VECTOR WISE:
   - OPERATOR_MODEL: (B)atch
 
