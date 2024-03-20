@@ -22,6 +22,8 @@
 #        6. (L)ate (M)aterialization
 #    2. (I)ndex (S)can
 #    3. (M)ulti (I)ndex (S)can
+# PROCESS MODEL: How processes are run concurrently
+#    1. (P)rocess per (W)orker
 
 # Alphabetical ordered by name
 
@@ -50,7 +52,8 @@ IBM DB2:
   - OPERATOR_MODEL: (P)ipeline / (B)atch
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
-    
+  - PROCESS_MODEL: (P)rocess per (W)orker    
+  
 MEMSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
@@ -88,12 +91,14 @@ ORACLE:
   - OPERATOR_MODEL: (P)ipeline / (B)atch
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
-    
+  - PROCESS_MODEL: (P)rocess per (W)orker    
+  
 PostgreSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
   - OPERATOR_MODEL: (P)ipeline
-
+  - PROCESS_MODEL: (P)rocess per (W)orker    
+  
 PRESTO:
   - OPERATOR_MODEL: (B)atch
 
