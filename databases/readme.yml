@@ -23,8 +23,9 @@
 #    2. (I)ndex (S)can
 #    3. (M)ulti (I)ndex (S)can
 # PROCESS MODEL: How processes are run concurrently
-#    1. (P)rocess per (W)orker
-#    2. (P)rocess (P)ool
+#    1. (P)rocess per (W)orker. process one worker at a time.
+#    2. (P)rocess (P)ool. we have a bunch of processes waiting in a pool, when a client arrives you can attach any free worker in the pool.
+#    3. (T)hread per (W)orker. Instead of processes, a single thread per worker
 # Alphabetical ordered by name
 
 Amazon REDSHIFT:
@@ -55,7 +56,8 @@ IBM DB2:
   - PROCESS_MODEL: 
     - (P)rocess per (W)orker
     - (P)rocess (P)ool
-  
+    - (T)hread per (W)orker
+    
 MEMSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
@@ -72,11 +74,15 @@ MongoDB:
   - MAIN_STORAGE: (D)isk
   - OPERATOR_MODEL: (P)ipeline
 
-MYSQL:
+MySQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
   - OPERATOR_MODEL: (P)ipeline
-
+  - PROCESS_MODEL: 
+    - (P)rocess per (W)orker
+    - (P)rocess (P)ool
+    - (T)hread per (W)orker
+    
 NETEZZA:
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
@@ -93,8 +99,9 @@ ORACLE:
   - OPERATOR_MODEL: (P)ipeline / (B)atch
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
-  - PROCESS_MODEL: (P)rocess per (W)orker    
-  
+  - PROCESS_MODEL: 
+    - (P)rocess per (W)orker
+    - (T)hread per (W)orker
 PostgreSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
@@ -118,9 +125,15 @@ SQLServer:
   - OPERATOR_MODEL: (P)ipeline / (B)atch
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
+  - PROCESS_MODEL: 
+    - (T)hread per (W)orker
 
 SNOWFLAKE:
   - OPERATOR_MODEL: (B)atch
+
+TERRADATA:
+  - PROCESS_MODEL: 
+    - (T)hread per (W)orker
 
 VERTICA:
   - OPERATOR_MODEL: (P)ipeline
