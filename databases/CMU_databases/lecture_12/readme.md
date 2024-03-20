@@ -120,6 +120,28 @@ if systems wanted to execute on a bunch of different platforms,
 
 
 
-
 ### PROCESS POOL
+We are still using processes to handle clients.
+- rather than forking a new process for each client that connects to the dispatcher
+- we allocate this worker pool of processes.
+
+when one of our proceses comes in,
+- the dispatcher can route it to any free worker process in the pool
+
+![](4.jpg)
+
+
+ 
+A worker uses any free process from the pool.
+- This is still going to rely on OS scheduler, interprocess communication and shared memory
+- Bad for CPU cache locality
+  - if we don't any control over when processes are being scheduled/descheduled
+  - you know there's this pool kind of working on the different queries.
+  - there's no way for us to control what is running concurrently.
+  - different processes could be flashing the cpu cache.
+
+Examples:
+  - IBM DB2
+  - PostgreSQL (2015)
+    
 ### THREAD PER DBMS WORKER
