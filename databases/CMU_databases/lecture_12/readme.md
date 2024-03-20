@@ -190,3 +190,32 @@ For each query plan, the DBMS decides where, when, and how to execute it.
 - Where should a task store its output
 
 The DBMS always knows more than the OS
+
+
+## DIFFERENT TYPES OF PARALLELISM
+**INTER-QUERY**, different queries are executed concurrently
+- increases throughput and reduces latency
+- queries don't block each others
+
+**INTRA-QUERY**, Execute the operations of a single query in parallel.
+- Decreases latency for long-running queries.
+
+### INTER-QUERY PARALLELISM
+Improve overall performance by allowing multiple queries to execute simultaneously
+
+If queries are **read only**, then this requires **little coordination** between queries.
+
+If multiple queries are **updating** the database at the same time, then this is **hard** to do correctly.
+- we are dealing with this at lecture 15.
+
+
+### INTRA-QUERY PARALLELISM
+Improve the performance of a single query by executing its **operators** in **parallel**.
+
+Think of organization of operations in terms of a **producer/consumer** paradigm
+
+There are parallel versions of every operator.
+- Can either have multiple threads access centralized data structures
+- or use partitioning to divide work up.
+
+
