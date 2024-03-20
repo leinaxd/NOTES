@@ -182,3 +182,11 @@ The **thread per worker** model does not mean,
 we may be able to support multiple concurrent unit,
 - from completely different users
 
+### NOTE ABOUT SCHEDULING
+For each query plan, the DBMS decides where, when, and how to execute it.
+- How many tasks should it use.
+- How many CPU cores should it use.
+- What CPU core should the tasks execute on.
+- Where should a task store its output
+
+The DBMS always knows more than the OS
