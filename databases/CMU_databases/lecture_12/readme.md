@@ -215,7 +215,124 @@ Improve the performance of a single query by executing its **operators** in **pa
 Think of organization of operations in terms of a **producer/consumer** paradigm
 
 There are parallel versions of every operator.
-- Can either have multiple threads access centralized data structures
-- or use partitioning to divide work up.
+- Implementation 1. Can either have multiple threads access centralized data structures (a big concurrent hash table)
+  - Shared data structure
+- Implementation 2. Partitioning scheme to divide up the work.
+  - we parallelize the work
+  - then we merge the results
 
 
+#### PARALLEL GRACE HASH JOIN
+
+Use a separate worker to perform the join for each level of buckets for **R** and **S** after partitioning.
+
+GRACE HASH JOIN,
+- we scan on **R**, we  scan on **S**,
+- we do this partitioning phase, we split the tuples into dijoint partitions
+  - using our $h_1$ hash function
+- then for each one of this partitions,
+- we do a join one-to-one
+  - R-partition-0 with S-partition-0
+
+![](7.jpg)
+
+In a parallel setting,
+- we can have all of our separate workers
+- each worker is going to get a disjoint partition
+- all the other workers can do their local join without worrying about of what's going on in other's partition.
+
+![](8.jpg)
+
+### INTRA QUERY PARALLELISM: IMPLEMENTATION
+APPROACH 1. INTRA-OPERATOR (HORIZONTAL)
+
+APPROACH 2. INTER-OPERATOR (VERTICAL)
+
+APPROACH 3. BUSHY PARALLELISM (HYBRID APPROACH)
+
+Techniques are not exclusive
+
+#### INTRA-OPERATOR PARALLELISM (HORIZONTAL)
+For each operators that we have,
+- selection
+- join
+- projection
+- aggregation
+
+we are going to decompose each of those operators into independent **fragments**
+- that perform the **same function** on **different subsets** of **data**.
+
+The DBMS inserts an **exchange** operator
+- (VOLCANO PROCESSING MODEL.)
+- dummy operator
+- responsible of coalescing or splitting up results from multiple children/parent operators.
+
+If you have a bunch of child operators,
+- that are split up into different fragments
+- we insert an exchange operator
+- that's going to coalesce all together,
+- group them all together for the next operator in the query plan.
+
+Similarly if you need to split up the result of individual operators,
+
+##### RUN THROUGH
+we have this simple query that is selecting everything from A.
+- where some value is greather than 99
+  
+![](9.jpg)
+
+Let's say we have 3 workers,
+- we want to split this process
+- we are going to have smaller table scans (A1, A2, A3)
+- They are going to read disjoint partitions
+- and the selection is going to proceed in parallel
+
+And then, they are going to get fed up to this exchange operator.
+- the exchange operator is going to call the NEXT call to each of its childs fragments
+- The first fragment is going to pull out the first page table from the disk
+  
+![](10.jpg)
+
+When they are done,
+- A1 and A2 can grab pages from disk
+
+![](11.jpg)
+
+We have to make sure, 2 workers don't take the same page.
+- A1 could take every mod 3
+- so you don't have to track the current next page.
+
+Is this parallel or is this concurrent?
+- is the exchange operator blocking on the next call?
+  - so no, calls to next in the exchange operator are going to be non-blocking
+
+###### EXCHANGE OPERATORS
+There were different types of exchange operators depending if you want to coalesce or split.
+- the previous slide was calling the gather operator.
+
+EXCHANGE TYPE 1. GATHER.
+- Combine the results from multiple workers into a single output stream
+- in the previous slide, we were combining our different selection operators
+  
+![](12.jpg)
+
+EXCHANGE TYPE 2. DISTRIBUTE
+- take a single input stream and you are going to
+- Split it up into multiple output streams
+- that can be handled in parallel.
+
+![](13.jpg)
+
+EXCHANGE TYPE 3. REPARTITION.
+- we are shuffling multiple input streams across multiple output streams
+
+![](14.jpg)
+
+
+Things get complicated for the JOIN operator.
+
+
+  
+#### INTER-OPERATOR PARALLELISM (VERTICAL)
+
+#### BUSHY PARALLELISM (HYBRID APPROACH)
