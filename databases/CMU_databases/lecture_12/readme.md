@@ -169,6 +169,16 @@ There's a lot lower overhead using threads than processes.
 ### SUMMARY
 Advantage of multi-threaded architecture
 - less overhead per context switch
-- do not have to manage shared memory
+  - switching between different threads
+  - switching between different proceses
+- **do not have** to worry about dealing with **shared memory**
 
-The thread per worker model does not mean that the DBMS supports intra-query parallelism
+The **thread per worker** model does not mean,
+- that the DBMS supports intra-query parallelism
+  - there are many different ways to parallelize a query.
+  - running many threads, doesn't mean that we can take a single query
+  - and split up its execution into multiple different parallel pieces.
+ 
+we may be able to support multiple concurrent unit,
+- from completely different users
+
