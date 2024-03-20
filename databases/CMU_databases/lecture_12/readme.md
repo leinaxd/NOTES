@@ -93,10 +93,32 @@ Each worker is a **separate** OS **process**
 - Use Shared memory for global data structures
 - A crash in the process doesn't take down the entire system
 
+At a high level, is.
+- So the application at the left is going to submit it's request (a query)
+- to have executed to the dispatcher layer
+- the dispatcher is going to fork off a new process, specifically to handle this query.
+- Then this worker is going to manage all of the logic needed to execute the query.
+- and its going to communicate back-and-forth the results to the client.
+
+![](2.jpg)
+
+So this worker is going to manage all the reads and writes,
+- and the different query operators
+
+
 Examples
 - IBM DB2, postgres, Oracle
 
-![](2.jpg)
+![](3.jpg)
+
+So Why these systems are using this system.
+- when those systems came out, there weren't really a portable threading library like p-threads (common standars)
+- this is a legacy architecture compared to newer options
+ 
+if systems wanted to execute on a bunch of different platforms,
+- they would kind of re-implement some threading implementation.
+
+
 
 
 ### PROCESS POOL
