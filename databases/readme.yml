@@ -24,7 +24,7 @@
 #    3. (M)ulti (I)ndex (S)can
 # PROCESS MODEL: How processes are run concurrently
 #    1. (P)rocess per (W)orker
-
+#    2. (P)rocess (P)ool
 # Alphabetical ordered by name
 
 Amazon REDSHIFT:
@@ -52,7 +52,9 @@ IBM DB2:
   - OPERATOR_MODEL: (P)ipeline / (B)atch
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
-  - PROCESS_MODEL: (P)rocess per (W)orker    
+  - PROCESS_MODEL: 
+    - (P)rocess per (W)orker
+    - (P)rocess (P)ool
   
 MEMSQL:
   - QUERY: SQL
@@ -97,8 +99,9 @@ PostgreSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
   - OPERATOR_MODEL: (P)ipeline
-  - PROCESS_MODEL: (P)rocess per (W)orker    
-  
+  - PROCESS_MODEL: 
+    - (P)rocess per (W)orker
+    - (P)rocess (P)ool
 PRESTO:
   - OPERATOR_MODEL: (B)atch
 
