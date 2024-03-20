@@ -145,3 +145,30 @@ Examples:
   - PostgreSQL (2015)
     
 ### THREAD PER DBMS WORKER
+Rather than using processes, we are going to use a single thread for each worker.
+- one DBMS process
+- we spawn up multiple threads
+- for each individual worker
+
+The DBMS manage its own schedule
+- How many threads
+- which threads
+
+it may or may not use a dispatcher thread.
+
+Trade off.
+- If a thread crash, it might cause the entire system to crash
+- there's not this isolation anymore.
+
+There's a lot lower overhead using threads than processes.
+
+![](5.jpg)
+
+![](6.jpg)
+
+### SUMMARY
+Advantage of multi-threaded architecture
+- less overhead per context switch
+- do not have to manage shared memory
+
+The thread per worker model does not mean that the DBMS supports intra-query parallelism
