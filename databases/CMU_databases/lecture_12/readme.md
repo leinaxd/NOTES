@@ -332,7 +332,55 @@ EXCHANGE TYPE 3. REPARTITION.
 Things get complicated for the JOIN operator.
 
 
-  
+##### INTRA-OPERATOR PALLELISM: JOIN RUN THROUGH  
+Here we are going to scan on A.
+- we split A into this different worker fragments
+- that can scan in parallel on A
+- they are assigned to their different workers
+
+![](15.jpg)
+
+we perform the selection over each fragment
+
+![](16.jpg)
+
+we can also perform a projection right ahead of time
+- we filter A.id and B.value
+- (see query optimizations)
+
+![](17.jpg)
+
+We have to build some **independent hash tables**
+- then use an exchange operator to combine those hash tables
+The other option would be to implement some concurrent data structure
+- with all of those fragments updating and inserting at the same time.
+
+![](18.jpg)
+
+We need those exchange operator to present one unified stream.
+
+Next we have to do the same for the **B** side.
+- with the difference that **B** has to probe into the hash table.
+
+![](19.jpg)
+
+we are not worrying to combining results right here,
+- we are going to put the exchange operator at the end of the join operation
+
+![](20.jpg)
+
+Its going to take all 3 values that are coming into the probe,
+- so each of those fragments produces their own output.
+- and gets streamed into the final exchange operator.
+
+What does the exchange operator, operates on?
+- different exchange operators depends on what you want to achieve.
+- some combining logic to merge streams.
+
+If you have a concurrent hash table, 
+- then you don't need an exchange operator.
+
+
 #### INTER-OPERATOR PARALLELISM (VERTICAL)
 
 #### BUSHY PARALLELISM (HYBRID APPROACH)
