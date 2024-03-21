@@ -332,7 +332,7 @@ EXCHANGE TYPE 3. REPARTITION.
 Things get complicated for the JOIN operator.
 
 
-##### INTRA-OPERATOR PALLELISM: JOIN RUN THROUGH  
+##### INTRA-OPERATOR PALLELISM: JOIN: RUN THROUGH  
 Here we are going to scan on A.
 - we split A into this different worker fragments
 - that can scan in parallel on A
@@ -381,6 +381,78 @@ If you have a concurrent hash table,
 - then you don't need an exchange operator.
 
 
-#### INTER-OPERATOR PARALLELISM (VERTICAL)
+#### INTER-OPERATOR (aka PIPELINE) PARALLELISM (VERTICAL)
+Operations rather than breaking into smaller fragments,
+- the operations are going to be overlapped,
+- in order to pipeline data from one stage to the next
+- without materializing.
+
+Each worker is executing a segment of operators (query plan) at the same time.
+
+##### RUN THROUGH
+Let's take the join,
+- we are going to split that up.
+- assign one worker to process the join part
+- it will just running in this nested loop doing the join
+
+![](21.jpg)
+
+And then we are going to have a separate worker
+- that is going to perform the projection operator
+- every time it gets the result from the join, is going to apply the projection
+  
+![](22.jpg)
+
+The challange here is that the projection operation,
+- has to wait the join to finish, as it is more time consuming.
+- so the projection operation is going to be idle almost all the time
+
 
 #### BUSHY PARALLELISM (HYBRID APPROACH)
+Hybrid of intra-parallelism and inter-parallelism.
+- where workers execute multiple operators from different segments of a query plan at the same time
+
+Still need to exchange operators to combine intermediate results from segments
+
+For example this query
+
+![](23.jpg)
+
+we could split it up, 
+- using a combination between intra- and inter- parallelism
+  
+![](24.jpg)
+
+to get something like this
+
+![](25.jpg)
+
+where you have 4 workers, doing 
+- join between A and B
+- join between C and D
+- mixed intermediate joins
+
+we have intra-query operations (the exchanges)
+
+we have inter-query operations (workers assigned to operators)
+
+#### OBSERVATION
+Using additional proccesses/threads to execute queries in parallel,
+- won't help if the disk is the main bottleneck
+
+In fact, it can makea things worse if each worker is working on different segments of the disk.
+
+## I/O PARALLELISM
+Split the DBMS across multiple storage devices.
+- Multiple disks per database
+- One Database per disk
+- One relation (table) per disk
+- split relations across multiple disks
+
+
+### MULTI-DISK PARALLELISM
+Configure OS/hardware to store the DBMS's files across multiple storage devices.
+- storage appliances
+- RAID configuration
+
+This is transparent to the DBMS
