@@ -454,5 +454,92 @@ Split the DBMS across multiple storage devices.
 Configure OS/hardware to store the DBMS's files across multiple storage devices.
 - storage appliances
 - RAID configuration
+  - Redundant Array of Independent Disks
+  - a data storage virtualization, where we have all this different disks
+  - and they're going to appear as a single logical device to the DBMS
+    
+
+There are different ways to split the file
+
+in RAID ZERO, called 'striping',
+- we are splitting the pages of the file that we have
+- page 1 and page 4 into the first disk
+- 2 and 5 to second one
+- 3 and 6 to sixth one
+  
+![](26.jpg)
+
+RAID ZERO vs single disk.
+- Higher bandwith accross fetching multiple pages simultaneously
+- READS are going to be faster
+- WRITES are going to be faster 
+- if one disk fails, you are screw.
+
+RAID ONE, called 'mirroring'
+- we are duplicating the pages across each of the disks
+
+![](27.jpg)
+
+RAID ONE
+- READS are going to be good, higher bandwith
+- WRITES are going to be slower as you have to replicate accross multiple disks
+- if one disk fails you are backed up by the rest
 
 This is transparent to the DBMS
+
+### DATABASE PARTITIONING
+Some DBMS allow you to specify the disk location of each individual database.
+- The buffer pool manager maps a page to a disk location.
+
+This is also easy to do at the filesystem level if the DBMS stores each database in a separate directory.
+- The DBMS **recovery log** file might still be shared if transactions can update multiple databases.
+
+#### PARTITIONING
+We are going to **split** a single logical **table**,
+- into disjoint physical **segments** that are **stored**/managed **separately**.
+
+
+Rather than something transparent to the DBMS like RAID,
+- Partitioning should (ideally) be transparent to the application.
+- The application should only access logical tables and not have to worry about how things are physically stored.
+
+##### VERTICAL PARTITIONING
+Think about this as the Column Store Model we talked about DSM
+
+It stores a table's **attributes** in a **separate location**
+- Must store tuple information to reconstruct the original record.
+
+![](28.jpg)
+
+Let's say attribute 1,2,3 are used together and are fixed size, 
+- so you can store them independently from the attribute 4 which is text
+
+![](29.jpg)
+
+So you can split this table into 2 different partitions,
+- partition 1 stores data that gets accessed together
+- while partition 2 is stored independently
+
+![](30.jpg)
+
+
+##### HORIZONTAL PARTITIONING
+Divide table into disjoints segments based on some partitioning key.
+- Hash Partitioning (key, value)
+- Range Partitioning
+- Predicate Partitioning (if match some predicate)
+
+this gets done frequently in distributed DBMSs
+
+![](31.jpg)
+
+Even that we store separatelly, they exists in one logical table.
+
+## CONCLUSION
+Almost every DBMS supports parallel execution
+
+However it is hard to make it right
+- Coordination overhead
+- Scheduling
+- Concurrency issues
+- Resource Contention
