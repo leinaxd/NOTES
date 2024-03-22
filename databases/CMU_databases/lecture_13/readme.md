@@ -68,4 +68,118 @@ Then you would bind this syntax tree
 - with information in the database
 - There would be a component in every system called **CATALOG**
   - esentially its metadata about the system
+
 ![](3.jpg)
+
+At this point you already know the semantics of the query.
+- at a high level you already know what the query is trying to do
+
+The Binder would be
+- just a straightforward compiler technique to look at the query
+- and then try to understand the syntax of the query
+
+The result of the step we would call,
+- the **logical plan** of the query.
+- that's where you would start optimization
+
+![](4.jpg)
+
+An important thing to emphasize,
+- for one specific query
+- there could be multiple possible valid logical plans
+
+For example a multi-way join, 
+- A JOIN B JOIN C
+- if you specify the join order to be as that one
+- at this point it will perform (A JOIN B) JOIN C
+- we will not try to order things
+- we are not trying to optimize the predicates-
+
+At this point it just gives you a valid logical plan from many possible.
+
+The next step is the tree rewriter,
+- its pretty common
+- it usually needs to look again the information in the system catalog
+- look at what would be the columns and the tables
+- and start to apply simple heuristics
+- to prune down obvious stupid execution choices
+- at this point we are not looking at the data, just the query structure
+    
+![](5.jpg)
+
+Then after the logical rewrite,
+- this optimized logical plan is sent to the **query optimizer**
+- it represents the cost based,
+  - plan emulation
+  - it will be the most complicated step by the way
+  - to generate an advanced organization
+
+![](6.jpg)
+
+And with the information,
+- system catalog
+- Cost Model (statistics about the data)
+
+![](7.jpg)
+
+And lastly this physical plan,
+- is sent back to the system to execute
+
+![](8.jpg)
+
+### LOGICAL vs PHYSICAL PLAN
+The **optimizer** generates a mapping of,
+- a **logical algebra expression** to
+- the **optimal** equivalent **physical algebra expression**.
+
+At the physical level,
+- there's many choices that the system can explore,
+- that the search space is so huge
+- different orders of joins
+- different methods, (sort-merge join, hash join)
+
+Before we go into these complex organization choices,
+- if looking at this high level what this query is trying to do
+- if there are simple rules to eliminate the stupid choices
+- shrink down the search space as much as possible.
+- that will help later the physical enumeration to be much more targeted and much more efficient
+
+Another note is that there would be a 1 to 1 mapping from logical to physical operators,
+- table A is going to join table B
+- but Not always a 1:1 mapping,
+  - a multiple JOIN operator but then ordered by some column
+    - if you choose to use a sort-merge join in your physical operator
+    - then you can perform the **join** and the **order by**,
+      - the two steps together in a single physical implementation
+
+### QUERY OPTIMIZATION IS NP-HARD
+This is the hardest part of building a DBMS
+- if you are good at this, you would get paid $$$
+
+people starting to look at employing ML to improve the accuracy and efficacy of optimizers.
+- IBM DB2 tried this with LEO in early 2000
+  - problem called 'cardinality estimation' 
+  - they abandon this project,
+    - if it work fine,
+    - if it doesn't, impossible to fix
+    
+Microsoft SQLServer's optimizer has more than a million lines of code
+  
+### TODAY'S AGENDA
+HEURISTICS and its RULES:
+- RELATIONAL ALGEBRA EQUIVALENCES, 
+
+- LOGICAL QUERY OPTIMIZATION, how do we expand nested queries
+
+- NESTED QUERIES
+
+- EXPRESSION REWRITTING
+
+
+COST MODEL
+
+## RELATIONAL ALGEBRA EQUIVALENCES
+## LOGICAL QUERY OPTIMIZATION
+## NESTED QUERIES
+## EXPRESSION REWRITTING
+## COST MODEL
