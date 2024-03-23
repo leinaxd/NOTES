@@ -179,6 +179,36 @@ HEURISTICS and its RULES:
 COST MODEL
 
 ## RELATIONAL ALGEBRA EQUIVALENCES
+if you want to optimize a query.
+- you have to guarantee that no matter how  you optimize
+- the query is still correct
+  
+Two relational algebra expressions are __equivalent__ if they generate the same set of tuples
+
+The DBMS can identify better querry plans withouta a cost model
+
+This is often called **Query Rewriting**
+
+### PREDICATE PUSHDOWN
+Let's say we have this simple query
+- where we are just joining 2 tables.
+- and then we do a filter on the grade of the students
+
+![](9.jpg)
+
+That expression could be view as a tree.
+- This logical plan we are seeing here
+- is what it would show up immediately after the binder step
+- we pick any logical plan and optimize from there
+  
+![](10.jpg)
+
+We can optimize by pushing the predicate
+- which is going to filter grades based on the grid level A
+- before we execute the Join
+
+![](11.jpg)
+
 ## LOGICAL QUERY OPTIMIZATION
 ## NESTED QUERIES
 ## EXPRESSION REWRITTING
