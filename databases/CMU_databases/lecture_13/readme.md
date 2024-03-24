@@ -209,7 +209,76 @@ We can optimize by pushing the predicate
 
 ![](11.jpg)
 
+RELATIONAL ALGEBRA EQUIVALENCE
+
+![](12.jpg)
+
+### SELECTION OPTIMIZATION
+What if we have multiple filters?
+- perform filters as **early** as possible
+- Break a complex predicate into individual predicates and push down
+  
+![](13.jpg)
+
+Simplify a complex predicate
+
+![](14.jpg)
+
+### JOIN OPTIMIZATION
+you can rewrite the  Join using its algebraic properties,
+- commutative
+- associative
+  
+![](15.jpg)
+
+The number of different join orderings for an n-way join is a 
+- CATALAN NUMBER ($\approx 4^n$)
+- exhaustive enumeration will be too slow
+
+Those are going to be reviewed in the COST MODEL section of this lecture
+
+### PROJECTION OPTIMIZATION
+This is not important for column store
+- useful for row stores
+
+If you have a final projection (S.id, or s.name)
+
+Perform them **early** to create smaller tuples and reduce intermediate results (duplicates are eliminated)
+
+Project out all attributes except the ones requested or required (e.g. joining keys)
+
+![](16.jpg)
+
+### SUMMARY
+Transform a logical plan into an equivalent logical plan using pattern matching rules
+
+The goal is to increase the likelihood of enumerating the optimal plan in the search
+
+Cannot compare plans because there is no cost model,
+- but can 'direct' a transformation to a desired side
+  
 ## LOGICAL QUERY OPTIMIZATION
+More involved organiztion we can do includes, 
+- SPLIT CONJUNCTIVE PREDICATES
+- PREDICATE PUSHDOWN
+- REPLACE CARTESIAN PRODUCTS WITH JOINS
+- PROJECTION PUSHDOWN
+
+### SPLIT CONJUNCTIVE PREDICATES
+If a query that have a predicate,
+- that contains multiple filters
+- then one thing we can do is
+
+DECOMPOSE the multiple filters into the bracket,
+- into this predicate so that
+- we can have more opportunities for optimization
+
+
+![](17.jpg)
+### PREDICATE PUSHDOWN
+### REPLACE CARTESIAN PRODUCTS WITH JOINS
+### PROJECTION PUSHDOWN
+
 ## NESTED QUERIES
 ## EXPRESSION REWRITTING
 ## COST MODEL
