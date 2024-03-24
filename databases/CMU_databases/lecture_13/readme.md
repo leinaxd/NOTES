@@ -406,3 +406,34 @@ Merging predicates together
 
 
 ## COST MODEL
+We need a cost model, in order to compare different query plan alternatives.
+
+Generate an estimate of the cost 
+- of executing a particular query plan for the current state of the database.
+- estimates are only meaningful internally
+
+This is independent of 
+- the plan enumeration step
+- that we will talk about next class.
+
+### COMPONENTS
+CHOICE 1. PHYSICAL COSTS, depends heavily on hardware
+- Predict CPU cycles
+- I/O
+- Cache misses
+- RAM consumption
+- pre-fetching
+- for specialized hardware, in terms of time
+  
+CHOICE 2. LOGICAL COST
+- Estimate result sizes per operator
+- Independent of the operator algorithm
+- Need estimations for operator result sizes
+- just consider the theoretical computational cost, in terms of operators
+  
+CHOICE 3. ALGORITHMIC COSTS
+- Complexity of the operator algorithm implementation
+- in terms of input
+
+
+
