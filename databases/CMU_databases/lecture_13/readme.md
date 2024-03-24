@@ -273,12 +273,136 @@ DECOMPOSE the multiple filters into the bracket,
 - into this predicate so that
 - we can have more opportunities for optimization
 
+This is a 3-way JOIN
 
 ![](17.jpg)
+
+A naive logical tree is difficult to optimize,
+- so we split the filter predicate
+
+![](18.jpg)
+
 ### PREDICATE PUSHDOWN
+After that we are going to look at each filter individually
+- and then we try to move this filter to the lowest possible point
+
+![](19.jpg)
+
 ### REPLACE CARTESIAN PRODUCTS WITH JOINS
+This would also enable us to 
+- exchange the cartesian product for the inner product
+- that would be more efficient
+- Note that we have combined our filters with the cartesian product to give us the inner JOIN operator
+![](20.jpg)
+
 ### PROJECTION PUSHDOWN
+Earlier projection
+- you look at the columns you are eventually going to read,
+- then push these projections down to the lowest possible point in your query plan.
+
+![](21.jpg)
 
 ## NESTED QUERIES
+Another organization you can do in this logical query phase,
+- The DBMS treats nested sub-queries in the WHERE clause,
+- as functions that take parameters
+- and return a single value or set of values
+
+Two approaches:
+- FLATTEN, Rewrite this inner-query to de-correlate and/or so there would be no nesting anymore
+- DECOMPOSE nested query and store result into a temporary table
+
+### FLATTEN
+In this example we are seeking for sailors that have any reservation on a specific date.
+- we can see that the inner query is actually a JOIN
+- referencing a column in the outer query.
+
+So instead of writting them as a nested query,
+- you can just look at both tables togethers
+- and have an inner join between these two tables
+
+![](22.jpg)
+
+Benefit:
+- In the first query, you have to re-execute the inner query for each individual query
+  from the outer table.
+- using an inner join would be more efficient
+
+ 
+### DECOMPOSE
+In this complex example of the same dataset,
+- we are trying to figure out, the Sailor with the highest ratings
+- and for the sailors that have at least 2 red boats reservations.
+- we want to project the sailor id, and the earliest date on which
+- the sailor has a reservation for a red boat.
+
+It doesn't that much, what's this query is trying to do
+
+The inner query is just trying to figure out,
+- the max rating among all the sailors in the table
+- and the outer table would have a filter table based on that
+
+![](23.jpg)
+
+Instead of computing that inner query over and over again,
+- we might pull over that inner query out.
+- and then execute this inner query ahead of time once,
+- and store the result into a temporary table
+
+For harder queries, the optimizer breaks up queries into blocks and then concentrates on one
+block at a time
+
+sub-queries are written to a temporary table that are discarded after the query finishes
+
+![](24.jpg)
+
 ## EXPRESSION REWRITTING
+An optimizer transforms a query's expression (e.g. WHERE clause predicates)
+- into the optimal /minimal set of expressions
+
+Implemented using IF/THEN/ELSE clauses or a **pattern matching** rule engine.
+- search for expressions that match a pattern
+- When a match is found, rewrite the expression
+- Halt if there are no more rules that match.
+
+Let's say we have a simple table
+- id is the primary key
+- val is an integer
+  
+![](25.jpg)
+
+Impossible predicates,
+- they never match anything
+    
+![](26.jpg)
+
+Unnecesary predicates,
+- they always match, or they can be simplified
+
+![](27.jpg)
+
+![](28.jpg)
+
+Also there could be other simple things,
+
+JOIN elimination
+- doing join with itself can be simplified
+  
+![](29.jpg)
+
+There is a case where you can combine the organization of the join and the sub-query
+- same as before, you are joining the same table with itself
+  
+![](30.jpg)
+
+Merging predicates together
+- we observe a superposition in values.
+- it can be simplified
+  
+![](31.jpg)
+
+![](32.jpg)
+
+
+
 ## COST MODEL
