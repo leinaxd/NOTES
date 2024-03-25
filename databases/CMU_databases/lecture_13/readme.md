@@ -437,3 +437,77 @@ CHOICE 3. ALGORITHMIC COSTS
 
 
 
+### PHYSICAL COSTS
+DISK BASED DBMS COST MODEL
+- The number of **disk accesses** will always **dominate** the execution time of a query
+- CPU costs are negligible
+- Must consider Sequential vs random I/O
+
+This is **easy** to model if the DBMS has full **control** over **buffer management**
+- we will know the replacement strategy, pinning and assume exclusive access to disk
+
+
+we are always focusing on a query that is executed alone.
+- we are not consider the contention if you have a multicore queries executed concurrently
+
+For most of the systems they will consider a few of the aspects of a concurrenct queries to make estimation.
+
+
+#### POSTGRES EXAMPLE
+Its an open source project.
+
+Uses a combination of CPU and I/O costs that are weighted by 'magic' constant factors
+
+Default settings are obviously for a disk-resident database without a lot of memory
+- processing a tuple in memory is 400x faster than reading a tuple from disk
+- Sequential I/O is 4x faster than random I/O
+
+If you specify the cost of a sequential I/O as one,
+- then the cost of random I/O would be 4.
+
+Those are arbitrary equivalences maded by postrgres 
+- if you multiplies those numbers with the LOGICAL COST MODEL
+- and then you multiply it again with the OPERATOR COST MODEL
+
+Postgres documentation.
+
+![](33.jpg)
+
+#### IBM DB2 EXAMPLE
+This case is a comercial database.
+
+MICRO-BENCHMARKS,
+- Database characterstics in system catalogs Hardware environment
+- Storage device characteristics
+- Communication bandwidth (distributed only)
+- Memory resources (buffer pools, sort heaps)
+
+Concurrency environment
+- Average number of users
+- Isolation level / blocking
+- Number of available locks
+
+It considers many more aspects compared to postrgres.
+- properties of the database (its columns, its schema, constrains in the schema)
+- hardware environment (performs micro benchmarks to know how well your hardware performs)
+- test the system and determine the unit assigned to each operation based on micro-benchmarks run.
+- also consider network bandwidth
+
+
+lastly it consider the 
+- concurrent users you have
+- isolation level you are using
+- lock contention
+
+### LOGICAL COSTS
+### ALGORITHMIC COSTS
+
+## CONCLUSION
+We can use static rules and heuristics to optimize a query plan 
+- without needing to understand the contents of the database
+
+We use the cost model to help perform more advanced enumeration of different query plans
+
+Next class will be,
+- Statistics and plan enumeration for the cost model.
+
