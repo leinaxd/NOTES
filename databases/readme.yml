@@ -26,6 +26,9 @@
 #    1. (P)rocess per (W)orker. process one worker at a time.
 #    2. (P)rocess (P)ool. we have a bunch of processes waiting in a pool, when a client arrives you can attach any free worker in the pool.
 #    3. (T)hread per (W)orker. Instead of processes, a single thread per worker
+# LICENCE:
+#    1. (O)pen Source
+#    2. (C)ompercial
 # Alphabetical ordered by name
 
 Amazon REDSHIFT:
@@ -57,7 +60,7 @@ IBM DB2:
     - (P)rocess per (W)orker
     - (P)rocess (P)ool
     - (T)hread per (W)orker
-    
+  - LICENCE: (C)omercial
 MEMSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
@@ -109,6 +112,8 @@ PostgreSQL:
   - PROCESS_MODEL: 
     - (P)rocess per (W)orker
     - (P)rocess (P)ool
+  - LICENCE:
+    - (O)pen Source
 PRESTO:
   - OPERATOR_MODEL: (B)atch
 
