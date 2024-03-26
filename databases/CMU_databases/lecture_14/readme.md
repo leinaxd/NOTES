@@ -135,6 +135,7 @@ DISJUNCTION PREDICATES
 
 ![](14.jpg)
 
+
 ### TODAY'S AGENDA
 - MOE COST ESTIMATION (statistics)
 
@@ -144,4 +145,31 @@ DISJUNCTION PREDICATES
 
 ## MOE COST ESTIMATION
 
+### JOIN RESULT SIZE ESTIMATION
+Given a join of **R** and **S**,
+- what is the range of possible result sizes in number of tuples?
+
+In other words, for a given tuple **R**, how many tuples of **S** will it match?
+
+Assume each key in the inner relation will exist in the outer table
+- so we multiply the number of tuples in **R** with the selection cardinality of **S**
+
+Estimate the number of tuples of S
+- $estSize \approx N_R\cdot N_S  / V(A,S)$
+or symertrically
+- $estSize \approx N_R\cdot N_S  / V(A,R)$
+
+Overall, you have to search the smaller table.
+- $estSize \approx N_R\cdot N_S  / max(V(A,S), V(A,R) )$
+
+### SUMMARY SELECTION CARDINALITY
+Assumption 1. Uniform data.
+- the distribution of values (except for the heavy hitters) is the same
+
+Assumption 2. Independent Predicates.
+- The predicates on attributes are independent
+
+Assumption 3. Inclusion principle.
+- The domain of join keys overlap such that each key in the inner relation will also exist in the outer table
+  
 ## PLAN ENUMERATION
