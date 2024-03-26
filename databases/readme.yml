@@ -29,6 +29,9 @@
 # LICENCE:
 #    1. (O)pen Source
 #    2. (C)ompercial
+# SYNTAX: customized sytax for each system
+
+
 # Alphabetical ordered by name
 
 Amazon REDSHIFT:
@@ -61,6 +64,8 @@ IBM DB2:
     - (P)rocess (P)ool
     - (T)hread per (W)orker
   - LICENCE: (C)omercial
+  - SYNTAX:
+    - RUNSTATS: update internal statistics
 MEMSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
@@ -85,6 +90,8 @@ MySQL:
     - (P)rocess per (W)orker
     - (P)rocess (P)ool
     - (T)hread per (W)orker
+  - SYNTAX:
+    - ANALYZE TABLE: update internal statistics
     
 NETEZZA:
   - ACCESS_METHOD: 
@@ -105,6 +112,9 @@ ORACLE:
   - PROCESS_MODEL: 
     - (P)rocess per (W)orker
     - (T)hread per (W)orker
+  - SYNTAX:
+    - ANALYZE TABLE: update internal statistics
+    
 PostgreSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
@@ -114,6 +124,9 @@ PostgreSQL:
     - (P)rocess (P)ool
   - LICENCE:
     - (O)pen Source
+  - SYNTAX:
+    - ANALYZE: update internal statistics
+  
 PRESTO:
   - OPERATOR_MODEL: (B)atch
 
@@ -125,14 +138,18 @@ SQLite:
   - QUERY: SQL
   - MAIN_STORAGE: (D)ISK
   - OPERATOR_MODEL: (P)ipeline
-
+  - SYNTAX:
+    - ANALYZE: update internal statistics
+  
 SQLServer:
   - OPERATOR_MODEL: (P)ipeline / (B)atch
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
   - PROCESS_MODEL: 
     - (T)hread per (W)orker
-
+  - SYNTAX:
+    - UPDATE STATISTICS: update internal statistics
+    
 SNOWFLAKE:
   - OPERATOR_MODEL: (B)atch
 
