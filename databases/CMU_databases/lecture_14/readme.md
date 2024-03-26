@@ -76,6 +76,65 @@ Then for different predicates you are going to use different formulas.
 - Conjunction
 - Disjunction
 
+##### SELECTION
+Assume that **V(age, people)** has five distincts values (0-4) and **$N_R=5$**
+
+Equality Predicate,
+- A=Constant
+- SEL(A=constant) = SC(P) / $N_R$
+
+![](3.jpg)
+
+If the table has 5 age groups, each of them have 1 tuple,
+- then the selectivity  of this query would be 1
+
+![](4.jpg)
+
+In this other example, we have a more complex curve right.
+
+![](5.jpg)
+
+Then the selectivity of this case would be
+- sel(age>=2) = 3/5
+  
+![](6.jpg)
+
+And the general formula is:
+
+![](7.jpg)
+
+For the Negation Predicate, 
+  
+![](8.jpg)
+
+You first search the one who fits the selection
+
+![](9.jpg)
+
+And the just compute the opposite of that.
+
+![](10.jpg)
+
+![](11.jpg)
+
+One observation we probably would have is.
+- SELECTIVITY is similar to PROBABILITY
+
+so what's the **probability** that a certain **tuple** would **satisfy** my **Predicate**.
+
+
+CONJUCTION PREDICATES
+- SEL( P1 AND P2 ) = SEL (P1) · SEL(P2)
+- This assumes that the predicates are independent
+  
+![](12.jpg)
+
+![](13.jpg)
+
+DISJUNCTION PREDICATES
+
+![](14.jpg)
+
 ### TODAY'S AGENDA
 - MOE COST ESTIMATION (statistics)
 
