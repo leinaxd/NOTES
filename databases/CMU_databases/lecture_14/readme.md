@@ -162,7 +162,7 @@ or symertrically
 Overall, you have to search the smaller table.
 - $estSize \approx N_R\cdot N_S  / max(V(A,S), V(A,R) )$
 
-### SUMMARY SELECTION CARDINALITY
+### SELECTION CARDINALITY OVERVIEW
 Assumption 1. Uniform data.
 - the distribution of values (except for the heavy hitters) is the same
 
@@ -171,5 +171,164 @@ Assumption 2. Independent Predicates.
 
 Assumption 3. Inclusion principle.
 - The domain of join keys overlap such that each key in the inner relation will also exist in the outer table
-  
+
+
+#### CORRELATED ATTRIBUTES
+Let's talk about the independent assumption.
+
+Consider a database of automobiles.
+- 10 different makes of the cars
+- with 100 different models
+
+Now consider this query.
+```
+(make = 'Honda' AND model='Accord')
+```
+With the independence  and uniformity assumptions, the selectivity is:
+- 1/10 * 1/100 = 0.001
+
+But since Honda is the only one who makes accords the real selectivity is 1/100 = 0.01
+
+To solve this issule you can define a correlated column statistics on multiple attributes in the database.
+- you cannot define statistics on every combination of attributes
+- the database just offloads to the users to manage how the attributes should be correlated
+
+
+#### UNIFORM ASSUMPTION
+We have assumed that the attributes were uniformly distributed
+
+![](15.jpg)
+
+But in practice,  the number of occurencies of each value in the table would not be uniformly distributed
+
+![](16.jpg)
+
+In this case, one naive approach we can do is,
+- instead of recording, the total number of distinct values. (selectivity cardinality)
+- you can record the occurence of each single value.
+- but it can become pretty large
+
+
+A better approach, without paying that huge overhead, 
+- you can keep track of multiple values together
+- in other words perform an histogram
+
+![](17.jpg)
+
+All buckets have to have the same width
+- in this case, each bucket has a range of 3.
+
+![](18.jpg)
+
+
+#### EQUI-DEPTH HISTOGRAMS
+An optimization we can do here is,
+- instead of divide this total amount of values into buckets by the number of values
+- we can group these values based on the number of occurrences
+
+So we divide our values into buckets,
+- such that the total number of occurrences in each bucket will be almost the same
+
+![](19.jpg)
+
+
+Instead of having 'Equi-width' say 3 values per sample,
+- we have instead 'Equi-depth' or 'equi-frecuency'
+
+![](20.jpg)
+
+This way it allows you to sample like an uniform distribution.
+
+### SKETCHES
+So far we have talked about most of common approaches to maintain statistics for the attributes in the table
+- there simple ones,
+  - like the number of tuples
+  - Histograms
+
+Now we are going to talk some less common ones.
+
+Cost-model can replace histograms with sketches to improve its selectivity estimate accuracy.
+- Count-min Sketc, 1988: approximate frequency count of elements in set
+- HyperLogLog, 2007: Approximate the number of distinct elements in a set.
+
+### SAMPLING
+Another option less common,
+- instead of maintain the different histograms, skteches about the probability of the data
+- why not keep certain samples of the data
+- then when a query comes,
+- just look in the reserved samples
+- and see how many tuples satisfy a certain predicate
+- and extrapole from there
+
+![](21.jpg)
+
+![](22.jpg)
+
+Modern DBMS also collect samples from tables to estimate selectivities.
+
+
+One very disadvantage of this,
+- first you have to generate the sample
+- keep it as a temporary table
+- you have to execute another mini-query
+- after that execution you use that information to start optimizing our plan enumeration
+
+You don't have to update those tables continuously,
+- just Update samples when the underlying tables changes significantly.
+
+
+### OBERVATION
+Now that we can estimate selectivity of predicates,
+- and subsequently the cost of query plans,
+- what can we do with them?
+
 ## PLAN ENUMERATION
+After performing rule-based rewriting, the DBMS will enumerate different plans for the query and estimate their costs.
+- Single relation
+- Multiple relations,
+  - queries with joins involved, more complicated search mechanism
+- Nested Subqueries
+
+It chooses the best plan it has seen for the query after exhausting all plans or some timeout
+
+### SINGLE RELATION QUERY PLANNING
+Often simple rules/heuristics would be enought for this type of simple queries.
+- heuristics here are different from last time to generate a logical query organization
+
+Pick the best access method
+- Sequential scan
+- Binary search (clustered indexes)
+- Index scan
+
+Predicate evaluation ordering
+
+Simple heuristics are often good enough for this.
+
+OLTP queries are especially easy
+- insert a tuple or look up at specific record
+
+#### OLTP QUERY PLANNING
+Query planning for OLTP queries is easy because they are **SARGABLE** (Search Argument able)
+- It is usually just picking the best index
+- Joins are almost always on foreign key realtionships with a small cardinality
+- Can be implemented with simple heuristics
+
+An index that can help accelerate the search of this query.
+
+a single relationship query would be like 'people that certify a particular age group'
+- then if you build and age index, ç
+- then this query is very likely to be executed in a very efficient way already.
+
+![](23.jpg)
+
+### MULTI RELATION QUERY PLANNING
+What the Join order should be?
+
+As numbers of joins increases, number of alternative plans grows rapidly
+- we need to restric the search space
+
+Fundamental decision in SYSTEM R:
+- only left-deep join trees are considered
+- Modern DBMS do not always make this assumption anymore
+
+- 
