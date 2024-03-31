@@ -331,4 +331,102 @@ Fundamental decision in SYSTEM R:
 - only left-deep join trees are considered
 - Modern DBMS do not always make this assumption anymore
 
-- 
+
+what We mean about this left deeper join tree would be,
+- the drawing operation would only show up as the left child of each node in the tree
+- for every operator, if it's join operator has a left and right relation
+  - only the left relation would be allowed to have a result as another join result
+ 
+
+![](24.jpg)
+
+
+Allows for fully piplined plans where intermediate results are not written to temp files.
+- not all left-deep trees are fully pipelined
+
+
+back then, systems don't usually have a large amount of memory
+- if you perform one join, you have a temporary join result
+- if that result is big, you have to write it back to disk to perform the other join and the read that back
+
+
+The optimization alternatives are:
+- Enumerate orderings
+  - Left-deep tree
+- Enumerate the plans for each operator
+  - Hash, sort-merge, nested loop
+- Enumerate the access paths for each table
+  - Index 1, Index 2, Seq scan
+ 
+Use **Dynamic Programming** to reduce the number of cost estimation
+- memorized search
+- avoid duplicates candidates
+
+### DYNAMIC PROGRAMMING
+Let's say we have this simple join query over 3 relations
+
+![](25.jpg)
+
+Those are the join ordering alternatives
+- for each ordering choise you have 2 other options
+  - use sort merge join or hash join
+- for simplicity we ignore the access options
+      
+![](26.jpg)
+
+Using the cost model, we compute the cost of each decision
+
+![](27.jpg)
+
+Then using dynamic programming, we can already eliminate the less optimal choices
+
+![](28.jpg)
+
+Then for the final join, we recompute those costs.
+
+![](29.jpg)
+
+we keep the cheapest alternative
+
+![](30.jpg)
+
+If you don't have enought budget to traverse all the alternatives you just cut/prune the optimal plan so far.
+
+#### EXAMPLE
+How to generate plans for the search algorithm
+- enumerate relation orderings
+- enumerate join algorithm choices
+- enumerate access method choices
+
+No real DBMS does it this way, it's actually more messy.
+
+Step 1, enumerate orderings
+- In system R, you only consider the first option, left-dept tree.
+
+![](31.jpg)
+
+
+Step 2, enumerate algorithms
+- nested loop join
+- Hash join
+  
+![](32.jpg)
+
+you do the same for every other plan.
+- eventually you pick the best possible one.
+
+step 3, access path
+
+![](33.jpg)
+
+## POSTGRES OPTIMIZER
+Examines all types of join trees
+- left-deep, right-deep, bushy
+
+Two optimizer implementations
+- Traditional dynamic programming approach
+- Genetic Query Optimizer (GEQO)
+
+Postgres uses the traditional algorithm when the number of tables is less than 12,
+- and switches to GEQO when there are 12 or more
+
