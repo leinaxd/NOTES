@@ -426,7 +426,46 @@ Examines all types of join trees
 Two optimizer implementations
 - Traditional dynamic programming approach
 - Genetic Query Optimizer (GEQO)
-
+  - similar to a montecarlo simulation
+    
 Postgres uses the traditional algorithm when the number of tables is less than 12,
 - and switches to GEQO when there are 12 or more
 
+### GENETIC OPTIMIZER
+Instead of starting the dynamic algorithm
+- start with a reandomized pick
+- 3 simulations in this case.
+
+![](34.jpg)
+
+Then pick the best explored plan so far
+- throw away the worst one
+- then pick elements of those plans
+
+![](35.jpg)
+
+
+Then randomize the combination of those elements as well.
+- generate a second batch of randomized plan
+  
+![](36.jpg)
+
+And repeat.
+
+![](37.jpg)
+
+Retrieve the cheapest plan you have explored.
+
+## CONCLUSION
+Filter early as possible
+
+Selectivity estimations
+- Uniformity
+- Independence
+- Inclusion
+- Histograms
+- Join Selectivity
+
+Dynamic programming for join orderings
+
+Again, Query optimization is a hard topic.
