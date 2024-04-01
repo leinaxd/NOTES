@@ -430,5 +430,47 @@ Schedules **S1** and **S2** are view equivalent if
 
 
 Say we have 3 transactions here
-
+- First conflict is between R-W on A
+  
 ![](23.jpg)
+
+- second is a R-W on A for T1 and T3
+
+![](24.jpg)
+
+Many conflicts 
+
+![](25.jpg)
+
+But if we take a look of this transactions, we are blindly writting at **A**
+- so the first transaction is the only one who reads **A**
+- it doesn't really matter what would be the final value of **A** as it has never been read
+
+![](26.jpg)
+
+So that's how the view serializability works.
+
+### SUMMARIZE
+**VIEW SERIABILITY** allows for (slightly) more schedules than **conflict serializability** does.
+- but its difficult to enforce efficiently
+
+Neither definition allows all schedules that you would consider  **serializable**
+- this is because they don't understand the meaning of the operations of the data.
+
+UNIVERSE OF POSSIBLE SCHEDULES
+
+![](27.jpg)
+
+## DURABILITY
+All the changes of commmited transactions should be persistent
+- no torn updates
+- No changes from failed transactions
+
+The DBMS can use either logging or shadow paging to ensure that all changes are durable
+
+## CONCLUSION
+Concurrency control and recovery are among the most important functions provided DBMS
+
+concurrency control is automatic
+- system automatically inserts lock/unlock request and schedules actions of different txns
+- ensures that resulting execution is equivalent to executing the txns one after the other in some order
