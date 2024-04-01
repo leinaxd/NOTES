@@ -309,7 +309,126 @@ Two schedules are **conflict equivalent** if and only if.
 - They involve the same actions of the same transactions and
 - Every pair of conflicting action is ordered the same way
 
-Schedule **S** is **conflict equivalent** if.
+Schedule **S** is **conflict SERIALIZABLE** if.
 - **S** is conflict equivalent to some serial schedule
 
 
+-> Same conflicts at the same order.
+
+### CONFLICT SERIALIZABLE INTUITION
+Schedule **S** is conflict serializable if you can transform **S** into a serial schedule by swapping consecutive non-conflicting operations of different transactions.
+
+Assume this schedule transaction between T1 and T2
+- If T1 abort, T2 is reading register changed by T1 so there is a R-W conflict
+- we don't know if both transaction are conflict equivalent
+
+![](10.jpg)
+
+we swap those non-conflict operations
+
+![](11.jpg)
+
+we swap again 2 non-conflict operations
+
+[](12.jpg)
+
+we reapeat until we get the operations serialized
+
+![](13.jpg)
+
+
+Let's try a different example,
+- if we just want to swap W(A)
+- you again are at the same situation
+  
+![](14.jpg)
+
+### SERIALIZABILITY
+Swapping operations is easy when there are only 2 txns in the schedule.
+- it's cumbersome when there are many txns.
+
+
+Are there any faster algorithms to figure this out, other than transposing operations?
+
+### DEPENDENCY GRAPHS
+For every transaction, we are going to define a node.
+
+We are going to define a directed Edge from **Ti** to **Tj** if:
+- There's an operation **Oi** of **Ti** conflicts with an operation **Oj** and **Tj** and
+- **Oi** appears earlier in the schedule than **Oj**.
+
+Also known as **precedence graph**
+
+A schedule is conflict serializable if and only if its dependency graph is acyclic
+
+![](15.jpg)
+
+#### EXAMPLES
+**EXAMPLE 1**
+We have transactions T1 and T2
+- our first conflict is when you write on **A**, and also read on **A** in T2
+
+![](16.jpg)
+
+Then, there's another Write on **B**, Read on **B**
+- we have found a cycle and terminate
+  
+![](17.jpg)
+
+**EXAMPLE 2**
+
+Lets have a more complex example between 3 transactions.
+- we first have a conflict between Write on **B** Read on **B**
+- as Write happens first, the arrows start from T2 up to T1.
+  
+![](18.jpg)
+
+We also have found another W-R conflict between T1 and T3
+
+![](19.jpg)
+
+
+But as it's acyclical, this is equivalent to a serial execution.
+- the sequence is. (T2, T1, T3)
+- Notice that T3 should go after T2, although it starts before it.
+
+
+**EXAMPLE 3** inconsistent analysis
+Assume that, not only i'm denoting the READ and WRITE operations 
+- but also the operation my application it is doing.
+
+we substract 10 from A,
+- T2 sums A
+- T2 echo the sum out
+
+We have a Write Read Conflict
+
+![](20.jpg)
+
+we also have a Read Write conflict on B
+
+![](21.jpg)
+
+But what if instead of looking for the Sum of A
+- what if we just care about how many values are greater than zero
+
+![](22.jpg)
+
+Even if this transaction is not conflict serializable
+- the result is actually correct
+- in practice, because its really difficult the system to know what do you really want to do with those records
+  - you are breaking isolation.
+  - view serializability
+
+### VIEW SERIALIZABILITY
+Alternative (weaker) notion of serializability.
+
+Schedules **S1** and **S2** are view equivalent if
+- T1 reads initial value of **A** in **S1** then **T1** also reads initial value of **A** in **S2**
+- If T1 reads value of **A** written by **T2** in **S1** then **T1** also reads value of **A** written by **T2** in **S2**
+- If T1 writes final value of **A** in **S1** then **T1** also writes final value of **A** in **S2**
+
+
+Say we have 3 transactions here
+
+![](23.jpg)
