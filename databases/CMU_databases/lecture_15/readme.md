@@ -141,3 +141,175 @@ Loggin is used by almost every DBMS.
 Few systems do this.
 - CouchDB
 - LMDB (openLDAP)
+
+## CONSISTENCY
+The world represented by the database is logically correct.
+
+DATABASE CONSISTENCY
+- integrity constrains
+- transaction in the future see the effects of transactions commited in the past inside of the database
+  
+TRANSACTION CONSISTENCY
+- if the database is consistent before the transaction starts (running alone), it will also be consistent after
+- transaction consistency is the application's responsability. DBMS cannot control this (we won't discuss this issue further)
+
+## ISOLATION OF TRANSACTIONS
+User submits txns and each txn executes as it was running by itself.
+- easier programming model to reason about
+
+But the DBMS achieves concurrency by interleaving the actions (reads/writes of DB objects) of txns
+
+We need a way to interleave txns but still make it appear as if they ran one-at-a-time
+
+### MECHANISMS TO ENSURE ISOLATION
+A **concurrency control protocol** is how the DBMS decides the proper interleaving of operations from multiple transactions.
+
+Two categories of protocols.
+- **pesimistic**, Don't let problems arise in the first place
+- **optimistic**, Assume conflicts are rare, deal with them after they happen
+
+### EXAMPLE
+Assume at first **A** and **B** each have $1000, 
+- T1 transfers $100 from **A**'s account to **B**'s
+- T2 credits both account with 6% interest.
+
+![](15.jpg)
+
+What are the possible outcomes of running T1 and T2?
+- Many, but **A+B** should be:
+- $2000*1.06=$2120
+
+There is no guarantee that **T1** will execute before **T2** of viceversa if both are submited together.
+- but the net effect must be equivalent to these two transactions running serially in some order
+
+So legal outcomes are, depending on whether T1 executes before T2 or not
+1. **A=954 and B=1166**
+2. **A=960 and B=1160**
+
+#### SERIAL EXECUTION EXAMPLE
+Let's say T1 starts before T2 or vice-versa
+- after all, the total amount of money should be the same
+  
+![](3.jpg)
+
+### INTERLEAVING TRANSACTIONS
+We interleave txns to maximize concurrency
+- slow disk/network I/O
+- Multi-core CPU
+
+When one txn stalls because of a resource (e.g. page fault) another txn can continue execute and make forward progress
+
+We want
+- Improve Throughput
+- Reduce Latency
+
+#### EXAMPLE
+We can first in T1, substract $100
+- then start T2, computing its interest
+- and then finish T1,  adding 100 to B
+- finally computing interest on B
+
+Even when those operations are interleaved,
+- we get the same result at the end of the day
+
+![](4.jpg)
+
+
+But if interleaving was done wrong, then you might have missed money in the way
+
+![](5.jpg)
+
+For the purpose of the transaction let we analyze the previous example
+- the only matters here is what record has to be read or written
+
+![](6.jpg)
+
+
+### CORRECTNESS
+How do we judge whether a schedule is correct?
+
+we define a transaction scheduling 
+- Is correct, if the schedule is equivalent to some serial execution
+
+### FORMAL PROPERTIES OF SCHEDULES
+**SERIAL SCHEDULE**
+- a schedule that does not interleave the actions of different transactions
+
+**EQUIVALENT SCHEDULES**,
+- For any database state, the effect of executing the first schedule is identical to the effect of executing the second schedule
+- doesn't matter what the arithmetic operations are.
+
+**SERIALIZABLE SCHEDULE**
+- A schedule that is equivalent to some execution of the transactions
+
+If each transaction preserves consistency, every serializable schedule preserves consistency
+
+Serializable is a less intuitive notion of correctnessc compared to txn initiation time or commit order,
+- but it provides the DBMS with additional flexibility in scheduling operations.
+
+More flexibility means better parallelism
+
+### CONFLICTING OPERATIONS
+How do we ensure this serializable properties?
+
+How are we going to analyze a specific schedule of a transaction?
+
+We need a formal notion of equivalence that can be implemented efficiently based on the notion of **"conflicting" operations**
+- what can we do, and what we cannot do
+
+Two operations conflic it
+- They are by different transactions
+- They are on the same object and at least one of them is a write.
+
+
+### INTERLEAVED EXECUTION ANOMALIES
+
+**Read-Write conflicts (R-W)**
+
+**Write-Read conflicts (W-R)**
+
+**Write-Write conflicts (W-W)**
+
+There's also a phantom conflict.
+
+#### READ WRITE CONFLICT
+You cannot repeat the read of a transaction
+- you are violating the isolation principle
+  
+![](7.jpg)
+
+#### WRITE READ CONFLICT
+Reading uncommited data (dirty reads)
+- if T1 aborts, then what has done by T2 should be undone
+  
+![](8.jpg)
+
+#### WRITE WRITE CONFLICT
+Overwritting Uncommited data
+- you can have A=$10, B=Andrew, or A=$19, B=Lin
+- but you cannot have a mixture of both. as you break the isolation principle.
+  
+![](9.jpg)
+
+### FORMAL PROPERTIES OF SCHEDULES
+Database is not trying to build a clever schedule
+- it just allows the transaction and operations and then check if there were any conflict
+
+Given these conflicts, we now can understand what it means for a schedule to be serializable
+- this is to check whether schedules are correct
+- This is nota how to generate a correct schedule
+
+There are different levels of serializability
+- Conflict serializability (most dbms tryies to support)
+- View serializability (rarely view)
+  - systems more efficient, but requires the understanding of the semantic of the application.
+ 
+
+Two schedules are **conflict equivalent** if and only if.
+- They involve the same actions of the same transactions and
+- Every pair of conflicting action is ordered the same way
+
+Schedule **S** is **conflict equivalent** if.
+- **S** is conflict equivalent to some serial schedule
+
+
