@@ -326,7 +326,117 @@ APPROACH 2. MINIMALLY, try to go back query by query.
 - then find the minimal amount of queries that i have to rollback so my withdrawal graph does not have any cycle anymore
 
 
+#### DEMO
+Before we start, we have our database,
+```
+SELECT * FROM txn_demo;
++----+-----+
+| id | val |
++----+-----+
+| 1  | 100 |
+| 2  | 200 |
++----+-----+
+```
 
+In MySQL deadlock detect is ON by default but we overwrite it anyways,
+- we set a lock wait timeout of 50 seconds.
+  
+```
+# MySQL
+SET GLOBAL innodb_deadlock_detect = ON;
+
+SET GLOBAL innodb_lock_wait_timeout = 50;
+```
+
+Then we are going to start 2 transactions.
+- so far all good, we have started 2 transactions
+- one is operating on id=1
+- the other one on id=2
+```
+# TERMINAL 1
+SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+BEGIN;
+UPDATE txn_demo SET val = val+1 WHERE id=1;
+```
+
+```
+# TERMINAL 2
+SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+BEGIN;
+UPDATE txn_demo SET val=val+1 WHERE id=2;
+```
+
+Then on transaction 1, also change record id=2
+- T1 is waiting
+- update T2 to request a lock on id=1 -> raise deadlock error
+```
+# TERMINAL 1
+UPDATE txn_demo SET val=val+1 WHERE id=2;
+-> is waiting for lock
+```
+
+```
+# TERMINAL 2
+UPDATE txn_demo SET val=val+1 WHERE id=1;
+ERROR. Deadlock found when trying to get lock, try restarting the transaction.
+```
+
+if you instead of requesting lock id=1 on T2 you would commit;
+- you would release lock id=1
+- that would unlock T1
+```
+# TERMINAL 2
+COMMIT;
+```
+
+---
+
+Same example in postgres
+```
+# POTGRES
+SELECT * FROM txn_demo;
+id | val
+---+-----
+ 1 | 100
+ 2 | 200
+
+SET deadlock_timeout TO '10s';
+```
+
+```
+# TERMINAL 1
+BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+UPDATE txn_demo SET val=val+1 WHERE id=1;
+```
+
+```
+# TERMINAL 2
+BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+UPDATE txn_demo SET val=val+1 WHERE id=2;
+```
+
+Now update id2 in T1
+```
+# TERMINAL 1
+UPDATE txn_demo SET val=val+1 WHERE id=2;
+-> is waiting
+```
+
+```
+# TERMINAL 2
+UPDATE txn_demo SET val=val+1 WHERE id=1;
+<after we wait 10 seconds>
+ERROR deadlock detected. 
+```
+If you try to commit after the deadlock,
+- it will perform a rollback
+```
+# TERMINAL 2
+COMMIT;
+-> rollback
+```
+
+You can actually access metadata of transaction in postgres.
 
 ### DEADLOCK PREVENTION
 
