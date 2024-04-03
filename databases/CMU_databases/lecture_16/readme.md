@@ -239,6 +239,97 @@ under regular 2-phase locking, how do we know we entered this shrinking phase?
 
 
 
-## DEADLOCK DETECTION + PREVENTION
+## DEADLOCKS
+Consider the following example
+- T1 acquires a lock on A
+- T2 acquires a lock on B
+  
+![](21.jpg)
+
+T2 then tries to get a lock on A,
+- but got denied, because it was held by T1
+
+Also T1 tries to get a lock on B,
+- but got denied as it was held by T2
+
+![](22.jpg)
+
+This case is called a 'deadlock',
+- a cyclic lock loop
+
+### DEFINITION
+A deadlock is a cycle of transactions waiting for locks to be released by each other
+
+Two ways of dealing with deadlocks
+- DETECTION, optimistic. Just let transaction to acquire locks, then try to detect that deadlock and terminate one transaction
+- PREVENTION, pesimistic approach. assumed locks happen very often. so prevent deadlocks ahead of time
+
+
+### DEADLOCK DETECTION
+The DBMS creates a **waits for** graph to keep track of what lock each txn is waiting to acquire.
+- nodes are transactions
+- Edge from Ti to Tj if Ti is waiting for Tj to release a lock
+
+The system periodically checks for cycles in the **waits for** graph and then decides how to break it.
+- it runs in a separated thread using txn metadata
+
+#### RUN THROUGH
+In this example
+- T1 gets a lock on A
+- T2 gets a lock on B
+- T3 gets a lock on C.
+- Then T1 also wants a lock on B
+  
+![](23.jpg)
+
+So then, 
+- T2 also ask a lock on C
+- T3 also ask a lock on A
+- being a wait for cycle
+  
+![](24.jpg)
+
+#### DEADLOCK HANDLING
+The way we are going to handle this deadlock when it happens is
+- we are going to select a transaction we called 'victim'
+- and kill that transaction, showing it back
+- breaking the cycle in the process
+
+The victim txn will either restart or abort (more common)
+- depending on how it was invoked
+
+There is a trade-off between frequency of checking for deadlocks 
+- and how long txn have to wait before deadlocks are broken.
+
+
+#### VICTIM SELECTION
+Selecting the proper victim depends on a lot of different variables
+- black art, no specific algorithm do to this.
+- simple heuristic rules.
+- By age (lowest timestamp), the oldest transaction may need the most number of locks. If you release that many locks potentially release the deadlock
+- By progress (least/most queries executed), you may not want to kill that transaction that did a ton of work
+- By the number of locks the transaction already locked.
+- By the number of transactions that we have rollback to it. (cascade effect, for non strict 2pl)
+
+We also should consider the number of times a transaction has been restarted in the past,
+- to prevent starvation
+
+#### ROLLBACK LENGTH
+After selecting a victim transaction to abort,
+- the DBMS can also decide on how far to rollback the txn's changes.
+
+When a transaction abort, we actually have 2 options.
+
+APPROACH 1. COMPLETELY abort the transaction
+
+APPROACH 2. MINIMALLY, try to go back query by query.
+- then find the minimal amount of queries that i have to rollback so my withdrawal graph does not have any cycle anymore
+
+
+
+
+### DEADLOCK PREVENTION
+
+
 ## HIERARCHICHAL LOCKING
 
