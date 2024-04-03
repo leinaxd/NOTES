@@ -439,7 +439,148 @@ COMMIT;
 You can actually access metadata of transaction in postgres.
 
 ### DEADLOCK PREVENTION
+When a txn tries to acquire a lock that is held by another txn,
+- the DBMS kills one of them to prevent a deadlock
+
+This approach does not require a **wait for** graph or detection algorithm
+
+### TYPES
+Assign priorities based on timestamps:
+- Older timestamp = higher priority
+
+**WAIT-DIE**,
+- old waits for young
+- If requesting a txn has higher priority than holding a txn,
+- then requesting a txn waits for __holding__ a txn.
+- otherwise requesting  txn aborts.
+
+**WOUND-WAIT**
+- young waits old
+- if requesting a txn has a higher priority than holding a txn,
+- then holdin a txn aborts and releases lock.
+- otherwise requesting txn waits.
+
+#### RUN THROUGH
+Here are T1 and T2.
+- Assume that T2 acquired the lock first
+- But T1 is the older transaction
+
+![](25.jpg)
+
+Then we can retrieve what each strategy would do
+- wait-die, will wait T1 or die
+- wound-die, will abort the younger T2
+
+In the following example 
+- T1 acquires early a lock
+- also T1 is the older one
+  
+![](26.jpg)
+
+Result would be
+- Wait-die, will wait T1 then kill T2
+- wound-wait, would make T2 to wait
+
+#### QUESTIONS
+why do these schemes guarantee no deadlocks?
+- Only one 'type' of direction is allowed when waiting for a lock
+- we don't need transaction graphs.
+  
+When a txn restarts, what is its (new) priority?
+- Its original timestamp
+- it would give it enought priority to avoid starvation in the future.
+
 
 
 ## HIERARCHICHAL LOCKING
+If a txn wants to update one billion tuples,
+- then it must acquire one billion locks
+- Acquiring locks is a more expensive operation than acquiring a latch even if the lock is available.
 
+Another way to do this is acquiring locks at a higher level.
+- if we know that a transaction would need to acquire locks on an entire table
+- then why not acquire a GIANT LOCK
+- lock the entire table
+
+The problem with that, if you only have a table locks
+- then every transaction is going to lock the entire table
+
+Given this there is a trade-off
+- how many locks
+- what size each lock
+
+most system would do different sizes for different locks
+
+### LOCK GRANULARITIES
+When a txn wants to acquire a 'lock', the DBMS can decide the granularity of that lock.
+- Attribute?
+- Tuple?
+- Page?
+- Table?
+
+The DBMS should ideally obtain the fewest numbers of locks that a txn needs.
+
+Trade off between **parallelism** vs **overhead**
+- fewer locks, larger granularity vs more locks, smaller  granularity
+
+### RUN THROUGH
+Let's say we have transaction T1
+- that wants to access all the tuples in the entire table
+- so it locks an entire table
+
+![](27.jpg)
+
+Or alternativelly it can just lock each tuples
+- it would be more expensive
+- but allows more flexible schedules
+
+![](28.jpg)
+
+### INTENTION LOCKS
+An **intention lock**, allows a higher-level node to be locked in **shared** or **exclusive** mode 
+- without having to check all descendent nodes
+
+If a node is locked in an intention mode, 
+- then some txn is doing explicit locking at lower level in the tree
+
+#### TYPES
+**INTENTION SHARED (IS)**
+- Indicates explicit locking at lower level with shared locks
+
+This is trying to say,
+- my transaction will all acquire a share lock
+- at a lower level of this node
+- but for the other nodes at the lower it may not be acquired locked 
+
+
+**INTENTION EXCLUSIVE (IX)**
+- Indicates explicit locking at lower level of this node with explicit locks
+
+To give other people a heads up,
+- this node is not entirely locked
+- but some turning of thie node is locked in the exclusive node
+
+
+**SHARED + INTENTION EXCLUSIVE (SIX)**
+- The subtree rooted by that node
+- is locked explicity in **shared** mode
+- and explicitly locking is being done at a lower level with **exclusive-mode** locks
+
+My entire transaction will acquire a lock,
+- for the entire node (i. e. the entire table)
+
+but in the meantime,
+- down below of this node
+- there could be one or a few leaves
+- that would be acquire with an exclusive lock
+
+so you can use the other leaves i'm not currently using.
+- but you can't acquire the entire table anymore
+
+#### COMPATIBILITY MATRIX
+For the exclusive **X** lock,
+- then nothing can be really shared
+  
+![](29.jpg)
+
+For other intention locks we found different compatibilies locks
