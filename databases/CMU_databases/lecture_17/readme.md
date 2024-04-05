@@ -198,7 +198,138 @@ ELSE:
   - to a private workspace
   - to ensure repeatable reads of X in that **Ti** 
 
+### WRITES
+IF **TS(Ti)** < **R-TS(X)** OR **TS(Ti)** < **W-TS(X)**
+- abort and restart Ti
 
+ELSE
+- Allow **Ti** to write **X**
+- UPDATE **W-TS(X)**
+- Also make a local copy of **X** to ensure repeatable reads
+
+#### EXAMPLES
+**EXAMPLE 1**
+In this example, Transaction T1
+- has a read on B
+- then read on A
+- and again read on A
+
+T2 is doing
+- Read on A
+- Write on A
+- Read on B
+- Write on B
+
+All timestamps records starts at zero
+- Transaction T1 has a timestamp of 1
+- Transaction T2 has a timestamp of 2
+
+![](12.jpg)
+
+First step
+- we read on B
+- and update the R-TS(B) record with the timestamp of T1
+  
+![](13.jpg)
+
+Second step
+- T2 is also reading on B
+- and has updated his own timestamp
+
+![](14.jpg)
+
+Then we have to write on B
+- we also update the W-TS(B) record to the timestamp of T2
+- of course we have to check the timestamp conflict...
+  
+![](15.jpg)
+
+Next step, Transaction T1
+- we read on A
+
+![](16.jpg)
+
+Then T2
+- also read on A
+- updates R-TS(A) = 2
+
+![](17.jpg)
+
+But then, T1 wants to read on A.
+- Even though this timestamp is higher than the T1 has
+- as we are performing a read operation, nothing should have changed
+- but of course, we **don't modify** that **timestamp**.
+  
+![](18.jpg)
+
+Finally T2 writes on A,
+- and updates W-TS(A)=2
+
+we found no issues in this scheduling example
+
+--- 
+
+**EXAMPLE 2**
+In this example T1 is Read Write Read on A, while T2 is Writing on A
+
+First step,
+- we read on A
+
+![](19.jpg)
+
+Then,
+- T2 writes on A
+- and updates **W-TS(A)**=2
+
+![](20.jpg)
+
+When it comes back to T1,
+- T1 also wants to write on A
+- but because T1 has a Writting-TimeStamp of 2
+- it cannot really update A
+- and has to restart with a new tiemstamp
+
+![](21.jpg)
+
+In actuality, 
+- it doesn't really matter if T2 has changed **A**
+- The final result would be the same
+- T2 is really doing a **blind write**
+
+
+In the View-seriability we have seen this kind of result
+- this transaction would be 'view seriability' valid, no need to actually restart
+
+### THOMAS OPTIMIZATION WRITE RULE
+When a transaction wants to write,
+
+IF **TS(Ti)** < **R-TS(X)**:
+- if the writing timestamp is smaller than the recorded read timestamp
+  - A read on the future,
+  - someone already read the record i haven't even written
+- Abort and restart Ti
+
+IF **TS(Ti)** < **W-TS(X)**:
+  - if someone in the future, already had written this record, just don't write it now. Either way it will be overwritten in the future 
+- Ignore the write to allow the txn to continue executing without aborting
+- This violates the timestamp order of Ti
+ELSE
+- Allow Ti to write **X** and update **W-TS(X)**
+
+So in the previous example, 
+- we are going to ignore this writting, as it would be overwritten anyways
+  
+![](22.jpg)
+
+### SUMMARY
+Basic T/O timestamp ordering protocol
+- generates a schedule that is **conflict serializable** if you do not use the **Thomas Write Rule**
+- no deadlocks, because no txn ever waits
+- Possibility of starvation for long txns is short txns keep causing conflicts
+
+Permits **schedules** that are **not recoverable**
+
+ 
 ## OPTIMISTIC CONCURRENCY CONTROL
 
 ## ISOLATION LEVELS
