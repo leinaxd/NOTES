@@ -94,5 +94,111 @@ This reduces the number of requests that the lock manager must process
 The system automatically detect, you have acquired too many tuple locks,
 - so better it grants you a table lock
 
+### LOCKING IN PRACTICE
+Systems will not allow you to actually specify these locks manually.
+- the whole point in database systems is to guarantee the ACID properties
+- sometimes you have to provide the DBMS with hints to help it improve concurrency
+
+#### LOCK TABLE
+Explicit locks are also useful when doing major changes in the database
+- There are different ways to do this in different systems
+- Not part of SQL standard
+
+POSTGRES/DB2/ORACLE: **SHARE**, **EXCLUSIVE**
+MYSQL: **READ**, **WRITE**
+
+![](8.jpg)
+
+![](9.jpg)
+
+![](10.jpg)
+
+#### LOCK HINTS
+It's more common to perform a select,
+- and then sets an exclusive lock on the matching tuples
+
+can also set shared locks.
+- POSTGRES: FOR SHARE
+- MYSQL: LOCK IN SHARE MODE
+
+![](11.jpg)
+
+### CONCURRENCY CONTROL APPROACHES
+So far we have talked about 2 Phase concurrency control.
+- determine the seriability order of conflicting operations at runtime while executing txns.
+- pessimistic,
+  - you assume conflicts are going to happen very often
+  
+Timestamp ordering (T/O)
+- determine seriability order of txns before they execute
+- Optimistic,
+  - you assume conficts are rare
+
+### T/O CONCURRENCY CONTROL
+Use timestamps to determine the seriability order of txns.
+
+if TS(Ti) < TS(Tj),
+- then the DBMS must enfure that the execution schedule
+- is equivlent to a serial schedule where Ti appears before Tj
+
+Note that in some cases,
+- you can actually come back and modify the timestamp
+- but in most cases the timestamp would be fixed
+
+### TIMESTAMP ALLOCATION
+Each txn Ti is assigned a unique fixed timestamp 
+- that is monotonically **increasing**.
+
+Let TS(Ti) be a timestamp allocated to txn Ti
+- Different schemes assign timestamps at different times during the txn
+
+Multiple implementation strategies
+- System Clock
+- Logical counter
+- Hybrid,
+  - common in distributed systems.
+  - a Logical counter is fixed in a physical machine.
+  - so you would have a fixed clock defined at each of the systems
+  - and a logical clock without relying all the systems' clocks to be synced
   
 ### TODAY'S AGENDA
+BASIC TIMESTAMP ORDERING T/O PROTOCOL
+
+OPTIMISTIC CONCURRENCY CONTROL
+
+ISOLATION LEVELS
+
+Note that all these timestamp concurrency control talked in this class will belong to the category of optimistic concurrency control
+- they all rely on timestamp to perform the protocol
+- but there are also specific implementations called 'basic timestamp ordering protocol'
+- and another implementation called 'optimistic concurrency control protocol'
+- So name convention is confusing
+
+## BASIC TIMESTAMP ORDERING T/O PROTOCOL
+Txns are read and write objects **without locks**, instead:
+
+Every txn when accessing object **X** is tagged with a **timestamp** of the last txn that successfully did read/write.
+- it maintain 2 timestamps.
+- **W-TS(X)** Write timestamp on **X**
+- **R-TS(X)** Read timestamp on **X**
+
+after a read/write operation,
+- timestamps gets updated
+- if txn tries to access an object 'from the future' it aborts and restart.
+
+### READS
+IF **TS(Ti)** < **W-TS(X)**, this violates timestamp order of Ti (with regard to the writter of X)
+- Abort Ti
+- restart it with a new TS.
+
+ELSE:
+- Allow Ti to **read** **X**
+- Update **R-TS(X)** to **max(T-TS(X), TS(Ti))**
+- Make a local copy of **X**
+  - to a private workspace
+  - to ensure repeatable reads of X in that **Ti** 
+
+
+## OPTIMISTIC CONCURRENCY CONTROL
+
+## ISOLATION LEVELS
