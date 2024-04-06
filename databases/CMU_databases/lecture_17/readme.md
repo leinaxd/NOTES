@@ -674,5 +674,29 @@ If there are no records with 'status=lit',
 If there is no suitable index, then the txn must obtain.
 - A lock on every page in the table to prevent a record's 'status=lit' from being changed to 'lit'
 - the lock for the table itself to prevent records with 'status=lit' from being added or deleted
-## ISOLATION LEVELS
+
+### WEAKER LEVELS OF ISOLATION
+Serializability is useful because it allows programmers to ignore concurrency issues.
+
+But enforcing it may allow too little concurrency and limit performance
+
+We may want to use weaker levels of consistency to improve scalability
+
+### ISOLATION LEVELS
+Controls the extents that a txn is exposed to the actions of other concurrent txn.
+
+Provides greater concurrency at the cost of exposing txns to uncommitted changes.
+- Dirty reads
+- Unrepeatable reads
+- Phantom reads
+
+#### TYPES
+- SERIALIZABLE, No phantoms, all reads repeatable, no dirty reads.
+  - HIGHER ISOLATION LEVEL
+- REPEATABLE READS, Phantoms may happen
+- READ COMMITED, Phantoms are unrepeatable reads may happen
+- READ UNCOMMITED, all of them may happen
+  - LOWER ISOLATION LEVEL
+ 
+![](42.jpg)
 
