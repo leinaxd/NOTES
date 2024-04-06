@@ -571,5 +571,108 @@ If the database is large and the workload is not skewed,
 - then there is a low probability of conflict
 - so again locking is wastefull
 
+### PERFORMANCE ISSUES
+- High overhead for copying data locally
 
+- Validation/Write phase bottlenecks
+
+- Aborts are more wasteful than in 2PL because they only occur **after** a txn  has already executed
+  - In 2PL you immediatelly abort as sooner you find a conflict
+
+## DYNAMIC DATABASES
+Recall that so far we have only dealing with transactions that read and update existing objects in the database
+
+But now, if we have insertions, updates and deletions we have a new problem.
+
+### THE PHANTOM PROBLEM
+Assume we have this table of people 
+- In T1 we are going to select the maximum of age of each people, where status is 'lit'
+- suppose we have a value of 72
+
+![](38.jpg)
+
+Suppose another transaction T2 comes in,
+- and inserts a new person with age 96 and also status 'lit'
+- suppose T2 can commit
+
+![](39.jpg)
+
+Even T2 is not modifying any record that T1 has read.
+- then T1 actually have an anomaly.
+- it reads the value for the second time and has changed. namelly 'a phantom'
+
+### THE PHANTOM PROBLEM (II)
+**How this happened?**
+- Because **T1** locked only existing records and not ones uner way
+
+Conflict serializability on reads and writes of individual items 
+- guarantees serializability only if the set of objects is fixed
+
+The fundamental Theory of protocols serializability only guarantees
+- the chedule is correct / serializable
+- if the set of object is fixed.
+
+
+### THE PHANTOM PROBLEM (III)
+Approach 1. 
+- Re-execute scans
+
+Approach 2. 
+- Predicate Locking
+
+Approach 3.
+- Index locking
+
+#### RE-EXECUTE SCANS
+When you first execute any query with a **WHERE** clause, 
+- you just record all the reading set of this query.
+
+At the end of the transaction when you want to commit,
+- execute all the query with the where clause again and check that
+- whether the queries are the same as the reading set of the first time you execute that.
+- if yes, you commit
+- if no, you abort
+
+It works but its very costy.
+
+#### PREDICATE LOCKING
+Proposed locking scheme from R
+- Shared lock on the predicate in a **WHERE** clause of a **SELECT** query.
+- Exclusive lock on the predicate in a **WHERE** clause of any **UPDATE**, **INSERT** or **DELETE** query
+
+Never implemented in any system except for HyPer (precision locking)
+
+You try to map the high dimensional space of the **WHERE** clause
+- so assume you have 2 attributes 'age' and 'status'
+
+When the first transaction comes along and tries to read the first record.
+- and reserve an hypothetical space in the high dimensional space
+- the system would try to lock out this entire mathematical space
+  
+![](40.jpg)
+
+When the following transaction comes along,
+- because its trying to insert a value
+- it would belong to that space that has already been locked
+
+![](41.jpg)
+
+In that case this is invalid and you just abort
+
+this kind of implementation is very unlikely and hard to maintain
+
+
+### INDEX LOCKING
+If there is an index on the status attribute 
+- then the txn can lock index page
+- containing the data with 'status=lit'
+
+If there are no records with 'status=lit',
+- the txn must lock the index page where such a data entry would be if existed
+
+#### LOCKING WITHOUT AN INDEX
+If there is no suitable index, then the txn must obtain.
+- A lock on every page in the table to prevent a record's 'status=lit' from being changed to 'lit'
+- the lock for the table itself to prevent records with 'status=lit' from being added or deleted
 ## ISOLATION LEVELS
+
