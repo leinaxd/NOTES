@@ -326,10 +326,75 @@ Basic T/O timestamp ordering protocol
 - generates a schedule that is **conflict serializable** if you do not use the **Thomas Write Rule**
 - no deadlocks, because no txn ever waits
 - Possibility of starvation for long txns is short txns keep causing conflicts
-
+  - the longer a transaction is, the higher probability of a conflict has
+  - if you abort, there is no guarantee in the future you would still have the same problem with this long txn
+    
 Permits **schedules** that are **not recoverable**
 
- 
+Its optimistic as conflicts are assumed to be rare
+
+### RECOVERABLE SCHEDULES
+Similar to the CASCADE ABORTING problem seen in the previous lecture in the 2phase locking protocol.
+- if you do not keep track of what transactions have read what records in which transaction
+- you will generate schedules that are not recoverable.
+
+A schedule is recoverable if txns commit only 
+- after all txns whose changes they read, commit.
+
+Otherwise, the DBMS cannot guarantee that txns read data
+- that will be restored after recovering from crash.
+
+In this example,
+- T1 is writing on A
+- T2 first Read on A, then Writes on B
+
+In this step, T2 can't read or write until T1 finish
+- Timestamp 2 is higher than TS of T1
+  
+![](23.jpg)
+
+After a while, 
+- assume T2 has already commited
+- if T1 aborts, how would you undo a commited transaction?
+- Remember T2 has read a ghost of T1 on A
+  
+![](24.jpg)
+
+
+So nobody implements this basic T/O protocol.
+- they usually implement a variant of the optimistic concurrency control
+
+### PERFORMANCE ISSUES
+High overhead, 
+- from copying data to transactions' workspace 
+- and from updating timestamps (you have to read them now)
+
+Long running txns can get starved
+- The likelihood that a txn will read something from a newer txn increases
+
 ## OPTIMISTIC CONCURRENCY CONTROL
+The DBMS creates a private workspace for each transaction.
+- Any object read is copied into workspace
+- Modifications are applied to workspace
+
+When a txn commits, the DBMS compares workspace write set to see wether it conflicts with other txn.
+
+If there are no conflicts, the write set is installed into the 'global' database.
+
+
+
+### OBSERVATION
+The premises of the Optimistic control are.
+- conflicts between txns are rare,
+- and that most txns are **short-lived**,
+- then forcing txns to wait to acquire locks adds a lot of overhead
+
+A better approach is to optimize for the non-conflict case
+- just don't update the read timestamp
+- and don't do so much conflict checks
+- we still need to update the write timestamp
+
+We only check the correctness of the transaction at the end of commit.
+- we do all the checks in a batch all together
 
 ## ISOLATION LEVELS
