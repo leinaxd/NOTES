@@ -372,15 +372,19 @@ High overhead,
 Long running txns can get starved
 - The likelihood that a txn will read something from a newer txn increases
 
+
 ## OPTIMISTIC CONCURRENCY CONTROL
 The DBMS creates a private workspace for each transaction.
 - Any object read is copied into workspace
 - Modifications are applied to workspace
 
-When a txn commits, the DBMS compares workspace write set to see wether it conflicts with other txn.
+When a txn commits, 
+- the DBMS will start to look at records that have been read or written in the private space.
 
-If there are no conflicts, the write set is installed into the 'global' database.
-
+If there are no conflicts, 
+- The system would apply those changes
+- the write set is installed into the 'global' database.
+- Otherwise throw changes away
 
 
 ### OBSERVATION
@@ -396,5 +400,176 @@ A better approach is to optimize for the non-conflict case
 
 We only check the correctness of the transaction at the end of commit.
 - we do all the checks in a batch all together
+
+### OCC PHASES
+1. READ PHASE
+- Track the read/write sets of txns and store their writes in  a private workspace
+  
+2. VALIDATION PHASE
+- when a txn commits, check whether it conflicts with other txns
+  
+3. WRITE PHASE
+- If validation succeeds, apply private changes to database
+- otherwise abort and restart txn
+
+
+#### EXAMPLE
+In this case, we don't need the read timestamps 'R-TS'
+
+T1 first enter the read phase
+- it reads the value of the record A
+- and copy that into its private workspace
+
+![](25.jpg)
+
+T2 arrives, and computes its own private workspace
+
+![](26.jpg)
+
+Then, T2 enters its Validation phase.
+- as nothing has changed, T2 succeeds
+- also at this time T2 is assigned the first timestamp
+
+Timestamp is assigned just before you are goint to write in the database
+- there's no need to assign a timestamp for manipulating the internal workspace
+- also after the validation is when you are certain you are going to commit that new information
+
+So you write nothing and finish transaction T2
+
+![](27.jpg)
+
+Then T1 continues with a Write on A 
+- in its private workspace
+
+![](28.jpg)
+
+At the validation step timestamp 2 is assigned
+- finally you write on the global database
+- also update its timestamp
+  
+![](29.jpg)
+
+#### READ PHASE
+Track the Read/Write records it wants
+- and then keep a copy of them in private workspace
+
+#### VALIDATION PHASE
+When a txn Ti invokes **COMMIT** , immediatelly enters this validation phase
+- the DBMS checks if its in conflict with other txns.
+- The DBMS needs to guarantee only serializable schedules are permitted
+- Checks other txns for R-W and W-W conflicts
+  - and ensure that conflicts are in one direction. (e.g. older-> younger or younger->older)
+  - otherwise would be a cycle of conflicts
+
+Two methods for this phase.
+- Backward Validation
+- Forward Validation
+
+##### BACKWARD VALIDATION
+When a txn tries to commits,
+- it just checks whether the read and write set of this transaction will be overlapped with other transactions
+
+In the first example, we are going to check
+- whether it has the read and write stamp of my current commiting transaction
+- has overlapped with the read/write set of transactions that has already being commited
+- as we are checking with older transactions that's called **BACKWARD** validation
+
+Consider the following physical time progress,
+- Assume that we are looking at Transaction T2
+- T1 has commited
+- T3 has not commited yet
+  
+![](30.jpg)
+
+looking at the validation scope
+- we are looking for whether my current transaction
+- has any conflict or overlap with the transaction that was commited earlier
+
+we only allow conflicts from older transaction to younger txns
+
+##### FORWARD VALIDATION (I)
+Checks whether the commiting txn conflicts its read/write sets,
+- with any active txn that have not yet commited
+
+if there is any overlap, you need to abort
+
+![](31.jpg)
+
+##### FORWARD VALIDATION (II)
+Analyzing the Backward validation is similar but reversed
+
+Each txn's **timestamp** is assigned at the beginning of the validation phase.
+- we are assuming the running transaction (not commited yet) would have a higher (infinite) timestamp rather that the current one
+  
+Check the timestamp ordering of the commiting txn with all other running txn
+
+IF **TS(Ti)** < **TS(Tj)** THEN  one of the following three conditions must hold.
+
+
+**STEP 1**, Ti completes all three phases before Tj begins
+
+![](32.jpg)
+
+**STEP 2**,
+- Ti completes before Tj its **WRITE** phase and
+- Ti does not write to any object read by Tj
+
+$Writeset(Ti) \cap ReadSet(Tj)= \Phi$
+
+In this case, T1 has to abort (even when T2 has never written in the database)
+- T2 has not started its validation step yet.
+- T1 has written into a record that is used by a current running transaction T2
+ 
+![](33.jpg)
+
+Assume now another case,
+- T2 has finished its validation step earlier, its timestamp has been assigned
+- Only after that T1 comes from its validation step
+
+Its safe to commit T1, because T2 commits logically before T1
+
+![](34.jpg)
+
+**STEP 3**
+- Ti completes its **read** phase before Tj completes its **read** phase
+- and Ti does not write to any object that is either read or written by Tj.
+
+$WriteSet(Ti) \cap ReadSet(Tj) = \Phi$
+
+$WriteSet(Ti) \cap WriteSet(Tj) = \Phi$
+
+At this validation point of T1,
+- T2 hasn't read anything of record A
+- so T1 is committing safely with timestamp TS(T1)=1
+  
+![](35.jpg)
+
+now T1 writes its result in the database
+- also updates its W-timestamp
+  
+![](36.jpg)
+
+When T2 comes back and has to read record A
+- updates its workspace
+
+![](37.jpg)
+
+As we are just reading in T2, it validates all the rules and finally commits
+
+#### WRITE PHASE
+The DBMS propagates the changes in the txn's write set to the database and makes them visible to other txns.
+
+Assume that only one txn can be in **write** phase at a time-
+- Use write latches to support parallel validation/writes
+
+### OBERVATIONS
+OCC works well when the number of conflicts is slow
+- all txns are read-only (ideal)
+- Txns access disjoint subsets of data
+
+If the database is large and the workload is not skewed,
+- then there is a low probability of conflict
+- so again locking is wastefull
+
 
 ## ISOLATION LEVELS
