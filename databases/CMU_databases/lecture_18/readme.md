@@ -136,11 +136,331 @@ First implementation was Rdb/VMS and InterBase at DEC in early 1980's
 ![](7.jpg)
 
 ### OVERVIEW
-**WRITTERS** DO NOT BLOCK **READERS**
+The main advantage of MVCC
+- **WRITERS** AND **READERS** Don't BLOCK each other
 
-**READERS** DO NOT BLOCK **WRITERS**
+**WRITERS** and **WRITERS**, do indeed affect each others
+  
+Say for example you have a writing transaction,
+- then when you write a new record
+- then if there are other transactions that are still reading the earlier version of this tuple, they are not affected
+  - because you are not deleting any records
+ 
 
-Read only-txns can read a consistent __snapshot__ without acquiring locks.
+Specifically Read only-txns can read a consistent __snapshot__ without acquiring any lock.
 - Use timestamps to determine visibility
 
+When a transaction are trying to access tuples
+- it could access tuples at a consistent version at a particular point of time
+
 Easily support **time-travel** queries
+
+A snapshot means, that the transaction is reading the state of a database at a particular time point
+- that it can only see the versions of the tuples commited by transactions
+- earlier than that, but nothing after.
+
+Note that the SNAPSHOT ISOLATION LEVEL
+- is not serializable
+- even it won't have the basic conflicts we saw in the concurrency class
+  - dirty read, dirty write and writting into the uncommited data
+- it would have a problem called Write skew.
+- at least is a pretty strong isolation level.
+
+Lastly with this multi-version idea.
+- it's also easy to support a type of query called 'time-travel' queries.
+- you can ask this query to check the state of the database at a particular point back in time.
+
+This is straightforward
+- with different versions
+- and with a snapshot isolation
+
+you can easily specify a timestamp,
+- and try to read tuples with versions before or exactly at this timestamp
+
+### EXAMPLE (I)
+Let's say we have 2 transaction and we are going to look at one record A
+- T1 reads A, T2 writes A
+- for illustration purpose we will maintain a **version** field
+  - in actuality databases don't maintain this field
+
+What a database will maintain are the **begining** and **end** Timestamp
+- for each version of a particular Record.
+ 
+![](8.jpg)
+  
+We are going to assign a timestamp at the begining of the execution
+- even thought last class in OCC, we say you only need to produce a timestamp at the validation step
+
+At the begining, we read Record A,
+- and because the timestamp of T1 is between the begining and end of this particular record.
+- is that you can read the record and continue your schedule
+
+![](9.jpg)
+
+Here T2 comes along, and wants to Write on A
+- so instead of overwritting this version 0
+- we are going to recreate a new version for this tuple.
+- With a different value and different timestamp
+
+![](10.jpg)
+
+Also this earlier version of the database would be updated its end-timestamp
+
+![](11.jpg)
+
+Another thing to note, beyond this beginning and end timestamp
+- another thing to have is a **Separate location** to keep track of the status
+- of all the transactions,
+- whether they have commited or not
+
+![](12.jpg)
+
+If T2 writes a new version of this record A,
+- before it commits,
+- other transactions depending on this isolation level couldn't really see this version.
+- as it's not commited yet.
+
+
+Here Transaction T1 comes back
+- because T1 has a timestamp of 1
+- now it wants to read the record A
+- but here the timestamp is only between the range 0 and 2
+
+![](13.jpg)
+
+This would not generate unrepeatable reads.
+
+Lastly T1 and T2 commits 
+
+### EXAMPLE (II)
+Here T1 is reading A, writting A
+
+![](14.jpg)
+
+Here T1 creates a new version of A
+- with a beginning timestamp of 1
+ 
+![](15.jpg)
+
+also it has to modify it previous version timestamp for ending at 1
+
+![](16.jpg)
+
+Later on, T2 comes along, and start by reading tuple A
+- then which version is going to read?
+- well is going to read the first version, just because we see that in the transaction status table
+  - T1 hasn't commited yet
+ 
+![](17.jpg)
+
+Now assume T2 is still writting on A
+- for example with a locking protocol
+- T2 has to wait T1 to release its lock
+
+![](18.jpg)
+
+Meanwhile T1 continues its execution 
+- reading the same record it has previously written by itself
+- Then T1 goes commit
+
+![](19.jpg)
+
+Now Lock on A is released.
+- T2 can continue its execution writting a new version of A
+- and ofc update the previous versioning table
+
+![](20.jpg)
+
+Depending on the isolation level you specify
+- under the highest level serializable
+  - you may not be able to commit this transaction
+- but under the snapshot isolation you actually can commit as well.
+
+### IMPLEMENTATION
+MVCC is more than just a concurrency control protocol.
+- it completely affects how the DBMS manages transactions and the database
+
+Most of the systems implement this optimization
+
+![](21.jpg)
+
+### DEMONSTRATION
+```
+# POSTGRES: TERMINAL 1
+SELECT ctid, xmin, xmax, * FROM txn_demo;
+ ctid | xmin | xmax | id | val
+------+------+------+----+-----
+(0,1) | 498  | 0    | 1  | 100
+(0,2) | 498  | 0    | 2  | 200
+
+SELECT * FROM txn_demo;
+  id | val
+-----+-----
+  1  | 100
+  2  | 200
+```
+The additional 3 fields are 
+- ctid = location of this tuple (page_id, slot_number)
+- xmin/xmax = begin/end timestamp of this particular tuple
+With this is obvious that postgres is using MVCC
+
+All tuples had the same xmin and xmax,
+- that means that all those tuples were created in the same transaction with a timestamp of 498
+- xmax is just a place holder. 0 or infinity. not an actual value.
+
+
+we are going to first, 
+- look at the tuples for this transaction
+```
+# TERMINAL 1
+BEGIN TRANSACTION ISOLATION LEVEL READ COMMITED;
+~# BEGIN
+SELECT ctid, xmin, xmax, * FROM txn_demo WHERE id=1;
+ctid | xmin | xmax | id | val
+-----+------+------+----+-----
+(0,1)| 498  | 0    | 1  | 100
+
+SELECT txid_current();
+txid_current
+------------
+499
+```
+
+Different transactions ids.
+```
+# TERMINAL 2
+BEGIN TRANSACTION ISOLATION LEVEL READ COMMITED;
+
+SELECT txid_current();
+txid_current
+------------
+500
+```
+
+Now we are going to do an update query
+- only update the record with the id=1
+- so the first record would have 2 versions
+```
+# TERMINAL 1
+UPDATE txn_demo SET val=val+1 WHERE id=1;
+SELECT ctid, xmin, xmax, * FROM txn_demo;
+ ctid | xmin | xmax | id | val
+------+------+------+----+-----
+(0,3) | 498  |   0  | 1  | 101
+```
+Let's see what have we got in terminal 2.
+- notice that xmax has changed from 0 to 499
+```
+SELECT ctid, xmin, xmax, * FROM txn_demo;
+ ctid | xmin | xmax | id | val
+------+------+------+----+-----
+(0,1) | 498  | 499  | 1  | 100
+```
+
+Even though the first transaction updated these tuple,
+- because the first transaction hasn't commited yet
+- the second transaction has a higher transaction, when it comes back it can only see the original version of this record.
+
+What if we select that uncommited tuple explicitly
+- it cannot see that record
+- even though we know there is a tuple at that location.
+- but logically the first transaction hasn't commited yet.
+```
+# TERMINAL 2
+SELECT * FROM txn_demo WHERE ctid='(0,3)';
+id | val
+---+----
+ 0 | 0
+```
+
+What if i update this tuple again in terminal 2?
+- terminal 2 is waiting T1 to release its lock on id=1
+```
+# TERMINAL 2
+UPDATE txn_demo SET val=val+1 WHERE id=1;
+... and it waits
+```
+
+so go into terminal 1 and commit
+```
+# TERMINAL 1
+commit;
+```
+Then terminal 2 has updated its command.
+```
+# TERMINAL 2
+commit;
+```
+
+we can come back and then select everything out.
+- note postgres uses 500 also to denote infinity in the end timestamp
+```
+# TERMINAL 1
+SELECT ctid, xmin, xmax, * FROM txn_demo;
+ ctid | xmin | xmax | id | val
+------+------+------+----+-----
+(0,2) | 498  |   0  |  2 | 200
+(0,4) | 500  | 500  |  1 | 102
+```
+
+---
+**PART 2**
+
+What if we increase the isolation level
+```
+# TERMINAL 1
+BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+SELECT txid_current();
+501
+```
+```
+# TERMINAL 2
+BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+SELECT txid_current();
+502
+```
+
+Now we are going to update T1
+```
+# TERMINAL 1
+UPDATE txn_demo SET val=Val+1 WHERE id=1 RETURNING txid_current();
+txid_current
+------------
+  501
+```
+i do the same on terminal 2
+- but the second transaction stop, waiting for T1 to commit.
+```
+# TERMINAL 1
+UPDATE txn_demo SET val=Val+1 WHERE id=1;
+```
+
+Now we effectively commit T1
+```
+# TERMINAL 1
+commit;
+```
+but T2 throws an error
+```
+# TERMINAL 2
+ERROR: could not serialize access due to concurrent update
+```
+
+---
+
+Final example we will try different isolation levels.
+
+```
+# TERMINAL 1
+BEGIN TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+SELECT ctid, xmin, xmax, * from txn_demo;
+ctid | xmin | xmax | id | val
+-----+------+------+----+-----
+(0,2)| 498  | 0    |  2 | 200
+(0,5)| 501  | 0    |  1 | 103
+```
+
+```
+# TERMINAL 2
+BEGIN TRANSACTION ISOLATION LEVEL READ UNCOMMITED;
+```
