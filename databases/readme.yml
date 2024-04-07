@@ -26,6 +26,11 @@
 #    1. (P)rocess per (W)orker. process one worker at a time.
 #    2. (P)rocess (P)ool. we have a bunch of processes waiting in a pool, when a client arrives you can attach any free worker in the pool.
 #    3. (T)hread per (W)orker. Instead of processes, a single thread per worker
+# ISOLATION LEVELS: correctness vs performance with anomalies
+#    1. (S)erializable, correctness guarantee
+#    2. (R)epeatable (R)eads, no dirty reads, no unrepeatable reads, phantom possible
+#    3. (R)ead (C)ommited, no dirty reads, repeatable reads problem, phantom problem
+#    4. (R)ead (U)ncomitted, dirty reads, repeatable reads, phantom problem.
 # LICENCE:
 #    1. (O)pen Source
 #    2. (C)ompercial
@@ -33,6 +38,16 @@
 
 
 # Alphabetical ordered by name
+
+ACTIAN INGRES:
+  ISOLATION LEVEL: 
+    - DEFAULT: (S)erializable
+    - MAXIMUM: (S)erializable
+
+AEROSPIKE:
+  ISOLATION LEVEL: 
+    - DEFAULT: (R)ead (C)ommited
+    - MAXIMUM: (R)ead (C)ommited
 
 Amazon REDSHIFT:
   - OPERATOR_MODEL: (B)atch
@@ -50,7 +65,10 @@ DuckDB:
 
 Greenplum:
   - OPERATOR_MODEL: (P)ipeline
-
+  ISOLATION LEVEL: 
+    - DEFAULT: (R)ead (C)ommited
+    - MAXIMUM: (R)ead (C)ommited
+    
 HYRISE:
   - OPERATOR_MODEL: (B)atch
 
@@ -71,6 +89,9 @@ MEMSQL:
   - MAIN_STORAGE: (M)emory
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
+  ISOLATION LEVEL: 
+    - DEFAULT: (R)ead (C)ommited
+    - MAXIMUM: (R)ead (C)ommited
     
 monetdb:
   - OPERATOR_MODEL: (M)aterialization
@@ -92,6 +113,9 @@ MySQL:
     - (T)hread per (W)orker
   - SYNTAX:
     - ANALYZE TABLE: update internal statistics
+  ISOLATION LEVEL: 
+    - DEFAULT: (R)epeatable (R)eads
+    - MAXIMUM: (S)erializable
     
 NETEZZA:
   - ACCESS_METHOD: 
@@ -114,6 +138,9 @@ ORACLE:
     - (T)hread per (W)orker
   - SYNTAX:
     - ANALYZE TABLE: update internal statistics
+  ISOLATION LEVEL: 
+    - DEFAULT: (R)ead (C)ommited
+    - MAXIMUM: (S)napshot (I)solation
     
 PostgreSQL:
   - QUERY: SQL
@@ -126,13 +153,26 @@ PostgreSQL:
     - (O)pen Source
   - SYNTAX:
     - ANALYZE: update internal statistics
-  
+  ISOLATION LEVEL: 
+    - DEFAULT: (R)ead (C)ommited
+    - MAXIMUM: (S)erializable
+    
 PRESTO:
   - OPERATOR_MODEL: (B)atch
 
 REDIS:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
+
+SAP HANA:
+  ISOLATION LEVEL: 
+    - DEFAULT: (R)ead (C)ommited
+    - MAXIMUM: (S)erializable
+
+ScaleDB:
+  ISOLATION LEVEL: 
+    - DEFAULT: (R)ead (C)ommited
+    - MAXIMUM: (R)ead (C)ommited
 
 SQLite:
   - QUERY: SQL
@@ -149,6 +189,9 @@ SQLServer:
     - (T)hread per (W)orker
   - SYNTAX:
     - UPDATE STATISTICS: update internal statistics
+  ISOLATION LEVEL: 
+    - DEFAULT: (R)ead (C)ommited
+    - MAXIMUM: (S)erializable
     
 SNOWFLAKE:
   - OPERATOR_MODEL: (B)atch
@@ -164,10 +207,12 @@ VERTICA:
 VECTOR WISE:
   - OPERATOR_MODEL: (B)atch
 
-VOLTDB:
+VoltDB:
   - MAIN_STORAGE: (M)emory
   - OPERATOR_MODEL: (M)aterialization
-  
+  ISOLATION LEVEL: 
+    - DEFAULT: (S)erializable
+    - MAXIMUM: (S)erializable
   
 /*
 - MAIN_STORAGE o - STORAGE_MANAGER? 
