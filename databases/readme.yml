@@ -28,9 +28,10 @@
 #    3. (T)hread per (W)orker. Instead of processes, a single thread per worker
 # ISOLATION LEVELS: correctness vs performance with anomalies
 #    1. (S)erializable, correctness guarantee
-#    2. (R)epeatable (R)eads, no dirty reads, no unrepeatable reads, phantom possible
-#    3. (R)ead (C)ommited, no dirty reads, repeatable reads problem, phantom problem
-#    4. (R)ead (U)ncomitted, dirty reads, repeatable reads, phantom problem.
+#    2. (S)napshot (I)solation,
+#    3. (R)epeatable (R)eads, no dirty reads, no unrepeatable reads, phantom possible
+#    4. (R)ead (C)ommited, no dirty reads, repeatable reads problem, phantom problem
+#    5. (R)ead (U)ncomitted, dirty reads, repeatable reads, phantom problem.
 # LICENCE:
 #    1. (O)pen Source
 #    2. (C)ompercial
