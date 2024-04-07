@@ -503,3 +503,65 @@ ctid | xmin | xmax | id | val
 (0,6)| 501  | 504  |  1 | 103
 (0,6)| 503  | 0    |  2 | 201
 ```
+
+## MVCC DESIGN DECISIONS
+CONCURRENCY CONTROL PROTOCOL
+
+VERSION STORAGE
+
+GARBAGE COLLECTION
+
+INDEX MANAGEMENT
+
+DELETES
+
+### CONCURRENCY CONTROL PROTOCOL
+**APPROACH 1** TIMESTAMP ORDERING,
+- Assign txns timestamps that determine serial order
+
+**APPROACH 2** OPTIMISTIC CONCURRENCY CONTROL
+- Three phase protocol from last class
+- modification is to install new versions into the private workspace 
+
+**APPROACH 3** TWO PHASE LOCKING
+- Txns acquire appropiate lock on physical version before they can read/write a logical tuple
+- Instead of locking a single physical copy of this tuple,
+  - you are going to lock the specific version of the tuple that you are trying to access
+ 
+### VERSION STORAGE
+How you actually storage those additional versions,
+- and how do you actually traverse them
+- how do you clean them up
+
+Different physical versions of the same tuple,
+- we are going to 'chain' them together using pointers.
+
+in each physical copy of a variant of that tuple, 
+- we are going to have a specific field
+- where to store a pointer, pointing to the next version of this logical tuple.
+
+The another thing to note is,
+- that the index, because in many cases, for example you have a B+Tree index or hash index
+- the value of that leaf node (record) in the index would point to the head of this variant chain.
+
+The DBMS uses the tuples' pointer field to create a **version chain** per logical tuple
+- This allows the DBMS to find the versions that are visible to a particular txn at runtime
+- indexes always point to the 'head' of the chain
+
+Then, there are Different storage schemes
+- determine where/what to store for each version
+
+#### STORAGE SCHEMAS
+**APPROACH 1** APPEND ONLY STORAGE
+- New versions are appended to the same table space
+  
+**APPROACH 2** TIME TRAVEL STORAGE
+- Old versions are copied to separate table space
+  
+**APPROACH 3** DELTA STORAGE
+- The original values of the modified attributes are copied into a separate delta record space
+### GARBAGE COLLECTION
+
+### INDEX MANAGEMENT
+
+### DELETES
