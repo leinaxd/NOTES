@@ -78,3 +78,28 @@ For many systems, they don't even provide serializability isolation level
 
 ![](4.jpg)
 
+### ISOLATION LEVELS SURVEY
+A survey across many DBMS about what isolation level you are using in your actual system.
+- the most used isolation level is the read commited
+  
+![](5.jpg)
+
+### ISOLATION LEVELS (IV)
+You can actually provide in the SQL-92 standard command to give hints
+- on wether a transaction is entirely read-only or not
+- if the DBMS knowing the balance that this entire txn is read-only,
+  - then it could be a potential organization scheme
+
+**ACCESS MODES**
+- **READ WRITE** (default)
+- **READ ONLY**
+
+![](6.jpg)
+
+It's not implemented by all systems.
+- but you can specified it anyways
+
+## MULTI-VERSION CONCURRENCY CONTROL
+The DBMS maintains multiple **physical** versions of a single **logical** object in the database
+- When a txn writes to an object, the DBMS creates a new version of that object
+- When a txn reads an object, it reads the newest version that existed when txn started
