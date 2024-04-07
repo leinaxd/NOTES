@@ -99,7 +99,39 @@ You can actually provide in the SQL-92 standard command to give hints
 It's not implemented by all systems.
 - but you can specified it anyways
 
-## MULTI-VERSION CONCURRENCY CONTROL
+## MULTI-VERSION CONCURRENCY CONTROL (MVCC)
+We are not talking about a specific concurrency control protocol
+- instead what we are going to talk about is actually an OPTIMIZATION
+- that many systems would apply
+- in combination with 'locking', 'optimistic timestamp', etc
+
+The fundamental Idea of multi-version concurrency control is that
+- instead of the database having a centrelized copy of the record
+
 The DBMS maintains multiple **physical** versions of a single **logical** object in the database
 - When a txn writes to an object, the DBMS creates a new version of that object
 - When a txn reads an object, it reads the newest version that existed when txn started
+
+
+When every transaction writes a new object
+- instead of writting that object in place in the global centralized location
+
+what if we keep all the original records intact
+- and just write a new copy of the new records
+
+Then we have a different copies of this records
+- and other transactions can read either read the current copy created by myself
+- or the older copies
+
+That would allow more flexible scheduling
+
+### HISTORY
+Protocol was first proposed in 1978 by MID PHD dissertation
+
+First implementation was Rdb/VMS and InterBase at DEC in early 1980's
+- both were by Jim Starkey, co-founder of NuoDB
+- DEC Rdb/VMS is now 'Oracle Rdb'
+- InterBase was open-sourced as **Firebird**
+
+![](7.jpg)
+
