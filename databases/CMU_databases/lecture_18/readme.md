@@ -135,3 +135,12 @@ First implementation was Rdb/VMS and InterBase at DEC in early 1980's
 
 ![](7.jpg)
 
+### OVERVIEW
+**WRITTERS** DO NOT BLOCK **READERS**
+
+**READERS** DO NOT BLOCK **WRITERS**
+
+Read only-txns can read a consistent __snapshot__ without acquiring locks.
+- Use timestamps to determine visibility
+
+Easily support **time-travel** queries
