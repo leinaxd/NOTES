@@ -464,3 +464,42 @@ ctid | xmin | xmax | id | val
 # TERMINAL 2
 BEGIN TRANSACTION ISOLATION LEVEL READ UNCOMMITED;
 ```
+
+Then we update T2
+```
+UPDATE txn_demo SET val=val+1 WHERE id=2 RETURNING txid_current();
+txid_current
+-----------
+503
+```
+
+```
+# TERMINAL 1
+UPDATE txn_demo SET val=val+1 WHERE id=1 RETURNING txid_current();
+txid_current
+------------
+504
+
+SELECT ctid, xmin, xmax, * FROM txn_demo;
+ctid | xmin | xmax | id | val
+-----+------+------+----+-----
+(0,2)| 498  | 0    |  2 | 200
+(0,7)| 504  | 0    |  1 | 104
+```
+What we get here, 
+- for the first tuple id = 1 it is seen the lastest value that is written
+- but then, for the other id=2 value, it doesn't see the updated value.
+
+
+Meanwhile in the second terminal, we are trying to read all transaction as an uncommited read.
+- it should see the transaction done by T1,
+  - but as it's not obligated to do so, it gives you a better isolation level
+- T1 has a current_id of 504
+```
+# TERMINAL 2
+SELECT ctid, xmin, xmax, * FROM txn_demo;
+ctid | xmin | xmax | id | val
+-----+------+------+----+-----
+(0,6)| 501  | 504  |  1 | 103
+(0,6)| 503  | 0    |  2 | 201
+```
