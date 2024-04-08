@@ -32,6 +32,23 @@
 #    3. (R)epeatable (R)eads, no dirty reads, no unrepeatable reads, phantom possible
 #    4. (R)ead (C)ommited, no dirty reads, repeatable reads problem, phantom problem
 #    5. (R)ead (U)ncomitted, dirty reads, repeatable reads, phantom problem.
+# MVCC: Multi-version concurrency control
+#    1. PROTOCOL
+#       1. MV-2PL
+#       2. MV-TO
+#       3. MV-OCC
+#    2. VERSION STORAGE
+#       1. DELTA
+#       2. APPEND ONLY
+#       3. TIME-TRAVEL
+#    3. GARBAGE COLLECTION
+#       1. VACUUM
+#       2. COOPERATIVE
+#       3. HYBRID
+#       4. TXN-LEVEL
+#    4. INDEXES
+#       1. LOGICAL
+#       2. PHYSICAL
 # LICENCE:
 #    1. (O)pen Source
 #    2. (C)ompercial
@@ -70,8 +87,27 @@ Greenplum:
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (R)ead (C)ommited
     
+HECKATON:
+  - MVCC:
+    - PROTOCOL: MV-OCC
+    - VERSION STORAGE: APPEND ONLY
+    - GARBAGE COLLECTION: COOPERATIVE
+    - INDEXES: PHYSICAL
+
+HYPER:
+  - MVCC:
+    - PROTOCOL: MV-OCC
+    - VERSION STORAGE: DELTA
+    - GARBAGE COLLECTION: TXN LEVEL
+    - INDEXES: LOGICAL
+    
 HYRISE:
   - OPERATOR_MODEL: (B)atch
+  - MVCC:
+    - PROTOCOL: MV-OCC
+    - VERSION STORAGE: APPEND ONLY
+    - GARBAGE COLLECTION: None
+    - INDEXES: PHYSICAL
 
 IBM DB2:
   - QUERY: SQL
@@ -85,14 +121,20 @@ IBM DB2:
   - LICENCE: (C)omercial
   - SYNTAX:
     - RUNSTATS: update internal statistics
+    
 MEMSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
-  ISOLATION LEVEL: 
+  - ISOLATION LEVEL: 
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (R)ead (C)ommited
+  - MVCC:
+    - PROTOCOL: MV-OCC
+    - VERSION STORAGE: APPEND ONLY
+    - GARBAGE COLLECTION: VACUUM
+    - INDEXES: PHYSICAL
     
 monetdb:
   - OPERATOR_MODEL: (M)aterialization
@@ -114,9 +156,14 @@ MySQL:
     - (T)hread per (W)orker
   - SYNTAX:
     - ANALYZE TABLE: update internal statistics
-  ISOLATION LEVEL: 
+  - ISOLATION LEVEL: 
     - DEFAULT: (R)epeatable (R)eads
     - MAXIMUM: (S)erializable
+  - MVCC:
+    - PROTOCOL: MV-2PL
+    - VERSION STORAGE: DELTA
+    - GARBAGE COLLECTION: VACUUM
+    - INDEXES: LOGICAL
     
 NETEZZA:
   - ACCESS_METHOD: 
@@ -124,12 +171,21 @@ NETEZZA:
 
 noise page:
   - OPERATOR_MODEL: (B)atch
-  
+  - MVCC:
+    - PROTOCOL: MV-OCC
+    - VERSION STORAGE: DELTA
+    - GARBAGE COLLECTION: TXN LEVEL
+    - INDEXES: LOGICAL
 NuoDB:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk / (M)emory / (C)loud
   - OPERATOR_MODEL: (P)ipeline
-
+  - MVCC:
+    - PROTOCOL: MV-2PL
+    - VERSION STORAGE: APPEND ONLY
+    - GARBAGE COLLECTION: VACUUM
+    - INDEXES: LOGICAL
+    
 ORACLE:
   - OPERATOR_MODEL: (P)ipeline / (B)atch
   - ACCESS_METHOD: 
@@ -139,9 +195,14 @@ ORACLE:
     - (T)hread per (W)orker
   - SYNTAX:
     - ANALYZE TABLE: update internal statistics
-  ISOLATION LEVEL: 
+  - ISOLATION LEVEL: 
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (S)napshot (I)solation
+  - MVCC:
+    - PROTOCOL: MV-2PL
+    - VERSION STORAGE: DELTA
+    - GARBAGE COLLECTION: VACUUM
+    - INDEXES: LOGICAL
     
 PostgreSQL:
   - QUERY: SQL
@@ -154,10 +215,15 @@ PostgreSQL:
     - (O)pen Source
   - SYNTAX:
     - ANALYZE: update internal statistics
-  ISOLATION LEVEL: 
+  - ISOLATION LEVEL: 
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (S)erializable
-    
+  - MVCC:
+    - PROTOCOL: MV-2PL / MV-TO
+    - VERSION STORAGE: APPEND ONLY
+    - GARBAGE COLLECTION: VACUUM
+    - INDEXES: PHYSICAL
+        
 PRESTO:
   - OPERATOR_MODEL: (B)atch
 
@@ -166,12 +232,17 @@ REDIS:
   - MAIN_STORAGE: (M)emory
 
 SAP HANA:
-  ISOLATION LEVEL: 
+  - ISOLATION LEVEL: 
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (S)erializable
-
+  - MVCC:
+    - PROTOCOL: MV-2PL
+    - VERSION STORAGE: TIME-TRAVEL
+    - GARBAGE COLLECTION: HYBRID
+    - INDEXES: LOGICAL
+    
 ScaleDB:
-  ISOLATION LEVEL: 
+  - ISOLATION LEVEL: 
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (R)ead (C)ommited
 
