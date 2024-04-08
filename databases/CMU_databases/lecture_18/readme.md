@@ -553,14 +553,172 @@ Then, there are Different storage schemes
 
 #### STORAGE SCHEMAS
 **APPROACH 1** APPEND ONLY STORAGE
-- New versions are appended to the same table space
+- The simplest approach,
+- New versions are appended to the end of the same table
   
 **APPROACH 2** TIME TRAVEL STORAGE
-- Old versions are copied to separate table space
-  
+- Similar but in reverse,
+- new versions are kept in the database
+- old versions are copied to a separated table
+
+So every time you write a record,
+- older versions are copied down
+- so the location of the current version never changes but get updated
+
 **APPROACH 3** DELTA STORAGE
+- rather than copying the entire tuple,
+- just update those particular attributes.
 - The original values of the modified attributes are copied into a separate delta record space
+- this approach is more advantageous,
+
+#### APPEND-ONLY STORAGE
+All the physical versions of the tuple are stored in the same table.
+- The versions are inter-mixed
+
+Let's say we want to add a new variant of tuple A
+- there's already an A0 and A1 version of it.
+
+![](22.jpg)
+
+What we do is to append a new version at the end of the table
+- and also adjust the pointers to the next version
+  
+![](23.jpg)
+
+On every update, append a new version of the tuple into an empty space in the table.
+
+
+#### VERSION CHAIN ORDERING
+Hey what's the order of this version's chain?
+
+**APPROACH 1**, OLDEST TO NEWEST (O2N)
+- Easy to Append a new version at the end of the chain
+- Must traverse chain on look ups for accessing the new record
+
+**APPROACH 2**, NEWEST TO OLDEST (N2O)
+- Must update index pointers for every new version
+- Do not have to traverse chain on look ups
+
+#### TIME-TRAVEL STORAGE
+we are assuming we are using newest to oldest ordering approach.
+
+Here we are doing a time-travel every time we want to update a record in the database
+- we are going to copy the old record to a separate table
+
+![](24.jpg)
+
+Say we want to update record A to a new version.
+- first we find a spot in the time-travel table
+- and then copy the current value into that table
+- also update the pointer
+
+![](25.jpg)
+
+And finally we are going to overwrite the master version 
+- to its new value
+- and update the pointer too
+
+![](26.jpg)
+
+#### DELTA STORAGE
+It's just an extension of the time-travel storage
+- instead of copying the entire tuple
+- you just copy the specific values
+
+![](27.jpg)
+
+Then if you update once more its value
+- you just copy again the value
+- and update the pointer too
+
+![](28.jpg)
+
+if you update many attributes, you just copy all of them in the same delta-record
+
+If you are updating 1000 tuples from a 2 fields table,
+- just by avoiding writing 1 field, that query would execute twice as fast
+
+When the transaction wants to access those tuples, traverse
+- you need to apply the chain in the current tuple
+
+People usually apply the N2O ordering
+- in order to acquire a specific version of the tuple
+- you always have to apply the changes to that tuple back to that top tuple
+- from the newest to the oldest
+- so you always have to go to the oldest version of the tuple and apply all changes back
+
+its redundant if you go from oldest to newest.
+
 ### GARBAGE COLLECTION
+The DBMS needs to  remove **reclaimable** physical versions from the database over time.
+- no active txn in the DBMS can 'see' that version (SI)
+- The version was created by an aborted txn
+
+Two additional design decisions
+- How to look for expired versions?
+- How to decide when it is safe to reclaim memory?
+
+**APPROACH 1**, TUPLE LEVEL
+- you examine each individual tuple, and check if you can reclaim each one or not
+- Find old versions by examining tuples directly
+- **Background Vacuuming** vs **Cooperative Cleaning**
+  - Look upon each individual tuple with a background thread
+  - or when different txn are reading those version chains, you can remove the unnecessary tuple while you are trying to traverse those version chains.
+    
+**APPROACH 2**, TRANSACTION LEVLE
+- look for each txn, what kind of new  versions it created, what kind of old versions are overwritten.
+- txns keep track of their old versions
+- so that the DBMS does not have to scan tuples to determine visibility
+
+#### TUPLE LEVEL
+Let's say you have 2 threads with different ids.
+- we also have 3 tuples, 1 variant for tuple A, and 2 for tuple B
+
+##### BACKGROUND VACUUM
+We are going to look at the **Background Vacuum** first
+- Separate threads periodically scan the table and look for reclaimable versions.
+- works with any storage
+
+![](29.jpg)
+
+Whether there any transaction that would fit into
+- the begin and end timestamp
+
+![](30.jpg)
+
+It's very costly to scan the entire table once in a while.
+
+Postgres do instead.
+- instead of just blindly scan all tuples.
+- it maintains a dirty  block bitmap
+
+from the last time i've reclaimed.
+- what are the pages that has changed from last scan
+- so the next time you have to do the vacuum, just scan the bitmap dirty pages
+
+![](31.jpg)
+
+##### COOPERATIVE CLEANING
+Worker threads identify reclaimable versions as they traverse the version chain.
+- Only works with O2N
+  - otherwise the newest version is always read and the older ones never.
+
+So instead of looping through all the dirty pages,
+- we can let different transactions to identify versions that are no longer useful
+- while traversing the version chain.
+
+Let's say we have this 2 transactions.
+- T1 is trying to access tuple A
+- while traversing it can identify that, that specific version of the tuple
+  - may have a timestamp that is smaller than any of my current running transactions.
+- so you can destroy the older version while doing the scan
+
+![](32.jpg)
+
+Then you would redirect the index to the newest versions
+
+![](33.jpg)
+
 
 ### INDEX MANAGEMENT
 
