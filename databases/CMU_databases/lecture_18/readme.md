@@ -719,7 +719,129 @@ Then you would redirect the index to the newest versions
 
 ![](33.jpg)
 
+#### TRANSACTION LEVEL
+Each txn keeps track of its read/write set.
+
+The DBMS determines when all versiosns created by a finished txn are no longer visible.
+
+May still require multiple threads to reclaim the memory fast enough for the  workload
+
+Let's say we have a transaction with 2 tuples.
+- so first we update the value of A
+
+![](34.jpg)
+
+So we create a new version A3,
+- while keep track of the older version A2
+- at some point in time, we know we are going to reclaim this.
+  
+![](35.jpg)
+
+Similarly Update on B comes along,
+- create a new version of B
+- Keep in track for further reclaim of the older version
+
+![](36.jpg)
+
+When this transaction commits,
+- it will send 2 different versions
+- to the specific vacuum component of the database system
+- so we actually need a vacuum thread.
+
+![](37.jpg)
+
+Instead of the vacuum thread to go into each individual tuple,
+- it just go through over the transactions that have finished
+
+Then you can reclaim, all those set of tuples created by the transaction
+- whose commit id is smaller than 15, can all be freed
+- no other transaction will need to access those anymore.
+
 
 ### INDEX MANAGEMENT
+Because you now have different variants of the tuple,
+- you now need to manage them how to interact with them.
+
+when we try to update a version of a tuple, 
+- we need to update the corresponding pointer in the index that is pointing to the header value of the chain.
+- so what we do is a DELETE followed by an INSERT
+  - deleting the tuple and inserting it back with the correct head
+
+
+Primary keys indexes point to a version chain head.
+- how often the DBMS must update the pkey index depends on whether the system creates new versions when a tuple is updated.
+- if a txn updates a tuple's pkey attributes then this is treated as a **DELETE** followed by an **INSERT**
+
+Secondary indexes are more complicated
+- there are different choices you can make
+
+That's why UBER swithched all their database
+- from postgres to MySQL
+
+![](38.jpg)
+
+Postgres has an inefficient way to manage pointers, 
+- especially in the secondary indexes for this different version of tuples
+
+#### SECONDARY INDEXES
+The Primary index, always points to the head of the version chain
+- delete follow by an insert
+
+For the secondary index you can choose to do it logically or physically
+- logical pointer, instead of directly pointing to the head of the version chain
+  - you can store of restore a logical identifier of these tuple
+  - either it could be the primary key or some inderection tuple id.
+  - so when you are updating the head of the version chain you only need to update that in direction
+  - based on this tuple id instead of updating the actual value in every secondary index.
+- the second approach you just update the value,
+  - then when you are changing the head of the version chain
+  - you actually have to go through all the secondary indexes including the primary indexes
+  - and do a deletion followed by an insertion, which could be potentially costly
+**APPROACH 1**, LOGICAL POINTERS
+- use a fixed identifier per tuple that does not change
+- Requires an extra unidirection layer
+- Primary keys vs Tuple ID
+
+
+**APPROACH 2**, PHYSICAL POINTERS
+- usa a physical address to the version chain head.
+
+##### INDEX POINTERS
+Assume we are going to do an append only newest to oldest.
+
+Let's say the primary index is trying to get this value A
+- then the primary index always has to store its physical address
+  
+![](39.jpg)
+
+Then for the secondary index
+- you can either directly store the physical address
+- but if you have many secondary indexes, you have to maintain a pointer for each of them
+
+![](40.jpg)
+
+Instead what you can do, is to use the physical pointer of the primary pointer of the primary key
+- after that you do another look up on the primary index to look at the tuple
+
+![](41.jpg)
+
+You can also use a separate data structure to store logical structure
+- another indirection layer
+- it is less common
+
+![](42.jpg)
+
+### MVCC ISSUES
+When you are storign this Multi-version of tuples in the index
+- the index doesn't really know that you have different versions of the tuple.
+- if you try to insert a tuple in that index address, there already exists a tuple in there.
+
+MVCC indexes (usually) do not store version information about tuples with their keys
+- exception: Index-organized tables (e.g. MySQL)
+
+Every index must support duplicate keys from different snapshots
+- The same key may point to different logical tuples in different snapshots
+
+#### MVCC DUPLICATE KEY PROBLEM
 
 ### DELETES
