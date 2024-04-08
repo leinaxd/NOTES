@@ -843,5 +843,72 @@ Every index must support duplicate keys from different snapshots
 - The same key may point to different logical tuples in different snapshots
 
 #### MVCC DUPLICATE KEY PROBLEM
+Here, let's say that you have this table with one tuple on it.
+- then you have this one transaction that has a Read on A
+
+![](43.jpg)
+
+Then another transaction comes along that tryies to update A
+
+![](44.jpg)
+
+Now let's say that T2 is now deleting tuple A
+- so far its fine, we mark A as a deletion
+
+![](45.jpg)
+
+What if a new transaction comes by
+- and tries to insert this version A
+
+![](46.jpg)
+
+because we are doing multiversioning
+- when we delete this second record
+- there still be other transactions still reading record A
+- we cannot just delete this version right away.
+  - we have to wait to the garbage collection proccess to reclaim this process
+
+but now, when T3 tries to insert this new record A,
+- it can insert
+- but then in the index there actually 2 versions of chains of A
+- you can deal with that, but it would be an additional complication
+
+![](47.jpg)
+
+so it could be duplicate keys for this specific record
+
+#### SUMMARIZE
+Each index's underlying data structure must support the storage of non-unique keys.
+
+Use additional execution logic to perform conditional inserts for pkey / unique indexes
+- Atomically check whether the key exists and then insert.
+
+Workers may get back multiple entries for a single fetch.
+- they then must follow the pointers to find the proper physical version
+
 
 ### DELETES
+The solution we are going to do is to lock this transactions.
+
+when we delete a key from this table we are not going to allow 
+- any new transaction to insert anything to this table
+- unless we commit
+
+The DBMS physically deletes a tuple from the database only when all versions of a logically deleted tuple are not visible
+- if a tuple is deleted, then there cannot be a new version of that tuple after the newest version
+- No write-write conflicts / first writer wins
+
+We need a way to denote that tuple has been logically delete at some point in time
+
+#### TYPES
+**APPROACH 1**, DELETED FLAG
+- Maintain a flag to indicate that the logical tuple has been deleted after the newest physical version
+- Can either be in tuple header or a separate column
+
+**APPROACH 2** TOMBSTONE TUPLE
+- Create an empty physical version to indicate that a logical tuple is deleted
+- Use a separate pool for tombstone tuples  with only a special bit pattern in version chain pointer to reduce the storage overhead.
+
+### IMPLEMENTATIONS
+
+![](48.jpg)
