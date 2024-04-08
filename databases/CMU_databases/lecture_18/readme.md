@@ -912,3 +912,8 @@ We need a way to denote that tuple has been logically delete at some point in ti
 ### IMPLEMENTATIONS
 
 ![](48.jpg)
+
+## CONCLUSION
+MVCC is the widely used scheme in DBMSs 
+- even systems that do not support multi-statement txns (e.g. no sql) use it
+
