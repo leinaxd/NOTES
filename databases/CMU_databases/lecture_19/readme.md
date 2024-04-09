@@ -211,13 +211,100 @@ So we stole this page from the buffer manager before we even commited.
 ### FORCE POLICY
 Whether the DBMS requires that all updates made by a txn are reflected on non-volatile storage before txn can commit
 
-FORCE is required
-
-NO-FORCE is not required
 
 Do we force the changes of all the commited transaction to be persistent before we tell the outside world we have commited.
-- if we have
+- if we have to havea the DBMS to install all the changes of the commited txn to their corresponding change of pages on disk
+- they will called forced to write before commit
+
+
+**FORCE** TO WRITE CHANGES BEFORE COMMIT.
+- force policy is only requiring the system to write the values
+- to the specific page, corresponding to the content of this data
+
+NO-FORCE is not required
+- it just don't specify if the system has to write changes or not before commit.
+
+### EXAMPLE
+This example illustrate the combination of the NO-STEAL and FORCE policies.
+
+So first we load the page to the Buffer pool
+- and read record A
+  
+![](7.jpg)
+
+We then write on record A
+- also T2 comes along and tries to read on B
+- then write on B
+
+![](8.jpg)
+
+Now T2 is going to commit
+- under the **FORCE** policy, meaning that write right now
+- also as the **NO-STEAL** policy is applied, meaning you just write the records changed by T2.
+
+One way could be to make a copy of that page
+- with only the modifications from the commited transactions
+  
+![](9.jpg)
+
+After a while, we reallize T1 is going to abort.
+- then its really trivial to rollback its changes.
+- just go back record A values
+
+What would be the potential issues with this approach?
+- Every time we are trying to write something into disk, we have to make a copy of this entire page.
+- even though we have to write another tuple of the same page, we have to do multiple copies and writes.
+- we need to keep pages of all the transaction changes in memory before to commit. a huge load to afford.
+  - other systems would allow you to write multiple records simultaneously
+ 
+**NO-STEAL** + **FORCE**
+Is the easiest to implement
+- Never have to UNDO changes of an aborted txn because the changes were not written on disk
+- Never have to REDO changes of a commited txn because all changes are guaranteed to be written to disk at the commit time.
+
+Previous examples cannot support **WRITE SETS** that exceeds the amount of physical memory available
+
 ## SHADOW PAGING
+A variant of last approach is called shadow paging.
+- esentially it is a way to extension of this simple copy mechanisms
+- incremental copying approach
+
+Maintain Two separate **copies** of the database.
+- **MASTER**. contains only changes from commited txns
+- **SHADOW**. Temporary database with changes made from uncommited txns.
+
+Apply all the changes
+- from the uncommited txn. to the shadow copy.
+- and when a txn wants to commit you just flip those copies around
+- and let the database point to the shadow page.
+
+
+Txns only makea updates in the SHADOW copy.
+- When a txn commits, atomically switch the shadow to become the new master.
+
+BUFFER POOL POLICY: **NO-STEAL**+**FORCE**
+
+it would make the recovery pretty easy
+- no undo
+- no redo.
+
+### RUN THROUGH
+At high level you just have a specific page, both in disk and in memory.
+- to store the pointer of the root of the database.
+- and choose that to control which version of the database (master or shadow)
+- you are going to use
+  
+![](10.jpg)
+
+To install the updates,
+- overwrite the root so it points to the shadow
+  - thereby swapping the master and shadow
+- Before overwritting the root, none of the txn's updates are part of the disk-resident database
+- After overwritting the root, all the txn's updates are part of the disk-resident database.
+
+
 ## WRITE AHEAD LOG
+
+
 ## LOGGING SCHEMES
 ## CHECKPOINTS
