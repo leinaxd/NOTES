@@ -303,8 +303,238 @@ To install the updates,
 - After overwritting the root, all the txn's updates are part of the disk-resident database.
 
 
-## WRITE AHEAD LOG
+Again, we are assuming that this database has this root page
+- and then have several pages on the disk
+- as the current page table, called 'master' page table
+  - that are pointing to the corresponding pages onto disk
+  - all the master versions are pointing one-by-one
 
+Let's say a transaction T1 comes along
+- it first need to make an entire copy of this shadow page table.
+- At the beginning, because this transaction has not made any changes yet,
+  - the root pointer is pointing into the original master copy.
+    
+![](11.jpg)
+
+When the transaction needs to install any changes
+- it will apply them to that shadow copy
+
+![](12.jpg)
+
+Lastly, when the transaction wants to commit
+- it will update the database root page 
+- and flip then flip the root pointer to the shadow copy
+
+![](13.jpg)
+
+If the system happens to crash
+- it will reclaim the old version of the database
+
+![](14.jpg)
+
+
+A problem with Shadow paging is
+- we only allow 1 writting transaction at a time.
+  - it limits the concurrency controll
+- you could allow multiple writting transactions
+  - but you would need an additional mechanism, to track Transactions made which change
+
+### UNDO / REDO
+Supporting rollbacks and recovery is easy.
+- it's easy to rollback changes of uncommited txns, usually blow away all the shadow page table
+  - as well as the record or record page on the disk
+- it's easy to come back from recovery after power failure. because all changes would be unaffected
+
+
+**UNDO**, remove the shadow pages.
+- leave the master and the DB root pointer alone
+
+**REDO**, Not need at all.
+
+### DISSADVANTAGES
+Copying the entire page table is expensive:
+- Use a page table structured like a B+Tree
+- No need to copy entire tree, only  need to copy path in the tree that lead to updated leaf nodes
+
+Commit overhead is high:
+- Flush every updated page, page table, and root.
+- Data gets fragmented
+- Need garbage collection
+- Only supports one writter txn at a time or txns in a batch
+
+### SQLITE
+Real based systems rarely uses this shadow page technique
+- SQLite is an exception
+
+When a txn modifies a page, the DBMS copies the original page to a separate journal file before overwritting master version
+
+After restarting, if a journal file exists,
+- then the DBMS restores it to undo changes from uncommited txns.
+
+**journaling** technique
+- you make a copy before you modify a page
+- at a separate journalism file.
+- an additional copy of the original version
+- and then modify the values of the records on those pages in place-
+- when txn commits
+
+Let's say we have 3 pages in memory
+- and many pages on disk
+- and then there's a separate journalism file
+
+
+
+Say we have a transaction, that wants to make a modification on page 2
+- so you first copy in the journaling file
+  
+![](15.jpg)
+
+Then you can change Page 2 to page 2'
+- similarly you repeat this process for page 3
+
+![](16.jpg)
+
+Then let's say the Txn wants to commit.
+- it will just write to the regular database page on the disk
+
+![](17.jpg)
+
+Assume now, there's a power failure while writting page 2'
+- after restart memory will be cleaned up
+
+![](18.jpg)
+
+Then SQLite will recover the journalist pages, and write it back to disk
+
+![](19.jpg)
+
+
+### OBSERVATION
+Shadowing page requires the DBMS to perform writes to random non-contiguous pages on disk
+
+we need a way for the DBMS convert random writes into sequential writes.
+
+so we want to record the changes of different txn and metadata about those txns
+- and write those changes as sequential as possible
+
+an important limitation is that we are going to modify
+- one page at a time
+
+so even though you modify one record in a page
+- at the end of the day you have to write the entire page out to disk
+  
+## WRITE AHEAD LOG
+The techinique we are going to apply here is going to achieve the last observation made
+
+Maintain a log file separate from data files that contains the changes that txns make to database
+- assume that the log is on stable storage
+- Log contains enough information to perform the necessary undo and redo actions to restore the database
+
+DBMS must write to disk the log file records that correspond to changes made to a database object
+- **before** it can flush that object to disk
+
+If you want to rollback those changes,
+- just go through the log file and restore from the end to the beginning
+
+Buffer pool policy: **STEAL** + **NO-FORCE**
+
+### WAL PROTOCOL
+When the database is going to modify any record, instead of first making the modifications on the original page
+- we first write that modification on a separate log file
+- it doesn't really need to write the content of the entire page
+- it only needs to write into the log record about whatever it changes
+
+And then, before the transaction is trying to commit
+- overwrite the changes of these modified records
+- it will first make sure that all records are flashed onto the disk
+- later on, if there's some crash, it can comeback and see what content is in the log record
+
+when the txn is trying to commit
+- it only need to make sure, that all the pages that contains the log records
+- are flashed out
+
+It doesn't need to ensure, that the modifications in the pages
+- to be flashed upto the disk (NO-FORCE policy)
+
+The DBMS stages all the txn's log records in volatile storage
+- usually backed by buffer pool
+
+All log records pertaining to an updated page are written to non-volatile storage 
+- **before** the page itself is overwritten in non-volatile storage
+
+
+A txn is not considered commited until all its log records have been written to stable storage
+
+
+### WAL PROTOCOL (II)
+Write a **<BEGIN>** record to the log for each txn to mark its starting point
+- at this point the recorder would be in memory
+
+when a txn finishes, the DBMS will:
+- write a **<COMMIT>** record on the log
+- Make sure that all log records are flushed before it returns an aknowledgment to application.
+
+
+When a txn finishes, it will apply or append
+- a log record at the end
+- and then i'll need to ensure all the modifications
+- all the log records changes are flushed into disk
+
+### WAL PROTOCOL (III)
+Each log entry contains information about the changes to a single object.
+- Transaction ID
+- Object ID
+- Before Value (UNDO)
+- After Value (REDO)
+
+### EXAMPLE
+Let's say we have 1 txn that is trying to write 2 values
+
+![](20.jpg)
+
+Then we have a Write on A
+- the log record would have <Txn ID, Object ID, before value, after value>
+
+1. So the first step is to update the log record.
+2. Then we update the buffer pool with the new values
+
+![](21.jpg)
+
+And in the later on, we have this new write on B
+- and similarly we are going to install that value in the log file as well into the buffer pool page
+
+![](22.jpg)
+
+Later on, Txn commits
+- we first store the commits records into the log file in the Disk.
+
+so instead of doing all this random writes
+- we apply all those changes into disk sequentially as command by the log file.
+
+![](23.jpg)
+
+If the system crash, we still have the log records to recover.
+
+![](24.jpg)
+
+
+### CLARIFICATIONS
+When should the DBMS write log entries to disk?
+- when the txn commits
+- Can use group commit to batch **multiple log** flushes together to amorthize overhead
+
+A disadvantage would be 
+- each txn has to wait a little bit before commit
+- before you write out the commit record, you cannot tell the outside world you have commited.
+
+One thing to note, 
+- if certain transaction did not commit
+- you can still write your changes if the time window has passed
+- or if you have written down a long record
 
 ## LOGGING SCHEMES
 ## CHECKPOINTS
+
+
+## QUESTION
+- What if power failure happens right when you are writting an array of tuples...
