@@ -532,9 +532,154 @@ One thing to note,
 - you can still write your changes if the time window has passed
 - or if you have written down a long record
 
+### RUN THROUGH
+Let's say you have 2 transactions T1 and T2
+- T1 is writing on A and B
+
+![](25.jpg)
+
+Let's say that T1 stall for some time,
+- then T2 start its own transaction
+
+![](26.jpg)
+
+The system now reallize that the log file is big enough,
+- so it decides to begin flush those records to disk
+- it doesn't really need to wait T1 or T2 to commit.
+
+![](27.jpg)
+
+Later on, T2 comes back,
+- both T1 and T2 has stalled again (maybe they are waiting some read lock operation)
+
+![](28.jpg)
+
+If certain time has passed, 
+- they can still write these new batch of logs in the disk.
+
+![](29.jpg)
+
+### CLARIFICATIONS (II)
+When should the DBMS has to write dirty records to disk?
+- every time the txn executes an update
+- Once when the txn commits
+
+### BUFFER POOL POLICIES
+SHADOW PAGING = **FORCE** and **NO-STEAL**
+- the fastest at recovery time
+- slow at runtime as you write after each txn
+  
+WRITE AHEAD LOGGING = **NO-FORCE** and **STEAL** 
+- the fastest at runtime, as you write into the logfile
+  
+![](30.jpg)
+
+In practice, people would prefer faster runtime compared with fast recovery.
+- crashing would be rare
+  
+Almost every DBMS uses **NO-FORCE** + **STEAL**
+
+If you expect power issues.
+- solar panel
+- batery powered
+- baybe the other approach would be suitable.
+
+
 ## LOGGING SCHEMES
+**PHYSICAL LOGGING**,
+- recall the exact change into the disc
+- Record the changes made to a specific location in the database.
+- example **git diff**, which change into which line
+
+**LOGICAL LOGGING**
+- Record the high-level operations executed by txns
+- not necessary restricted to single page
+- Example. The **UPDATE**, **DELETE** and **INSERT** queries invoked by a txn
+
+### TRADE OFF
+Logical logging requires less data written in each log
+
+Difficult to implement recovery with logical logging if you have concurrent txns
+- hard to determine which parts of the database may have been modified by a query before crash
+- Also takes longer to recover because you must re-execute every txn all over again
+
+The logical logging is difficult to determine, which part is modified by which query and in which order 
+
+### PHYSIOLOGICAL LOGGING
+what people actually do is an hybrid approach.
+- log records target a single page but do not specify organization of the page.
+- identify tuples based on their slot number
+- Allows DBMS to reorganize pages after a log record has been written to disk
+
+this is the most popular approach
+
+#### RUN THROUGH
+In the physical approach you would record.
+- the table
+- the page
+- the specific offset of that value
+- and the before and after values.
+- also the change in the indexes as well
+  - every time you come back from a crash, you don't want to repopulate the entire index either.
+
+In the logical Logging approach you would record.
+- the query
+  - when you come back, you re-execute this query.
+
+In the Physiological approach you would record.
+- similar to the physical approach
+- but instead of recording the specific offset of this tuple.
+- you would record the slot of the tuple like 'A', 'B', 'X'
+- so when you recovery you are free to insert this tuple to what would be his new location
+
+![](31.jpg)
+
 ## CHECKPOINTS
+The WAL will grow forever
+
+after a crash, the DBMS must replay the entire log,
+- which will take a long time
+
+The DBMS periodically takes a checkpoint where it flushes all buffers out to disk
+
+- Output onto stable storage all logs records currently residing in main memory
+- output to the disk all modified blocks
+- write a **<checkpoint>** entry to the log and flush to stable storage
+
+![](32.jpg)
+
+Any txn that commited before the checkpoint is ignored T1
+- T2 and T3 did not commit before the last checkpoint
+- need to redo T2 because it commited after the checkpoint
+- Need to undo T3 because it did not commit before the crash
 
 
+### CHALLANGES
+The DBMS must stall txn when it takes a checkpoint to ensure a consistent snapshot
+
+scanning the log to find uncommited txns can take a long time
+
+Not obvious how often the DBMS should take a checkpoint
+
+### FREQUENCY
+Checkpointing too often causes the runtime performance to degrade
+- system spends too much time flushing buffers
+
+But waiting a long time is just as bad
+- the checkpoint will be large and slow
+- makes recovery time much longer
+
+## CONCLUSION
+Write ahead of time is almost always the best approach to handle loss of volatile storage
+
+Use incremental updates (**STEAL** + **NO-FORCE**) with checkpoints
+
+On recovery: Undo uncommited txns + REDO commited txns
+
+
+## NEXT CLASS
+Better Checkpoint Protocols
+
+Recovery with ARIES
 ## QUESTION
 - What if power failure happens right when you are writting an array of tuples...
