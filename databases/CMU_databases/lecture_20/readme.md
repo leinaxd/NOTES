@@ -270,9 +270,9 @@ At the end, write TXN-END log record
 
 Notice: **CLR**s never need to be undone
 
-## FUZZY CHECKPOINTING
 
-### NON-FUZZY CHECKPOINTS
+
+## NON-FUZZY CHECKPOINTS
 The DBMS halts everything when it takes a checkpoint to ensure a consistent snapshot
 - halt the start of any new txns
 - Wait until all active txns finish executing
@@ -316,5 +316,80 @@ We need an additional mechanism to deal with those uncommited values
 - **DIRTY PAGE TABLE (DPT)**
 
 ### ACTIVE TRANSACTION TABLE (ATT)
+One entry per currently active txn
+- **txnID**, Unique txn identifier
+- **status**, the current 'mode' of the txn
+- **lastLSN**, most recent LSN created by a txn
 
-## RECOVERY ALGORITHM
+Entries removed after the txn commits or aborts.
+
+Txn Status Codes:
+- **R** Running
+- **C** Commiting
+- **U** Candidate for UNDO
+
+### DIRTY PAGE TABLE (DPT)
+Keep track of which pages in the buffer pool
+- contains changes from uncommited transactions
+
+One entry per dirty page in the buffer pool.
+- **reclLSN**, the LSN of the log record that first caused the page to be dirty
+
+### RUN THROUGH
+At the first checkpoint T2 is still running and there is one dirty page **P22**
+
+In this example, we did 2 checkpoints
+- The first checkpoint, T1 has already finished
+- T2 is still running
+- So in the ATT would be just T2
+- and in the DPT table would be the dirty page 22
+  
+![](20.jpg)
+
+At the second checkpoint
+- T3 is active and there is one dirty page **P33**
+
+![](21.jpg)
+
+The problem with this slighly better approach is
+- you still need to stall all the current running writting transactions while checkpointing
+
+## FUZZY CHECKPOINTING
+A **Fuzzy checkpoint** is where the DBMS allows active txns to continue the run while the system flushes dirty pages to disk
+
+New logs records to track checkpoint boundaries.
+
+We are going to write 2 checkpoints records
+- **CHECKPOINT-BEGIN** indicates start of checkpoint
+- **CHECKPOINT-END** Contains ATT + DPT
+
+### RUN THROUGH
+The LSN of the CHECKPOINT-BEGIN record is written 
+- to the database **MasterRecord** entry on disk when the checkpoint successfully completes
+
+Any txn that starts after the checkpoint is excluded from the ATT in the CHECKPOINT-END record.
+
+When the CHECKPOINT-BEGIN is flushed.
+- the system would start to look at all the log records before that.
+- in the meantime, some other transactions can start
+- or existing transaction can still make modifications.
+  
+![](22.jpg)
+
+After the database has flushed everything before.
+- it would record a CHECKPOINT-END that contains the
+- Active Transaction Table
+- and the Dirty Page Table
+
+![](23.jpg)
+
+## ARIES RECOVERY PHASES
+**PHASE 1**, ANALYSIS
+- Read WAL from last **MasterRecord** to identify dirty pages in the buffer pool
+- and active txns at the same time of the crash
+
+**PHASE 2**, REDO
+- Repeat all actions starting from an appropiate point in the log (even txn that will abort)
+
+**PHASE 3**, UNDO
+- Reverse the actions of txns that did not commit before the crash
