@@ -52,6 +52,11 @@
 # LICENCE:
 #    1. (O)pen Source
 #    2. (C)ompercial
+# ARCHITECTURE: 
+#    1. (S)hare (E)verything
+#    2. (S)hare (M)emory
+#    3. (S)hare (D)isk
+#    4. (S)hare (N)othing
 # SYNTAX: customized sytax for each system
 
 
@@ -71,13 +76,18 @@ Amazon REDSHIFT:
   - OPERATOR_MODEL: (B)atch
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
-    
+  - ARCHITECTURE: (S)hare (D)isk
+  
+Amazon AURORA:
+  - ARCHITECTURE: (S)hare (D)isk
+
 Cloudera Impala:
   - QUERY: SQL
   - OPERATOR_MODEL: (P)ipeline
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
-    
+  - ARCHITECTURE: (S)hare (D)isk
+  
 DuckDB:
   - OPERATOR_MODEL: (B)atch
 
@@ -86,7 +96,10 @@ Greenplum:
   ISOLATION LEVEL: 
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (R)ead (C)ommited
-    
+
+HBASE:
+  - ARCHITECTURE: (S)hare (D)isk
+  
 HECKATON:
   - MVCC:
     - PROTOCOL: MV-OCC
@@ -185,7 +198,8 @@ NuoDB:
     - VERSION STORAGE: APPEND ONLY
     - GARBAGE COLLECTION: VACUUM
     - INDEXES: LOGICAL
-    
+  - ARCHITECTURE: (S)hare (D)isk  
+  
 ORACLE:
   - OPERATOR_MODEL: (P)ipeline / (B)atch
   - ACCESS_METHOD: 
@@ -203,7 +217,13 @@ ORACLE:
     - VERSION STORAGE: DELTA
     - GARBAGE COLLECTION: VACUUM
     - INDEXES: LOGICAL
-    
+
+ORACLE EXADATA:
+  - ARCHITECTURE: (S)hare (D)isk
+
+ORACLE RAC:
+  - ARCHITECTURE: (S)hare (D)isk
+  
 PostgreSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
@@ -226,10 +246,14 @@ PostgreSQL:
         
 PRESTO:
   - OPERATOR_MODEL: (B)atch
-
+  - ARCHITECTURE: (S)hare (D)isk
+  
 REDIS:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
+
+ROCKSET:
+  - ARCHITECTURE: (S)hare (D)isk
 
 SAP HANA:
   - ISOLATION LEVEL: 
@@ -246,6 +270,10 @@ ScaleDB:
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (R)ead (C)ommited
 
+SNOWFLAKE:
+  - OPERATOR_MODEL: (B)atch
+  - ARCHITECTURE: (S)hare (D)isk
+  
 SQLite:
   - QUERY: SQL
   - MAIN_STORAGE: (D)ISK
@@ -264,10 +292,19 @@ SQLServer:
   ISOLATION LEVEL: 
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (S)erializable
-    
-SNOWFLAKE:
-  - OPERATOR_MODEL: (B)atch
 
+sqrrl:
+  - ARCHITECTURE: (S)hare (D)isk
+
+SPANNER:
+  - ARCHITECTURE: (S)hare (D)isk
+  
+splice machine:
+  - ARCHITECTURE: (S)hare (D)isk  
+
+Stinger:
+  - ARCHITECTURE: (S)hare (D)isk
+  
 TERRADATA:
   - PROCESS_MODEL: 
     - (T)hread per (W)orker
@@ -285,6 +322,9 @@ VoltDB:
   ISOLATION LEVEL: 
     - DEFAULT: (S)erializable
     - MAXIMUM: (S)erializable
+
+YugaByte:
+  - ARCHITECTURE: (S)hare (D)isk
   
 /*
 - MAIN_STORAGE o - STORAGE_MANAGER? 
