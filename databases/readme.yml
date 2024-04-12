@@ -53,10 +53,10 @@
 #    1. (O)pen Source
 #    2. (C)ompercial
 # ARCHITECTURE: 
-#    1. (S)hare (E)verything
-#    2. (S)hare (M)emory
-#    3. (S)hare (D)isk
-#    4. (S)hare (N)othing
+#    1. (S)hare (E)verything, single node
+#    2. (S)hare (M)emory, one centralized memory
+#    3. (S)hare (D)isk, one disk storage, many nodes
+#    4. (S)hare (N)othing, many cpu-memory-disk units
 # SYNTAX: customized sytax for each system
 
 
@@ -68,10 +68,11 @@ ACTIAN INGRES:
     - MAXIMUM: (S)erializable
 
 AEROSPIKE:
-  ISOLATION LEVEL: 
+  - ISOLATION LEVEL: 
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (R)ead (C)ommited
-
+  - ARCHITECTURE: (S)hare (N)othing
+  
 Amazon REDSHIFT:
   - OPERATOR_MODEL: (B)atch
   - ACCESS_METHOD: 
@@ -81,22 +82,68 @@ Amazon REDSHIFT:
 Amazon AURORA:
   - ARCHITECTURE: (S)hare (D)isk
 
+ASSASSIN:
+  - ARCHITECTURE: (S)hare (N)othing
+
+CASANDRA:
+  - ARCHITECTURE: (S)hare (N)othing
+  
+ClickHouse:
+  - ARCHITECTURE: (S)hare (N)othing
+
 Cloudera Impala:
   - QUERY: SQL
   - OPERATOR_MODEL: (P)ipeline
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
   - ARCHITECTURE: (S)hare (D)isk
+
+Clustrix:
+  - ARCHITECTURE: (S)hare (N)othing
+
+Cockroach LABS:
+  - ARCHITECTURE: (S)hare (N)othing
+
+ComDB2:
+  - ARCHITECTURE: (S)hare (N)othing
+
+Couchbase:
+  - ARCHITECTURE: (S)hare (N)othing
+
+CreateDB:
+  - ARCHITECTURE: (S)hare (N)othing
+
+CitrusData:
+  - ARCHITECTURE: (S)hare (N)othing
   
+Dgraph:
+  - ARCHITECTURE: (S)hare (N)othing
+
 DuckDB:
   - OPERATOR_MODEL: (B)atch
 
+etcd:
+  - ARCHITECTURE: (S)hare (N)othing
+
+Exasol:
+  - ARCHITECTURE: (S)hare (N)othing
+
+FAUNA:
+  - ARCHITECTURE: (S)hare (N)othing
+
+FOUNDATIONDB:
+  - ARCHITECTURE: (S)hare (N)othing
+
+GEODE:
+  - ARCHITECTURE: (S)hare (N)othing
+  
 Greenplum:
   - OPERATOR_MODEL: (P)ipeline
   ISOLATION LEVEL: 
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (R)ead (C)ommited
-
+  - ARCHITECTURE: (S)hare (N)othing
+  
 HBASE:
   - ARCHITECTURE: (S)hare (D)isk
   
@@ -106,6 +153,9 @@ HECKATON:
     - VERSION STORAGE: APPEND ONLY
     - GARBAGE COLLECTION: COOPERATIVE
     - INDEXES: PHYSICAL
+
+HStore:
+  - ARCHITECTURE: (S)hare (N)othing
 
 HYPER:
   - MVCC:
@@ -134,7 +184,13 @@ IBM DB2:
   - LICENCE: (C)omercial
   - SYNTAX:
     - RUNSTATS: update internal statistics
-    
+
+InfiniDB:
+  - ARCHITECTURE: (S)hare (N)othing
+
+KINETICA:
+  - ARCHITECTURE: (S)hare (N)othing
+
 MEMSQL:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
@@ -148,7 +204,7 @@ MEMSQL:
     - VERSION STORAGE: APPEND ONLY
     - GARBAGE COLLECTION: VACUUM
     - INDEXES: PHYSICAL
-    
+  - ARCHITECTURE: (S)hare (N)othing  
 monetdb:
   - OPERATOR_MODEL: (M)aterialization
   - STORAGE_MODEL: (DSM) (column store)
@@ -158,7 +214,8 @@ MongoDB:
   - TYPE:  Documents
   - MAIN_STORAGE: (D)isk
   - OPERATOR_MODEL: (P)ipeline
-
+  - ARCHITECTURE: (S)hare (N)othing
+  
 MySQL:
   - QUERY: SQL
   - MAIN_STORAGE: (D)isk
@@ -251,6 +308,10 @@ PRESTO:
 REDIS:
   - QUERY: SQL
   - MAIN_STORAGE: (M)emory
+  - ARCHITECTURE: (S)hare (N)othing
+
+RethinkDB:
+  - ARCHITECTURE: (S)hare (N)othing
 
 ROCKSET:
   - ARCHITECTURE: (S)hare (D)isk
@@ -269,6 +330,9 @@ ScaleDB:
   - ISOLATION LEVEL: 
     - DEFAULT: (R)ead (C)ommited
     - MAXIMUM: (R)ead (C)ommited
+
+SciDB:
+  - ARCHITECTURE: (S)hare (N)othing
 
 SNOWFLAKE:
   - OPERATOR_MODEL: (B)atch
@@ -308,13 +372,19 @@ Stinger:
 TERRADATA:
   - PROCESS_MODEL: 
     - (T)hread per (W)orker
+  - ARCHITECTURE: (S)hare (N)othing
+  
+TiDB:
+  - ARCHITECTURE: (S)hare (N)othing
 
+VECTOR WISE:
+  - OPERATOR_MODEL: (B)atch
+  
 VERTICA:
   - OPERATOR_MODEL: (P)ipeline
   - ACCESS_METHOD: 
     - SECUENTIAL_SCAN: (Z)one (M)aps
-VECTOR WISE:
-  - OPERATOR_MODEL: (B)atch
+  - ARCHITECTURE: (S)hare (N)othing
 
 VoltDB:
   - MAIN_STORAGE: (M)emory
@@ -322,9 +392,13 @@ VoltDB:
   ISOLATION LEVEL: 
     - DEFAULT: (S)erializable
     - MAXIMUM: (S)erializable
+  - ARCHITECTURE: (S)hare (N)othing
+  
+Yellowbrick:
+  - ARCHITECTURE: (S)hare (N)othing
 
 YugaByte:
-  - ARCHITECTURE: (S)hare (D)isk
+  - ARCHITECTURE: (S)hare (D)isk / (S)hare (N)othing
   
 /*
 - MAIN_STORAGE o - STORAGE_MANAGER? 
