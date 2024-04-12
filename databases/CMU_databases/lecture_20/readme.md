@@ -393,3 +393,183 @@ After the database has flushed everything before.
 
 **PHASE 3**, UNDO
 - Reverse the actions of txns that did not commit before the crash
+
+
+### OVERVIEW
+Start form last **BEGIN-CHECKPOINT** found by the **MasterRecord**
+- **ANALYSIS**, figure out which txn commited or failed since checkpoint
+
+![](24.jpg)
+
+- **REDO**, repeat all actions
+  - the recLSN is the smallest LSN since last time i've flushed the disk
+    
+![](25.jpg)
+
+- **UNDO**, Reverse effects of failed txn
+  - what would be the oldest log record of the active txn before crash
+    
+![](26.jpg)
+
+### ANALYSIS PHASE
+Scan log forward from last successful checkpoint
+
+if you find a **TXN-END** record, remove its corresponding **ATT**
+
+All other records
+- add txn to **ATT** with status **UNDO**
+- On commit, change txn status to **COMMIT**
+
+For **UPDATE** records
+- If page **P** not in **DPT**
+  - add **P**  to **DPT**
+  - set its **recLST=LSN**
+ 
+At the end of the Analysis phase
+- **ATT** identifies which txn were active at time of crash
+- **DPT** identifies which dirty page might not have made it to the disk
+
+#### RUN THROUGH
+Let's assuming we are recovering after the crash.
+- The example start with the beginning checkpoint
+
+![](27.jpg)
+
+Then a modification is applied
+- we are scanning this write ahead logging file
+- we are going to record the ID of the transaction and the status of this txn which happens to be UNDO
+
+![](28.jpg)
+
+Then we are going to record the page that has been modified
+
+![](29.jpg)
+
+After that we continue our analysis phase.
+- say we have encountered this checkpoint-end
+- we have encountered this additional information (see the ATT table)
+  - that may would happened before the CHECKPOINT-BEGIN even started
+  
+![](30.jpg)
+
+Now we keep scanning this log record
+- and we found this Transaction 96 had commited
+- so we have to update T96 to status **C**
+  
+![](31.jpg)
+
+After a while we see that T96 has and TXN-END command
+- meaning that we have completed all the processing for the T96 and we are allow to discard it now
+  
+![](32.jpg)
+
+### REDO PHASE
+The goal is to repeat history to reconstruct state at the moment of the crash.
+- Reapply all updates (even aborted txns!) and redo CLRs
+
+There are techniques that allow the DBMS to avoid unnecessary reads/writes, but we will ignore that in this lecture...
+
+scan forward from the log record containing the smallest **recLSN** in **DPT**
+
+For each update log or **CLR** with a given **LSN**, REDO the action unless.
+- Affected page is in **DPT** but that record's **LSN** is less than the page **recLSN**
+
+To REDO an action
+- Reapply logged action
+- Set **pageLSN** to log record's LSN
+- No additional logging, no forced flushes
+
+At the end of REDO phase, write **TXN-END** log record for all txns with status **C** and remove them from the **ATT**
+
+### UNDO PHASE
+Undo all the Txns that were active at the time of crash
+- and therefore never commit
+- these are all the txns with **U** status in the **ATT** after the analysis phase.
+
+
+Process them in reverse LSN order using the **lastLSN** to speed up traversal
+
+Write a **CLR** for every modification
+
+### RUN THROUGH
+Let's say we have this log record content on the right
+- we have a very quick checkpoint between beginning and end
+
+![](33.jpg)
+
+Assume we already finish this analysis phase.
+- we start to undo
+
+First look at this transaction T1
+- that has not commited
+
+![](34.jpg)
+
+After that we have finished processing T1 and we commit TXN-END
+
+![](35.jpg)
+
+Now assume you have additional changes
+- and system crashed
+  
+![](36.jpg)
+
+--- 
+
+After come back, we analyze now how to come back from that crash.
+
+The analysis Phase has been already done
+
+![](37.jpg)
+
+So first we undo T2 last modification
+
+![](38.jpg)
+
+We do the same for T3
+- we flush everything onto disk
+  
+![](39.jpg)
+
+But assume that before we have finished this whole process
+- the system crashed again
+
+that means that our Analysis phase would be gone
+- We didn't even have created a checkpoint either.
+  
+![](40.jpg)
+
+This time we have to REDO the complete analysis,
+- but we know this time we have finished processing T3
+- so we can actually remove T3 from my Active Transaction Table
+
+
+So i have to just deal with T2
+
+![](41.jpg)
+
+## ADDITIONAL CRASH ISSUES
+What does the DBMS do if it crashes during recovery in the analysis phase?
+- Nothing, just run recovery again
+
+What does the DBMS do if it crashes during recovery in the REDO phase?
+- Nothing, just redo everything again
+
+How can the DBMS improve performance during recovery in the REDO phase?
+- Assume that it is not going to crash again and flush all changes to disk asynchronously in the background
+
+How can the DBMS improve performance during recovery in the UNDO phase?
+- Lazily rollback changes before new txn access pages
+- Rewrite the application to avoid long-running txns
+
+## CONCLUSION
+Main ideas of ARIES
+- WAL with NO-FORCE + STEAL
+- Fuzzy checkpoints (snapshot of dirty page ids)
+- Redo everything since the earliest dirty page
+- Undo txns that never commits
+- Write CLRs when undoing, to survive failures during restarts
+
+Log Sequence Numbers
+- LSNs identify Log records, linked into backwards chains per transaction via **prevLSN**
+- **pageLSN** allows comparison of data page and log records
