@@ -355,6 +355,173 @@ Let's say we have 3 replication of this data.
 
 ![](23.jpg)
 
-Examples are 
+Implementations are 
+
 ![](24.jpg)
+
+### LOGICAL PARTITIONING
+Partitioning the data, doesn't mean that the data has to be in different machines
+
+Let's say this shared nothing has 4 tuples stored
+- for example managed by Amazon S3
+- what i do care is which nodes are responsible for which tuples
+
+![](25.jpg)
+
+### PHYSICAL PARTITIONING
+Common in the shared nothing scenario
+
+the first node can have tuple 1 and 2
+- while the second node can have tuple 3 of 4
+
+![](26.jpg)
+
+### SINGLE NODE VS DISTRIBUTED
+Examples seen before, all txns access data on a single node.
+
+A Single node txn has only accesses data that is contained on one partition
+- the DBMS does not need coordinate the behaviour concurrent txn running on other nodes
+
+In practice you have to access that is not in your current node.
+
+A distributed architecture, txn accesses data at one or more partitions
+- requires expensive coordination
+
+
+If all the txn would be single node, then the distributed database would be very easy.
+- all you need to do, is to partition the data on different machines
+- and figure our which data is on which machine.
+
+What would be challenging on distributed databases would be this distributed transactions.
+- when you need to access data on different machines and a lot of coordination needs to happen
+
+### TRANSACTION COORDINATION
+If our DBMS supports multi-operation and distributed txn.
+- we need a way to coordinate their execution in the system
+
+Two different approach
+- CENTRALIZED, global 'traffic cop'
+- DECENTRALIZED, Nodes organize themselves
+
+### TP MONITORS (transaction processing)
+This is the very first centralized approach
+
+A TP monitor is an example of a centralized coordinator for distributed DBMS.
+
+Originally developed in 1970-80 to provide txns between terminals and mainframe databases.
+- examples, ATMS, airline reservations
+
+Many databases now support the same functionality internally
+
+### CENTRALIZED COORDINATOR
+Let's say a Query needs to access on to these 3 different partitions.
+
+The coordination is going to lock these 3 different partitions
+- and then it sends an acknowledgement
+
+This way the user can change the content of those partitions.
+
+![](27.jpg)
+
+In newer systems those locks are granted in a finner level
+- table, page, tuple
+
+![](28.jpg)
+
+when the system wants to commit, it would access to each of the partitions
+- to ask if it's safe to commit
+- if every transaction is ready to commits
+- then it goes back to the central coordinator and acknowledge that commit operation
+- and then release all the locks
+
+![](29.jpg)
+
+There are systems actually using this system,
+- TRANSARC, from CMU
+
+
+What happened a little bit later,
+- instead of a simple coordinator
+- build a **MIDDLEWARE** that would hide all those lockings
+
+When the application server sends the request,
+- it doesn't need to know which data is on which machine
+
+Inside this middleware, 
+- it actually maintains all the information about which information is on which partition
+- also this middleware is responsible to maintain the lock request table
+
+
+![](30.jpg)
+
+Also the Middleware is handling the commit request
+
+![](31.jpg)
+
+Facebook Has the largest MySQL cluster in the world
+- that is managed using this approach
+- Also youtube uses this approach called vertice
+- google used to use this system as well
+
+### DECENTRALIZED COORDINATOR
+Each node has the ability to commit a transaction
+
+when an application server sends a request.
+- it will actually find a **master node**
+- that would be responsible of all the coordination.
+
+![](32.jpg)
+
+Also the master node is responsible to validate all commits. 
+
+![](33.jpg)
+
+Every node in this topology has the ability to handle and commit transactions
+
 ## DISTRIBUTED CONCURRENCY CONTROL
+Need to allow multiple transactions to execute simultaneously across multiple nodes.
+- Many of the same protocols from single-node DBMS can be adapted
+
+This is harder because of
+- Replication
+- Network Communication Overhead
+- Node Failures
+- Clock Skew
+
+We are trying to control the concurrency control of a distributed transaction
+- many of the ideas we use in single node transaction still are going to apply
+  - Timestamp ordering, 2 Phase logging, etc.
+
+what we do here is handling additional steps
+
+### 2PL EXAMPLE
+We have 2 applications servers
+- also we have 2 nodes.
+
+First application wants to set record A to 2
+
+Second wants to set record B to 7
+
+Nodes can lock their corresponding nodes or specific records
+
+![](34.jpg)
+
+But then, what if the application server wants the inaccessible corresponding other record?
+- they would encounter a deadlock
+
+
+![](35.jpg)
+
+A possible solution would be to construct the wait-for graph
+- and scan for cycles
+  
+![](36.jpg)
+
+In distributed system we need a way to coordinate those different nodes
+- we have to consider network delay also
+- we don't want to misuse the network very frequently
+  
+
+## CONCLUSION
+We have scratched the surface of distributed DBMS
+- it is hard to get it right
