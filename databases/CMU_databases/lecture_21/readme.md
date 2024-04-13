@@ -525,3 +525,9 @@ In distributed system we need a way to coordinate those different nodes
 ## CONCLUSION
 We have scratched the surface of distributed DBMS
 - it is hard to get it right
+
+Next class would be about
+- DISTRIBUTED OLTP SYSTEMS
+- REPLICATION
+- CAP THEOREM
+- REAL-WORLD SCENARIOS
