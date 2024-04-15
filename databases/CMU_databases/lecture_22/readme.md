@@ -448,9 +448,27 @@ This is hard and nobody does it well
 - Lots of data copying
 
 It can ve view as a coordinator
-
+- the communication channels are called 'connectors'
+  
 ![](30.jpg)
 
+Postgres actually gives you the option of using a federated database called 'FOREIGN DATA WRAPPER'
+- you can hook up 'fake customized table' with an external database
+- you can define a table using 'forwarding data wrapper' and this would be backed up by different DBMS systems
+
+![](31.jpg)
+
+### CONCLUSIONS
+We assumed that the nodes in our database distributed DBMS are friednly
+
+Blockchain databases assume that the nodes are adversarial.
+- this means you must use different protocols to commit transactions
+
+If nodes behave maliciously, then it would be a complete different scenario
+- you would use byzantine failure for tolerant protocol
+
+### NEXT CLASS
+DISTRIBUTE OLAP SYSTEMS
 
 ## QUESTIONS
 - What if the participant after 'commiting' is destroyed
