@@ -211,7 +211,106 @@ After some time, the Txn N+1 agrees to commit,
 
 A problem here is Denial of Service.
 - if you continuously submit a txn it will always block the older ones.
+
+### MULTI-PAXOS
+
+If we have to continue with this restriction of having to keep the serial order of commiting transaction.
+- it's better to have just one person to propose. one proposer. No competetition
+
+The leader would rotate between different nodes.
+- for example every 10 sec.
+- the leader would be chosen through another PAXOS round
+  
+If the system elects a single leader that oversees proposing changes for some period,
+- then it can skip the **propose** phase
+- fall back to full Paxos whenever there is a failure
+
+The system periodically renews who the leader is using another Paxos round.
+- Nodes must exchange log entries during leader election
+- to make sure that everyone is up to date
+
+### 2PC vs PAXOS
+**Two Phase Commit**
+- Blocks if coordinator fails after the prepare message is sent, until coordinator recovers.
+- for an optimistic environment, failures are rare
+  
+**PAXOS**
+- Non-Blocking if a majority participants are alive, provided there is a sufficiently long period without further failures.
+- for a pessimistic environment where failures are frequently
+  
 ## REPLICATION
+The DBMS can replicate data across **redundant nodes** to increase avilability
+
+Design decisions
+- Replica configurations
+- Propagation scheme
+- Propagation timing
+- Update method
+
+### CONFIGURATION
+**APPROACH 1**, PRIMARY-REPLICA
+- All updates go to a designated primary for each object
+- The primary propagates updates to its replicas without an atomic commit protocol
+- Read only txns may be allowed to access replicas
+- If the primary goes down, then hold an election to select a new primary
+
+**APPROACH 2**, MULTI-PRIMARY
+- Txns can update data objects at any replica
+- Replicas must synchronize with each other using an atomic commit protocol
+
+In Practice, most databases do fin in just one machine.
+
+#### RUN THROUGH
+**PRIMARY REPLICA SCENARIO**
+- one primary and many replicas.
+- all the writes go to the primary
+
+After the primary completes all the writes, then it transfer that to the replicas.
+- that would execute the reads
+
+![](19.jpg)
+
+**MULTI-PRIMARY REPLICAS**
+- all the reads and writes goes into those nodes
+- when there is a conflict, you have to do some coordination between different copies of the data
+
+![](20.jpg)
+
+
+### K-SAFETY
+The number of data copies that should exits in the system.
+
+K-Safety is a threshold for determining the fault tolerance of the replicated database.
+
+The value **K** represents the number of replicas per data object that must always be available.
+
+If the number of replicas goes  below this threshold,
+- then the DBMS halts execution and takes itself offline.
+
+
+### PROPAGATION SCHEME
+How do the system propagates all the changes on a replicated database.
+
+Whether you have to wait all the copies of the data,
+- to be successfully written
+- or you can return into the client while processing the replicas.
+
+Propagation levels
+- Synchronous (Strong consistency)
+- Asynchronous (Eventual consistency)
+
+#### SYNCHRONOUS
+The primary sends updates to replicas and then waits for them to acknowledge that they fully applied (logged) the chanes.
+
+so you have the replica to flush into the disk
+
+![](21.jpg)
+
+#### ANSYNCHRONOUS
+The primary immediately returns the  acknowledgement without waiting the replicas to apply the changes
+
+![](22.jpg)
+
 ## CONSISTENCY ISSUES (CAP)
 ## FEDERATED DATABASES
 
@@ -222,3 +321,4 @@ A problem here is Denial of Service.
 2 types of faults
 - server down
 - server destroyed
+
