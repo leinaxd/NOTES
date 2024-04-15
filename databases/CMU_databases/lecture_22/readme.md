@@ -299,6 +299,8 @@ Propagation levels
 - Synchronous (Strong consistency)
 - Asynchronous (Eventual consistency)
 
+Typically systems support both options to the usert to decide.
+
 #### SYNCHRONOUS
 The primary sends updates to replicas and then waits for them to acknowledge that they fully applied (logged) the chanes.
 
@@ -311,8 +313,144 @@ The primary immediately returns the  acknowledgement without waiting the replica
 
 ![](22.jpg)
 
+### PROPAGATION TIMING
+When would be the time when you propagate such log records 
+
+**APPROACH 1**, CONTINUOUS
+- The DBMS sends log messages immediately as it generates them
+- also need to send a commit/abort message
+
+**APPROACH 2**, ON COMMIT
+- The DBMS only sends the log messages for a txn to the replicas once the txn is commits
+- do not waste time sending log records for aborted txns
+- Assumes that a txn's log records fits entirely in memory
+
+### ACTIVE VS PASSIVE
+**APPROACH 1** ACTIVE-ACTIVE
+- A txn executes at each replica inependently
+- Need to check at the end whether the txn ends up with the same result at each replica
+
+Instead of having one of the nodes making changes from the transactions and propagate those changes later.
+- assuming you have 3 replicas
+- you send 3 copies of the queries to each replica.
+- instead of doing that computation in one machine and replicating results.
+
+very unfrequently used
+
+**APPROACH 2** ACTIVE-PASSIVE
+- Each txn executes at a single location and propagates the changes to the replica
+- Can either do physical or logical replication
+- Not the same as Primary replica vs Multi-Primary
+
+One primary a few replicas
+- just propagate the results
+
 ## CONSISTENCY ISSUES (CAP)
+**CAP THEOREM**
+proposed by Eric Brewer that it is impossible for a distributed system to always be:
+- Consistent
+- Always available
+- Network partition Tolerant
+
+Proved in 2002 
+
+Consistency would be similar to the linearizability
+- at the end of the day, the state of the database would be equivalent to some serial executed schedule of transactions.
+
+Availability would mean that,
+- all the nodes available, are able to accept the request
+
+Partition Tolerant would mean that,
+- the system is going to still operate, even there is a network failure and some nodes cannot communicate with other nodes.
+
+![](23.jpg)
+
+
+What would be the difference between linearizability and seriability?
+- linearibility is from distributed databases, a set of txn would be scheduled at a specific serial order
+- serializability, the execution of txn would be equivalent to some serial order
+
+### EXAMPLE
+**CAP CONSISTENCY**
+Here we have 2 application servers
+- we have 2 nodes in our database
+- we have a good network
+
+First we have our first update on record A
+- it updates the primary database
+- then tryies to update the replica one
+
+![](24,jpg)
+
+Assuming we have a syncronous replication scheme
+- the system would be consistent
+- you would immediately propage the changes to the replica
+
+![](25.jpg)
+
+After that a new read transaction comes along to read succesffuly the record A
+
+**CAP AVAILABILITY**
+Assume one node is down,
+- Application 1 can read normally from primary
+- and get its result back
+
+![](26.jpg)
+
+If the other server wants to access the data it has to skip the replica server into the primary one
+
+![](27.jpg)
+
+This would satisfy the availability requirement
+
+**PARTITION TOLERANT**
+- if there's a network failure
+- those nodes cannot communicate each others
+
+As nodes can't talk with each others,
+- then we can't guarantee availability
+- each node doesn't know if the other system is dead or not
+
+![](28.jpg)
+
+The network would split into a separated network.
+
+At some point later, when network comes back
+- the two systems would be in an inconsistent state
+
+![](29.jpg)
+
+### OBSERVATION
+How a DBMS handles failure determines which elements of the CAP theorem they support
+
+**TRADITIONAL/NewSQL DBMS** (in memory)
+- Stop allowing updates until a majority of nodes are reconnected
+
+**NoSQL DBMS**
+- Provide mechanisms to resolve conflicts  after nodes are reconnected
+
 ## FEDERATED DATABASES
+We have assumed that the nodes in our distributed systems are running the same DBMS software.
+
+Bur organizations often run many different DBMS in their applications
+
+it would be nice, if we could have a single interface for all our data
+
+In a Bank, there could be diffent systems for different workloads.
+
+**FEDERATED DATABASES**
+Distributed architecture that connects together multiple DBMSs into a single logical system
+- A query can access data from any location
+
+This is hard and nobody does it well
+- Different data models, query languages, limitations
+- No easy way to optimize queries
+- Lots of data copying
+
+It can ve view as a coordinator
+
+![](30.jpg)
+
 
 ## QUESTIONS
 - What if the participant after 'commiting' is destroyed
