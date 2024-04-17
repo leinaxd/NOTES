@@ -244,8 +244,65 @@ SELECT * FROM R JOIN S
 ```
 
 Because the data is replicated, you can perform the join in both machines
+- then you have to aggregate both results in order to output the final result
 
 ![](11.jpg)
 
+You don't need to move the data of the original values in any of the relations.
+
+
+### SCENARIO (II)
+Tables are partitioned on the join attribute. Each node performs the join on local data and then sends to a node for coalescing.
+
+The both tables may be both pretty big.
+- you would have not the luxury to replicate the table in both machines
+- but then you might have the same partition key as the join key.
+
+for all the data that resides in a particular node it would contain
+- all the tuples from both relations
+- that have the same range in terms of this join
+- it's also a straightforward operation
+
+it doesn't require the direct movement of tuples
+
+![](12.jpg)
+
+
+you can actually design the partition scheme to be the more beneficial to the common queries in the workload 
+
+### SCENARIO (III) BROADCASTING
+Both tables are partitioned on different keys.
+- if one table is small then the DBMS 'broadcast' that table to all nodes
+
+In this example table **S** was copied to both sides
+
+![](13.jpg)
+
+### SCENARIO (IV) SHUFFLING
+Both tables are not partitioned on the join key.
+- the DBMS copies the tables by 'shuffling' them across nodes.
+
+![](14.jpg)
+
+In this example you have to reshufle/repartition the both relations
+
+![](15.jpg)
+
+### SEMI-JOIN
+Type of query after perform the join
+- you actually require data from one side of the relationship
+
+Distributed DBMS use SEMI-JOIN to minimize the amount of data sent during joins
+- this is like a projection pushdown
+
+Some DBMS supports SEMI JOIN SQL syntax. otherwise you fake it with EXISTS
+
+```
+SELECT R.id FROM R JOIN S
+    ON R.id = S.id
+ WHERE R.id IS NOT NULL
+```
+
+![](16.jpg)
 
 ## CLOUD SYSTEMS
