@@ -295,14 +295,82 @@ Type of query after perform the join
 Distributed DBMS use SEMI-JOIN to minimize the amount of data sent during joins
 - this is like a projection pushdown
 
-Some DBMS supports SEMI JOIN SQL syntax. otherwise you fake it with EXISTS
-
 ```
 SELECT R.id FROM R JOIN S
     ON R.id = S.id
  WHERE R.id IS NOT NULL
 ```
 
+Here you just move data from S to R
+
 ![](16.jpg)
 
+But instead of moving the entire tuple
+- you just move the ids of that records
+
+![](17.jpg)
+
+Some DBMS supports SEMI JOIN SQL syntax. otherwise you fake it with EXISTS
+
+![](18.jpg)
+
 ## CLOUD SYSTEMS
+Vendors provide **database-as-a-service** (DBaaS) offerings that are managed DBMS environments.
+
+Newer systems are starting to blur the lines between shared-nothing and shared-disk
+- Example, you can do simple filtering in AMAZON S3, before copying data to compute nodes.
+
+There are actually 2 types of CLUD SYSTEMS
+
+**APPROACH 1** MANAGED DBMS
+- No significant modification to the DBMS to be 'aware' that it is running in a cloud environment
+- Examples: most vendedors
+
+**APPROACH 2** CLOUD-NATIVE DBMS
+- The system is designed explicitly to run in a cloud environment
+- Usually based on a shared-disk architecture
+- Examples: Snowflake, Google BigQuery, Amazon Redshift, Microsoft SQL Azure
+
+### SERVERLESS DATABASES
+Rather than alays maintaining compute resources for each customer, 
+- a 'serverless' DBMS evicts tenants when they become idle.
+
+Its like a pricing model, 
+- resorces are withowed on demand
+- i got billed by the amount of computation used when executing queries.
+
+Then i go to sleep, go to rest
+- and i don't need to access databases for now
+- in order to save money,
+
+The managed DBMS would charge you for the designed node.
+
+![](19.jpg)
+
+Then in the cloud-native pricing model
+- the DBMS evicts tenants when they become idle
+- typically a shared-disk architecture
+
+The system can choose rather to write content in the buffer pool, before go been evicted.
+- or just shut the middle node down, you won't be charged by that writting
+  
+![](20.jpg)
+
+when the system comes back, it can optionally recover the buffer pool, and continue it's workload
+
+![](21.jpg)
+
+Implementations
+- Amazon, Fauna, microsoft SQL azure, Google Big Query
+  
+![](22.jpg)
+
+### DISSAGREGATED COMPONENTS
+**SYSTEM CATALOGS**
+- HCatalog, Google Data Catalog, Amazon Glue Data Catalog
+
+**NODE MANAGEMENT**
+- KUBERNETES, APACHE YARN, Clud vendor tools
+
+**QUERY OPTIMIERS**
+- Greenplum Orca, Apache Calcite
