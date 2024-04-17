@@ -374,3 +374,57 @@ Implementations
 
 **QUERY OPTIMIERS**
 - Greenplum Orca, Apache Calcite
+
+
+Amazon S3, if you build you distributed Database.
+- with this shared data stored in S3, you can actually expose your data to other services
+  - analytical tools, machine learning
+ 
+With those general purpose data services
+- you might not be able to fully utilize the system and optimize as efficient as you would want
+
+### UNIVERSAL FORMATS
+Most DBMS usa a proprietary on-disk binary file format to their databases.
+- Think of the BusTub page types
+
+The only way to share data between systems is to convert data into a common text-based format
+- examples, CSV, JSON, XML
+
+There are new open-source binary file formats that make it easier to access data across systems
+
+
+**Approach 1**
+- you can store data in the Universal open format
+
+**Approach 2**
+- you can still store your data in your own format, but then
+- you could provide mechanisms to transalte your format to an open source format
+- easier to move data along
+
+
+
+Open source choices.
+
+**APACHE PARQUET**
+- Compressed columnar storage from Cloudera/Twitter
+
+**APACHE ORC**
+- Compressed columnar storage from Apache Hive
+
+**APACHE CARBON DATA**
+- Compressed columnar storage with indexes from Huawei
+
+**APACHE ICEBERG**
+- Flexible data format that supports schema evolution from Netflix
+
+**HDF5**
+- Multi-dimensional arrays for scientific workloads
+
+**APACHE ARROW**
+- In memory, compressed columnar storage from Pandas/Dremio
+
+
+## CONCLUSION
+More money, more data, more problems...
+
+![](23.jpg)
