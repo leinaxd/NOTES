@@ -231,4 +231,21 @@ One approach is to put the entire table on a single node and then perform the jo
 - Costly data transfer over the network
 
 ## DISTRIBUTED JOIN ALGORITHMS
+We need to make sure, that tuples in a 2 Join relation are executed in the same machine.
+
+Once the data is at that node, the DBMS then executes the same join algorithms that we discussed earlier.
+
+### SCENARIO (I)
+One table is replicated at every node
+- each node joins its local data in parallel and then sends their results to a coordinating node
+```
+SELECT * FROM R JOIN S
+    ON R.id = S.id
+```
+
+Because the data is replicated, you can perform the join in both machines
+
+![](11.jpg)
+
+
 ## CLOUD SYSTEMS
