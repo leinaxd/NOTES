@@ -583,3 +583,52 @@ OBSERVATIONS
 ![](31.jpg)
 
 ### STORAGE CONSISTENCY POINTS
+Segment complete LSN (SCL)
+- Low water mark below which all log records have been received
+- maintained for each segment at each storage node using segment backlinks
+- Used to identify 'holes' or missing writes when gossiping with peers
+- sent to DB with each write acknowledgement
+
+Protection group complete LSN (PGCL)
+- PGCL can advance after DB sees SCL advance 4/6 segments
+
+Volume complete LSN (VCL)
+- VCL can advance after DB sees PGCL advance at all PGs
+
+### COMMIT
+When DB cam prove that all changes have met quorum
+- by ensuring that VCL >= Commit LSN
+- Are asynchronously acknowledge for multiple transactions
+
+No flush, no consensus, or grouping is required
+
+### RECOVERY
+**TRADITIONAL DATABASES**
+- have to replay logs since the last checkpoint
+- Typically 5 minutes between checkpoints
+- single threaded in MySQL, requires a large number of disk accesses
+  
+**AMAZON AURORA**
+- Underlying storage replays redo records on demand as part of a disk read
+- Parallel, distributed, asynchronous
+- no replay for startup
+
+![](32.jpg)
+
+The recovery protocol goes as follows:
+- Storage establishes consistency points that increase monotonically + continuously returned to DB
+- Transactions commit once DB can prove all changes have met quorum
+- Volume Complete LSN (VCL) is the highest point where all records have met quorum
+- Consistency Point LSN (CPL) is the highest commit record below VCL
+- Everything past CPL is deleted at crash recovery
+  - Removes the need of 2PC at each commit spanning  storage nodes
+  - No REDO or UNDO processing is required before the database is opened for processing
+
+![](33.jpg)
+
+### SIMILAR ARCHITECTURES
+SQL AZURE HYPERSCALE
+
+ALIBABA CLOUD POLAR DB
+
+![](34.jpg)
