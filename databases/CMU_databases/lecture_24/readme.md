@@ -432,5 +432,154 @@ The setup would be customers with large data lakes on AWS
 
 
 ## AURORA OLTP IN THE CLOUD
-
 Let's move on into a cloud data warehouse is architected
+
+How some assumption change in an OLTP environment
+
+Relational databases were not designed for the cloud
+- monolithic architecture
+- large failure blast radius
+
+Databases in the cloud
+- compute and storage have different lifetimes
+- Instances fail/shutdown/scale up and down
+- Instances added to a cluster
+
+Compute and storage are best decoupled for scalability, availability and durability
+
+![](25.jpg)
+
+### IO FLOW
+IO Flow is the major bottleneck
+- databases write data twice
+- first in the write ahead log, that provides the durability property
+- then the data is rewritten when data is checkpointed back to storage
+  
+In this example
+- you have a primary and a standby instance
+  - The WAL is shipped to the secondary index
+  - pages are checkpointed back to EBS, in this case attached cloud disk
+  - underneath there's the EBS mirror
+- there's a lot of IO
+  
+
+![](26.jpg)
+
+The architecture of AURORA
+- is really looking at having a hosting (typically MySQL or Postgres instance)
+- but really cutting out the extra need of write, optimizing the stream of IO
+
+![](27.jpg)
+
+DATABASE TIER
+- Writes REDO log to network
+- No Chekpointing! the log is the database
+- Pushes log application to storage
+- Master replicates to read replicas for cache updates
+
+STORAGE TIER
+- Highly parallel, scale-out redo processing
+- Data replicated 6 ways across 3 AZs
+- Generates/Materialize database pages on demand
+- Instant database redo recovery
+
+4/6 WRITE QUORUM WITH LOCAL TRACKING
+- AZ+1 failure tolerance
+- Read quorum needed only during recovery
+
+### AURORA READ SCALE
+The advantage here is the read scale
+- 
+
+In the typicall high availability model
+- log is shipped to the secundary
+- data has to be rewritten
+- transactions has to be reprocessed
+- essentially remove this path
+
+Just the page cache is updated on the read replicas
+- these updates are physical using delta changes on top of the pages
+- there's no writes on the replica
+- it can read data directly from shared storage
+- it needs to answer query as of some point in time
+  
+
+![](28.jpg)
+
+### AURORA QUORUM
+AZ= availability zone
+
+Why are 6 copies necessary
+
+In a large fleet, failures are background noise
+
+Need to tolerate AZ+1 failures
+
+For 3 AZs replicate 6-ways with 2 copies per AZ
+- Write quorum of 4/6
+- Read quorum of 3/6 (only for repair)
+
+![](29.jpg)
+
+### SEGMENTED STORAGE
+Storage essentially segments data into certain segments chunks
+
+Partition volume into n segments each replicated 6 ways
+- 6 replicas form  a **protection group (PG)**
+
+What is the 'goldilocks' segment size?
+- if segments are too small, then failures are more likely
+- If segments are too big, then repairs take too long
+
+Choose biggest size for 'fast enough' repair
+- Aurora uses 10GiB segments
+- can repair 10GB segments in ~10sec on a 10Gbps link
+
+### QUORUM SETS FOR MEMBERSHIP CHANGES
+At a certain point we have 6 replicas, all healthy.
+
+Then at another point we have replica F that is unhealthy or in a suspect state
+- you just define a new epoch and bring a new replica G
+- where F and G are currently active
+
+At a certain point in epoch 3,
+- you reallize that F is no longer needed
+- and start a new set G
+
+![](30.jpg)
+
+### OVERVIEW
+SUMMARY:
+- Manages 10GB page segments
+- 10GB = right size for repair/fault tolerance
+- use fault tolerance for host management/machine patching
+
+IO FLOW
+- Receive record and add in memory queue
+- Persist record and ACK
+- Organize records and identify gaps in logs
+- Gossip with peers to fill in holes
+- Coalesce log records into new data block versions
+- Periodically stage log and new block versions to S3
+- Periodically garbage collect old versions
+- Periodically validate CRC codes on blocks
+
+What aurora storage Node does:
+- it's a replay machine
+- it recieves the log records written from the primary instance
+- it writes it into an incoming queue
+- which is made durable at that point it ackownledges back to primary instance
+- behind the scenes is doing coalescing the hot piece of the log,
+- redoing on top of database pages and writting the pages back to storage for durability
+- then also backing up the data for disaster recovery back to S3
+
+OBSERVATIONS
+- all steps are asynchronous
+- only steps 1 and 2 are in the foreground latency path
+- input queue is 46x less than MySQL (unamplified, per node)
+- Favor latency-sensitive operations
+- Use disk space to buffer against spikes in activity
+
+![](31.jpg)
+
+### STORAGE CONSISTENCY POINTS
