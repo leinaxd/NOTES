@@ -272,3 +272,165 @@ ocassionally swap join sides in certain cases
 and also there are star schema join organization
 - Detect the star schema joins
 - Compute and propagate constraint predicates from dimensions to fact table
+
+#### CAPACITOR COLUMNAR FORMAT
+It's the BigQuery format for read optimize
+
+The Evaluation is embedded into the data access library
+- to push compute as close to compute as possible
+
+Partition/Predicate pruning
+
+Vectorization
+
+Skip indexes within file
+
+Predicate re-ordering using heuristics
+- dictionary useage
+- Unique value cardinality
+- Null density
+- Expression complexity
+
+#### CAPACITOR ROW REORDERING
+Takes advantage of run length encoding
+
+![](16.jpg)
+
+It can reorder the data behind the scene
+
+#### CLUSTERING
+Provides the ability to re-cluster the data
+- if you define a table, you would be able to say
+- i want to cluster the data by this column in this column
+
+![](17.jpg)
+
+Advantages
+- Data skipping
+- Colocation for aggregates
+- Joins over star schemas
+
+#### BIG METADATA
+There's a physical and logical metadata
+- Logical (small): schema, row/column, access policies, etc
+- Physical (big): file location, MVCC info, column stats, etc
+- How big? paper references 10's of TB, adding tens of minutes latencies to load metadata for PB size tables
+
+Main idea
+- Treat metadata management as data management
+- Organize physical metadata of each table as a set of system tables (columnar) that are derived from the original table
+- Built for batch and streaming workloads
+
+Query processing
+- Defer reading of physical metadata for the tables until the actual dispatch of parallel partitions to workers
+- Query planner first uses only the logical metadata to generate a query plan with constants folded and filters push down
+- Query rewritten as a semi-join of the original query with metadata system table, producing list of block locators needed to answer query
+
+#### APIS
+BigQuery supports  read and write apis directly to the manage storage
+
+So on top of Dremel which access data on colossus
+
+we also have high throughput read and write apis in both directions
+- so engines like spark, tensorflow, presto, or google dataflow can read and write data to and from storage directly
+![](18.jpg)
+
+#### READ API
+Multiple streams
+- read disjoint set ofa rows in parallel
+- Facilitates consumption from parallel processing frameworks
+Column projection and filtering
+- read only the data that is needed
+- Query processing pushed close to data under API
+Snapshot consistency
+- Consistent point-in-time reads
+- read as of session creation or prior snaptshots
+
+#### WRITE API
+Best in the industry stream ingest support at scale
+
+Exactly once semantics
+
+Stream-level and cross-stream transactions
+- Stream and commit as a single transaction
+- Retry on abort/failure
+- Commit data across parallel streams
+
+Schema update detection
+
+#### EMBEDDED BI ENGINE
+BI: Business intelligence
+- dashboards
+
+![](19.jpg)
+
+#### BIGQUERY CACHING AT MULTIPLE LAYERS
+
+![](20.jpg)
+
+Query caching and advanced performance
+- at the very base you can look at things like partitioning and clustering of the data
+- being able to speed up queries
+
+On top of that BigQuery provides materialized views
+- for materializing sub queries or whole queries
+- for use in query optimization
+
+At the very top, we are able to cache data in what we call the BI engine
+- in memory vectorized query engine for low latency and high concurrency
+
+#### BI ENGINE ARCHITECTURE
+You think about this as a set of stateful workers
+- here is where data is cached in memory
+- there's a vectorized query sitting close to data to be able to efficiently answer the queries that are memory bounded
+
+![](21.jpg)
+
+It is built on an existing BigQuery storage
+- nothing is really changed there
+
+The streaming ingest really needs to manage BI servers
+- so there's a separate set of BI servers
+
+and then you can eliminate things like ETL pipelines or complex extracts
+
+no need to manage OLAP cubes
+
+![](22.jpg)
+
+#### BIG QUERY ML
+Another feature we have is big query ML
+- CLASSIFICATION
+  - logistic regression
+  - DNN classifier (Tensorflow)
+  - Boosted trees using XGBoost
+  - AutoML tables
+- REGRESSION
+  - Linear regression
+  - DNN regressor (Tensorflow)
+  - Boosted trees using XGBoost
+  - AutoML tables
+- MODEL IMPORT/EXPORT
+  - Tensorflow models for batch and online prediction
+- OTHER MODELS
+  - K-means clustering
+  - Time series forecasting
+  - Recomendation: Matrix factorization
+    
+![](23.jpg)
+
+
+#### BIG QUERY OMNI
+Is shipping within the cloud
+- the control plane, able to talk to dremel, the distributed memory shuffler
+- that lives on AWS itself
+
+The setup would be customers with large data lakes on AWS
+
+  
+![](24.jpg)
+
+
+## AURORA OLTP IN THE CLOUD
+
+Let's move on into a cloud data warehouse is architected
