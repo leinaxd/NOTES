@@ -169,3 +169,106 @@ Centralized scheduling
 - After Planning, coordinator sends workers ready-to-execute query plan (tree)
 
 ![](9.jpg)
+
+Let's say we have this query,
+```
+SELECT language, MAX(views) as views
+  FROM 'wikipedia_benchmark.Wiki1B'
+ WHERE title LIKE "G%O%"
+ GROUP BY 1 ORDERa BY 2 DESC LIMIT 100
+```
+
+it gets executed in three stages
+- the bottom workers would be scanning the data from distributed storage
+- then go to shuffle that would provide dynamic partitioning for us
+- into the next stage that would apply, GROUP BY, SORT and LIMIT
+- piped into the final stage, which is doing the final sort and top k limit
+  
+  
+![](10.jpg)
+
+### IN MEMORY SHUFFLE
+BigQuery uses a separated storage tier.
+- a design decision described in the 10-best paper award for dremel
+  
+
+![](11.jpg)
+
+And the basis are as follows.
+
+In Memory shuffle is not actually new.
+- but coupled with compute presents bottlenecks
+- it's hard to mitigate, quadratic scaling characteristics
+- it leads to resource fragmentation, stranding, poor isolation
+
+BigQuery implements in top of separate compute and storage
+- disaggregated memory based shuffle
+- this is RAM /disk managed separately from computer tier
+- it found to reduce latency by an order of magnitude
+- Enable order of magnitude larger shuffles
+- Reduced resource cost by 20%
+
+Persistence in the shuffle layer
+- Checkpoint query execution state
+- Allows flexibility in scheduling + execution (preemption of workers)
+
+### DYNAMIC SCHEDULING
+The Dynamic central scheduler allocates
+- slots, the virtual compute unit
+- workers
+
+it's used to handle machine failures
+- if a machine fails it's able to spin another one after the state is checkpointed
+
+it allows the fair distribution of resources between queries
+
+In this graph 
+- Query 1, 2,3,4 are executed at a certain point
+- the scheduler can reduce the resorces used to give arise another query
+- so they call all finish roughly at the same time.
+
+![](12.jpg)
+
+Why do you need dynamic query execution?
+- it allows you for dynamic execution for optimizers
+
+#### DYNAMIC PARTITIONING
+The goal here is to Dynamically load balance and adjust parallelism while adapting to any query or data shape or size
+
+So the planner optimizers are actually quite primitive
+- we have to rely heavily on this dynamic query execution pieces for predictibility and performance
+
+Say we have workers
+- starting writing to partitions 1 and 2
+- at a certain point the Query coordinator detects that there is too much data going to partition 2
+- it will dynamically repartition on the fly to partition 3 and 4
+- at that point workers stop writing to partition 2 and start writing to partition 3 and 4
+- so data in partition 2 is repartitioned into 3 and 4
+
+![](13.jpg)
+
+We also are going to use JOIN optimization
+- A broadcast join
+- one worker is getting one side of the table that is small enough to be broadcast to the other workers in the join
+
+![](14.jpg)
+
+Shuffle join is when both sides of the join are large enough
+- it will completely re-shuffle or re-partition to be able to execute the join
+- in parallel after shuffling
+
+![](15.jpg)
+
+BigQuery takes advange of dynamic join processing
+
+Start with hash join by shuffling the data on both sides
+- Cancel shuffle one side finished fast and is below a broadcast size threshold
+- Execute broadcast join instead (much less data transferred)
+
+Decide the number of partitions/workers for parallel join based on input data sizes
+
+ocassionally swap join sides in certain cases
+
+and also there are star schema join organization
+- Detect the star schema joins
+- Compute and propagate constraint predicates from dimensions to fact table
