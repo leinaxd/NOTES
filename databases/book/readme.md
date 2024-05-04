@@ -44,4 +44,34 @@ Other decisions
     - that is related both the customer and the produc
 
 #### 6.2 THE ENTITY-RELATIONSHIP MODEL
+Developed to facilitate the logical design of an enterprise schema.
+
+##### 6.2.1**ENTITY SETS**
+- Distinguishable object
+- Each entity has a set of properties
+- The values for some set of properties must uniquely identify an entity
+The entity may be concrete (book, person) or it may be abstract (course, flight reservation)
+
+An entity set is a set of entities of the same type
+- that shares the same set of properties
+
+**Extension** is used to refer to the actual collection of individual entities belonging to the entity set.
+
+Entity sets don't need to be disjoint
+- it is possible to define the entity set 'person' consisting of all people in the university.
+  - but also a student or instructor may be related to a person.
+
+An Entity is represented by a set of **attributes**
+- Attributes are descriptive properties possesed by each member of an entity set.
+- The designation of an attribute, expresses to the database, to store similar information of each entity.
+- However each entity may have different values for each attribute
+- i.e. ID, name, dept_name, salary
+- in section 6.3 we discuss attributes that are composited like 'full name' or multivalued
+  
+##### 6.2.2**RELATIONSHIP SETS**
+
+##### 6.2.3**ATTRIBUTES**
+
+
+
 ### CHAPTER 7:sRELATIONAL DATABASE DESIGN
