@@ -30,4 +30,18 @@ The following 2 steps translate the abstract model into its implementation
   - people, places, products
   - They are distinct
 
+In designing a database schema, we must ensure that we avoid 2 major pitfails.
+1. **REDUNDANCY**, don't repeat yourself
+  - i.e. don't repeat attribute 'title' in 'book' and 'sold' entities, use a foreign relation instead
+  - ISSUE: redundancy may lead to inconsistencies
+2. **INCOMPLETNESS**,
+    - bad design may lead to certain aspects of the enterprise unmodeled
+    - i.e. entity 'courses offered' may be a bad design for representing all courses available. a better entity would be just 'courses'
+
+Other decisions
+- Consider a customer buying a product.
+  - is the sale itself an entity?
+    - that is related both the customer and the produc
+
+#### 6.2 THE ENTITY-RELATIONSHIP MODEL
 ### CHAPTER 7:sRELATIONAL DATABASE DESIGN
