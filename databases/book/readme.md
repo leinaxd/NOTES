@@ -67,10 +67,35 @@ An Entity is represented by a set of **attributes**
 - However each entity may have different values for each attribute
 - i.e. ID, name, dept_name, salary
 - in section 6.3 we discuss attributes that are composited like 'full name' or multivalued
-  
-##### 6.2.2**RELATIONSHIP SETS**
 
-##### 6.2.3**ATTRIBUTES**
+Each entity has a **value** for each of its attributes
+- Historically the governament ID was used to identify persons in companies
+- but it is considered a bad practice for security and privacy reasons
+- for instance, each company has to define its own identification number.
+
+**REPRESENTATION**
+- An entity set is represented in the E-R diagram with a **rectangle**
+- which is divided into 2 parts, 1. the name of the entity set. 2. the name of all the attributes
+- Attributes that are assosiated with the primary key are underlined.
+
+![](6.1.jpg)
+
+##### 6.2.2 **RELATIONSHIP SETS**
+A **relationship** is an association among several entities.
+- for example an 'advisor' may asociate instructor 'Katz' with student 'Shankar'
+
+A **Relationship set** is a set of relationships of the same type.
+
+A **Relationship instance** is an E-R schema 
+- representing an association between the named entities in the real world enterprise that is being modeled
+
+![](6.2.jpg)
+
+![](6.3.jpg)
+
+
+
+##### 6.2.3 **ATTRIBUTES**
 
 
 
