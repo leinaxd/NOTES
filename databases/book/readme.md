@@ -91,10 +91,70 @@ A **Relationship instance** is an E-R schema
 
 ![](6.2.jpg)
 
+A relationship set is represented by a **DIAMOND** in the E-R diagram.
+- which is linked with lines to a number of different entity sets.
+  
 ![](6.3.jpg)
 
+Formally, a **relationship set**
+- Let $E_1 .. E_n$ be entity sets that **participate** into the relation.
+- Then a Relationship set **R** is a subset of $\{(e_1 .. e_n ) | e_1\in E_1 .. e_n \in E_n\}$
+  
+$R \subseteq E_1 \times \cdots \times E_n$
+
+The Function that an entity plays in a relationship is called a **ROLE**
+- Since the __participation__ of __entity sets__ into a __relationship__ is generally distinct, roles are not specified.
+- However, when the same __entity set__ __participate__ more than once into the same __relation__, **explicit roles** have to be given.
+  - aka **recursive relationship set**
+  - There has to be specified, how an entity participates in a relationship instance.
+
+Consider the entity set '__course__'.
+- some couse C1 may be prerequisite for another course C2.
+- so we define a relationship set 'prereq',
+  - characterized by pairs (C1, C2)
+
+In the E-R diagram, Roles are **labels** into the relationship lines
+
+![](6.4.jpg)
+
+A relationship may also have **descriptive attributes**
+- Consider the relation set '__takes__' which relates entity sets 'student' and 'course'
+- we may wish to store a descriptibe attribute named 'grade' altogether with the relationship
+- An attribute of a relationship set is represented by an **undivided rectangle** connected with a **dashed line** to its diamond representation.
+
+![](6.5.jpg)
+
+A relationship set may have multiple descriptive attributes
+- for example 'for_credit' to record whether a student is section for credit or it's just auditing it.
+
+**NOTE**, about multi-page diagrams
+- It is a common practice to specify __relationship sets__ attributes in a diagram different from the __entity set__ one.
+- Attributes of entities are specified first, but then they are ommited to avoid inconsistencies.
 
 
+**NOTE**, about relationship sets.
+- it is possible that many relationships apply to the same set of entities sets.
+- for example 'teaching_asistant' may be also a relation between 'student' and 'courses'
+
+In the formal definition we saw that a set cannot have duplicates,
+- if follows that a particular student, can only have one association with a particular 'course'
+- so that student can have only one 'grade' for that particular course.
+
+However, if we want to allow the student to have multiple grades to the same course,
+- we may have the attribute 'grade' to actually be a 'set of grades'
+- souch attributes are called **MULTIVALUED ATTRIBUTES**
+- 
+
+**LUCID CHART NOTATION**
+- UML standard
+
+In this notation, we keep attributes inside the entity set.
+- note that you can also include constraints (FK, PK) to a particular attribute
+- The data type (int, varchar, float) are also possible to be included in the diagram
+
+![](lucid_chart_1.jpg)
+
+![](lucid_chart_2.jpg)
 ##### 6.2.3 **ATTRIBUTES**
 
 
