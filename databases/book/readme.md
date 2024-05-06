@@ -143,7 +143,18 @@ In the formal definition we saw that a set cannot have duplicates,
 However, if we want to allow the student to have multiple grades to the same course,
 - we may have the attribute 'grade' to actually be a 'set of grades'
 - souch attributes are called **MULTIVALUED ATTRIBUTES**
-- 
+
+
+**DEGREE OF THE RELATIONSHIP SET**, the number of entity sets involved in the relationship set.
+- **BINARY RELATIONSHIP SET**, relationships that involves 2 entity sets
+- **TERNARY RELATIONSHIP SET**,
+  - Consider the entity sets 'instructor', 'student' and 'research_project'
+  - Each 'research_project' can have multiple 'students' and multiple associated 'instructors'
+  - Furthermore, each student working in a 'research project' must have an associated 'instructor'
+  - we can relate all three relationships through a ternary relationship called 'proj_guide'
+    - A particular 'student' is related to a particular 'instructor' to work on a particular 'project'
+      
+![](6.6.jpg)
 
 **LUCID CHART NOTATION**
 - UML standard
@@ -155,8 +166,66 @@ In this notation, we keep attributes inside the entity set.
 ![](lucid_chart_1.jpg)
 
 ![](lucid_chart_2.jpg)
-##### 6.2.3 **ATTRIBUTES**
+
+##### 6.3 COMPLEX ATTRIBUTES
+For each attribute there is a set of permitted values, called **DOMAIN** or **value set** of that attribute.
+- The domain of attribute 'course_id' might be the set of all text strings of certain length.
+- The domain of attribute 'semester' might be strings from the set {'fall', 'winter', 'spring', 'summer'}
+
+An attribute can be characterized by the following types.
+1. **SIMPLE** and **COMPOSITE** attrutes.
+   - They are **simple** attributes if they cannot be divided into subparts.
+   - **composites** attributes can be divided into subparts.
+
+For example 'name' could be structured as a composite attribute consisting of
+- first_name
+- last_name
+Or the 'address' may be composed from
+- street
+- city
+- state
+
+Composite attributes help us group related attributes, making the modeling cleaner.
+
+Note also, that a composite attribute may appear as a hierarchy.
+- Street can be split into
+  - street_number
+  - street_name
+  - apartment_number
+
+![](6.7.jpg)
+
+3. **SINGLE VALUED** and **MULTI VALUED** attributes.
+- **single valued**, student_id refers to only one student ID
+- **multi valued**, an 'instructor' may have zero, one or multiple phone numbers.
+  - and different 'instructors' may have different number of phones
+  - Another example is the amount of 'departments' assigned to that instructor
+    
+5. **DERIVED ATTRIBUTES**
+  - The value of this attribute, can be derived from the values of other related attributes or entities.
+  - for example, the 'instructor' might have the attribute 'assigned students',
+    - so we can derive this attribute by counting the number of 'student' entities associated to that instructor.
+  - Another example is when computing the age, derived from the 'date_of_birth'
+The value of the derived attributes, are not stored, but computed when required.
 
 
+In the following example we show how to represent those attributes in the E-R diagram.
+- **composite attribute** 'name' has 'first_name', 'middle_initial' and 'last_name'
+- the composite attribute 'address' is defined through a **'hierarchy process'**
+  - the 'street' is a composite attribute itself
+- **{'phone number'}** denoted in brackets denotes a **multivalued** attribute
+- while **'age()'** denotes a **derived** attribute.
+  
+![](6.8.jpg)
 
-### CHAPTER 7:sRELATIONAL DATABASE DESIGN
+
+An attribute takes a **'NULL'** value, when an entity does not have a value for it.
+- the 'Null' value may also mean 'not applicable' or does not exists for that entity
+  - for example, a person without a 'middle_inital' attribute may have that attribute set to Null.
+- 'Null' may also designate that an attribute is unknown
+  - it may be missing (we don't know it yet)
+  - or not known (we don't know even if there exists souch a value)
+
+##### 6.4 MAPPING CARDINALITIES
+
+### CHAPTER 7: RELATIONAL DATABASE DESIGN
