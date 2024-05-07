@@ -227,5 +227,54 @@ An attribute takes a **'NULL'** value, when an entity does not have a value for 
   - or not known (we don't know even if there exists souch a value)
 
 ##### 6.4 MAPPING CARDINALITIES
+The idea is to express the number of entities that can be related to another entity
+- it can be also used not only to describe binary relationship set, but any number of entities contributing to a relation.
 
+For a binary relationionship set **R**, between sets **A** and **B** the mapping cardinality might be.
+
+- **ONE-TO-ONE**, An entity in **A** is associated AT MOST with one entity in **B** and viceversa.
+
+![](6.9a.jpg)
+
+We draw a line from the relationship set to both entities sets.
+- an 'instructor' may advice at most one 'student', and a 'student' may have at most one 'instructor'
+  
+![](6.11a.jpg)
+
+- **ONE-TO-MANY**, An entity in **A** is associated with ANY NUMBER of entities in **B**.
+  - However, An entity **B** can be associated with AT MOST ONE entity in **A**
+
+![](6.9b.jpg)
+
+An instructor may advice many students, but a student may have at most one advisor
+
+![](6.11b.jpg)
+
+- **MANY-TO-ONE**, An entity in **A** is associated with AT MOST one entity in **B**,
+  - However, an entity **B** can be associated with ANY NUMBER of entities in **A**
+
+![](6.10a.jpg)
+
+An 'instructor' may advice at most one 'student', but a 'student' may have many instructors
+
+![](6.11c.jpg)
+
+- **MANY-TO-MANY**, An entity in **A** is associated with ANY NUMBER of entities in **B**.
+  - Also an entity in **B** is associated with ANY NUMBER of entities in **A**
+
+![](6.10b.jpg) 
+
+An 'instructor' may advice many 'students', and a 'student' may have many 'advisors'
+
+![](6.11d.jpg)
+
+NOTE, that the 'advisor' relationship set can be
+- many-to-many, if Any number of students can be advised by any number of instructors
+- one-to-one, if the university sets the constraint one advisor per student.
+- many-to-one, if one instructor can be avice many students
+Thus, the mapping cardinalities can vary on real-world constraints.
+
+**NOTATION**
+- We indicate cardinality contraints on a relationship by drawing either a directed line (-->), or an undirected line (---)
+  
 ### CHAPTER 7: RELATIONAL DATABASE DESIGN
