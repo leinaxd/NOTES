@@ -276,5 +276,43 @@ Thus, the mapping cardinalities can vary on real-world constraints.
 
 **NOTATION**
 - We indicate cardinality contraints on a relationship by drawing either a directed line (-->), or an undirected line (---)
+
+
+The participation of an entity set **E** in a relationship **R** is said to be **TOTAL**
+- if every entity in **E** must participate in at least one relationship in **R**
+- if every 'student' has to have at least one 'advisor', the participation would be total.
+    
+The participation of an entity set **E** in relationship **R** is said to be partioal
+- if it's possible that some entities **E** do not participate in **R**
+- if some 'student' are related with some 'advisor', the participation would be partial.
+
+We indicate total representation by a double line
+- each student has to have one advisor.
+
+![](6.12.jpg)
+
+A minimum and a maximum cardinality can also be specified.
+- a minimum value of 1,
+  - indicates total participation of the entity set in the relationship set
+  - each entity occur in at least one for that relationship.
+- a maximum value of 1, indicates that the entity partcipates in at most one relationship.
+  -  while a maximum value of * means no limit.
   
+![](6.13.jpg)
+
+The line between advisor and student 1..1 means that each student must have exactly one advisor.
+- the line between 'advisor' and 'instructor' indicates that an instructor can have 0 or more students.
+- so the relationship is **one to many** with **total** participation of advisor over 'student'
+
+It's easy to misinterpret that the relation 0..* being 'many to one' while the opposite is correct.
+
+The figure 6.13, could alternatively have been drawn with a **double line** from 'student' to 'advisor'
+- and an **arrow** from 'advisor' to 'instructor' in place of the cardinality constraint
+
+In the case of nonbinary relationship sets, we can specify some types of 'many-to-one' relationship
+- 'student' can have at most 1 'instructor' on a project
+- This constraint must be specified by an arrow pointing to 'instructor' on the edge of 'proj_edge'
+- we permit at most one arrow out of a nonbinary relationship set, since more may be misinterpreted. refer to section 6.5.2
+
+##### 6.5 PRIMARY KEY
 ### CHAPTER 7: RELATIONAL DATABASE DESIGN
