@@ -315,4 +315,36 @@ In the case of nonbinary relationship sets, we can specify some types of 'many-t
 - we permit at most one arrow out of a nonbinary relationship set, since more may be misinterpreted. refer to section 6.5.2
 
 ##### 6.5 PRIMARY KEY
+We must have a way to specify how entities and relationships are distinguished.
+
+###### 6.5.1 ENTITY SETS
+Conceptually, **individual entities** are **distinct**.
+- However, the **differences** among them must be expressed **in terms** of their **attributes**.
+- No two entities in an entity set are allowed to have exactly the same value for all attributes.
+
+The notion of a **key** for a **relation schema**, applies directly to **entity sets**. 
+- **a key** for an **entity** is a **set of attributes** that suffice to distinguish entities from each other. 
+- **superkey**, **candidate key**, and **primary key** are **applicable** to **entity sets**
+  - just **as** they are applicable to **relation schemas**.
+
+###### 6.5.2 RELATIONSHIP SETS
+We need a mechanism to distinguish the various relationships of a relationship set.
+
+Let **R** be a relationship set involving entity sets $E1 , ... , En$
+- Let $primary-key(Ei)$, denote the **set of attributes** that forms the **primary key** for Ei. 
+- Assume that all primary keys attributes names are unique.
+- The **composition** of the **primary key** for a **relationship set** depends on the **set of attributes** associated with **R**.
+
+If the **R** has **no attributes** associated with it, 
+- then the **set of attributes** describes an individual relationship in set **R**
+
+$key(R) = primary-key(E1 ) \cup \cdots \cup primary-key(En)$
+
+If the **R** **has attributes** $a1 .. am$ associated with it, 
+- then the **set of attributes** describes an individual relationship in set **R**
+
+$key(R) = primary-key(E1 ) \cup \cdots \cup primary-key(En) \cup \{a1 ... am \}$
+
+
+
 ### CHAPTER 7: RELATIONAL DATABASE DESIGN
