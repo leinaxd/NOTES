@@ -411,5 +411,79 @@ Or a simpler approach is to use functional dependencies,
 - They allow either of these **interpretations** to be **specified** simply in an unambiguous manner.
 - The primary key for **R** is then the **union** of the **primary keys** of **those participating entity sets Ei**
 - that **don't have an incoming arrow** from **R**.
+
+
+###### 6.5.3 WEAK ENTITY SETS
+Consider a 'section', which is uniquely identified by
+- a 'course id', 'semester', 'year', and 'section id'.
+- 'section' entities are related to 'course' entities.
+- Suppose we create a relationship set 'sec_course' between 'section' and 'course'.
+
+![](6.14.jpg)
+
+Now, observe that the information in 'sec_course' is redundant, 
+- since 'section' already has an attribute 'course id', which identifies the 'course' with which the 'section' is related.
+- One option to deal with this 'redundancy' is to 'get rid' of the relationship 'sec_course'
+- however, by doing so the relationship between 'section' and 'course' becomes 'implicit' in an attribute, which is not desirable.
+
+An alternative way to deal with this redundancy is 
+- to not store the attribute 'course id' in the section entity
+- and to only store the remaining attributes sec_id, year, and semester.
+
+However, the entity set 'section' then does not have enough attributes to 'identify' a particular section entity uniquely
+- although each section entity is distinct, sections for different courses may 'share' the same 'sec_id', 'year', and 'semester'.
+- To deal with this problem, we treat the relationship 'sec_course' as a special relationship
+- that provides extra information,
+- in this case the 'course_id', required to identify section entities uniquely.
+
+A **weak entity set** is one whose existence is **dependent** on **another entity set**, 
+- called its **identifying entity set**
+- instead of associating a **primary key** with a **weak entity**, we **use** the primary key of the **identifying entity**
+- along with **extra attributes**, called **discriminator attributes** to uniquely identify a weak entity.
+- An **entity set** that **is not a weak entity set** is termed a **strong entity set**.
   
+The weak entity set is said to be **existence dependent** on the **identifying entity set**.
+- The **identifying entity set** is said to **own** the **weak entity set** that it **identifies**.
+- The **relationship** associating the **weak entity set** with the **identifying entity set** is called the **identifying relationship**.
+- The **identifying relationship** is **many-to-one** from the **weak entity set** to the **identifying entity set**
+- and the **participation** of the **weak entity set** in the **relationship** is **total**.
+
+The **identifying relationship set** should **not have** any **descriptive attributes**, 
+- since any such **attributes** can instead **be associated** with the **weak entity set**.
+
+In our example, the **identifying entity set** for 'section' is **'course'**, 
+- and the relationship 'sec_course' which associates 'section' entities, with their corresponding 'course' entities is the identifying relationship.
+- The **primary key** of 'section' is **formed** by the **primary key** of the **identifying entity set** 'course',
+- **plus** the **discriminator** of the **weak entity set** 'section'.
+Thus, the **primary key** is **{course id, sec id, year, semester}**.
+
+**Note** that we could **have chosen** to make 'sec_id' globally unique across all courses offered in the university, 
+- in which case the 'section' would have had a primary key.
+- However, conceptually, a 'section' is still dependent on a course for its existence,
+- which is made **explicit** by making it a **weak entity set**.
+  
+In E-R diagrams, a weak entity set is depicted via a **double rectangle** 
+- with the **discriminator** being **underlined** with a **dashed line**.
+- The relationship set connecting the **weak entity set** to the **identifying strong entity set** is depicted by a **double diamond**.
+
+In Figure 6.14, the **weak entity set** 'section' depends on the **strong entity set** 'course' via the relationship set 'sec_course'.
+- The figure also illustrates the use of **double lines** to indicate that the **participation**
+- of the (weak) entity set section in 'sec_course' is **total**,
+- meaning that **every section** must be **related** via **sec course** to some **course**.
+- Finally, the **arrow** from 'sec_course' to 'course' indicates that **each section** is **related** to a **single course**.
+
+In general, a **weak entity set** must have a **total participation** in its **identifying** relationship set,
+- and the **relationship** is **many-to-one** toward the **identifying** entity set.
+- A **weak entity set** can **participate** in **relationships** other than the **identifying relationship**.
+- For instance, the **section entity** could **participate** in a **relationship** with the **time slot** entity set,
+- identifying the **time** when a **particular** class **section** meets.
+- A **weak entity set** may **participate** as **owner** in an **identifying relationship** with **another weak entity set**.
+
+It is also **possible** to have a **weak entity set** with **more** than **one identifying entity set**.
+- A particular **weak entity** would then be **identified** by a **combination of entities**,
+- **one** from each **identifying entity set**.
+- The **primary key** of the **weak entity set** would consist of the **union**
+- of the **primary keys** of the **identifying entity sets**,
+- **plus** the **discriminator** of the **weak entity set**.
+
 ### CHAPTER 7: RELATIONAL DATABASE DESIGN
