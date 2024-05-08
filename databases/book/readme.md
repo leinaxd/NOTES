@@ -338,13 +338,78 @@ Let **R** be a relationship set involving entity sets $E1 , ... , En$
 If the **R** has **no attributes** associated with it, 
 - then the **set of attributes** describes an individual relationship in set **R**
 
-$key(R) = primary-key(E1 ) \cup \cdots \cup primary-key(En)$
+$superkey(R) = primary-key(E1 ) \cup \cdots \cup primary-key(En)$
 
 If the **R** **has attributes** $a1 .. am$ associated with it, 
 - then the **set of attributes** describes an individual relationship in set **R**
 
-$key(R) = primary-key(E1 ) \cup \cdots \cup primary-key(En) \cup \{a1 ... am \}$
+$superkey(R) = primary-key(E1 ) \cup \cdots \cup primary-key(En) \cup \{a1 ... am \}$
+
+If the **attribute names** of **primary keys** are **not unique** across entity sets, 
+- the **attributes** are **renamed** to distinguish them;
+- the **name** of the **entity set** combined with the **name** of the **attribute** would form a unique name.
+- If an **entity set** **participates more than once** in a relationship set,
+- the **role name** is **used** instead.
+
+**MANY-TO-MANY**
+The choice of the 'primary key' for a binary relationship set 
+- depends on the **mapping cardinality** of the relationship set.
+- For **many-to-many** relationships, the preceding **union** of the **primary keys**
+  - is chosen as the **primary key**.
+
+As an illustration, consider the entity sets 'instructor' and 'student', and the relationship set 'advisor', 
+- Suppose that the relationship set is many-to-many.
+- Then the 'primary key' of 'advisor' consists of the 'union' of the 'primary keys' of 'instructor' and 'student'.
+
+**ONE-TO-MANY**
+The **primary key** of the “many” side is a minimal superkey and is used as the primary key. 
+- For example, if the relationship is many-to-one from 'student' to 'instructor'
+  - that is, **each student can have at most one advisor**
+  - then the **primary key** of **advisor** is simply the **primary key** of **student**.
+
+**ONE-TO-ONE**
+The **primary key** of **either one** of the participating entity sets forms a minimal superkey, 
+  - if an 'instructor' can 'advise' only **one** 'student' and each 'student' can be 'advised' by only one 'instructor'
+  - then the **primary key** of either 'student' or 'instructor' as the primary key for advisor.
 
 
+For **nonbinary relationships**, 
+if **no cardinality constraints are present**, 
+- then the **superkey** formed as described earlier in this section is the only candidate key and it is chosen as the primary key.
 
+If **cardinality constraints are present**. 
+- we permit at most **one arrow** out of a relationship set.
+- We do so because an E-R diagram with **two** or **more arrows** out of a nonbinary relationship set
+  - can be **interpreted** in the **two ways** we describe below.
+
+Suppose there is a relationship set **R** between entity sets **E1, E2, E3, E4**
+- and the **only arrows** are on the **edges** to entity sets **E3** and **E4** .
+- Then, the **two possible interpretations** are:
+1. A particular combination of entities from **E1, E2** can be **associated**
+  - with AT MOST **one** combination of entities from **E3, E4**.
+  - Thus, the **primary key** for **R** can be constructed by the **union** of the **primary keys** of **E1** and **E2**
+
+2. A particular combination of entities from **E1, E2, E3** can be associated
+   - with AT MOST **one** combination of entities from **E4**,
+   - and further a particular combination of entities from **E1, E2, E4** can be associated
+   - with AT MOST **one** combination of entities from **E3**
+   - Then the **union** of the **primary keys** of **E1, E2, E3** forms a
+   - candidate key, as does the **union** of the primary keys of **E1**, **E2** and **E4**.
+
+Each of these interpretations has been used in practice and **both are correct** 
+- Thus, **to avoid confusion**, we **permit** only **one arrow out** of a **nonbinary relationship set**,
+- in which case the two interpretations are equivalent.
+
+In order to **represent** a situation where one of the **multiple-arrow** situations holds,
+- the E-R design can be modified
+- by replacing the **non-binary relationship set** with an **entity set**.
+
+Then we can **relate** each of **those entities** to corresponding **instances** of **E1, E2, E4** 
+  - via separate relationship sets.
+
+Or a simpler approach is to use functional dependencies, 
+- They allow either of these **interpretations** to be **specified** simply in an unambiguous manner.
+- The primary key for **R** is then the **union** of the **primary keys** of **those participating entity sets Ei**
+- that **don't have an incoming arrow** from **R**.
+  
 ### CHAPTER 7: RELATIONAL DATABASE DESIGN
