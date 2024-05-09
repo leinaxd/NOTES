@@ -534,25 +534,47 @@ In this section, we describe how an E-R schema can be represented by relation sc
 - how constraints arising from the E-R design can be mapped to constraints on relation schemas.
 
 ##### 6.7.1 REPRESENTATION OF STRONG ENTITY SETS
-Let E be a strong entity set with only simple descriptive attributes a1 , a2 , ... , an. We
-represent this entity with a schema called E with n distinct attributes. Each tuple in a
-relation on this schema corresponds to one entity of the entity set E.
-For schemas derived from strong entity sets, the primary key of the entity set serves
-as the primary key of the resulting schema. This follows directly from the fact that each
-tuple corresponds to a specific entity in the entity set.
-As an illustration, consider the entity set student of the E-R diagram in Figure 6.15.
-This entity set has three attributes: ID, name, tot cred. We represent this entity set by a
-schema called student with three attributes:
-student (ID, name, tot cred)
-Note that since student ID is the primary key of the entity set, it is also the primary key
-of the relation schema.
-Continuing with our example, for the E-R diagram in Figure 6.15, all the strong
-entity sets, except time slot, have only simple attributes. The schemas derived from
-these strong entity sets are depicted in Figure 6.16. Note that the instructor, student, and
-course schemas are different from the schemas we have used in the previous chapters
-(they do not contain the attribute dept name). We shall revisit this issue shortly.
+Let **E** be a **strong entity set** with only simple **descriptive attributes** **a1 .. an**. 
+- We **represent** this entity with a **schema** named **E** with **n** **distinct** attributes.
+- Each **tuple** in a **relation** on this **schema** corresponds to ONE entity **E**.
+- **primary key** of the entity set serves as the **primary key** of the resulting schema 
+  - 'student' has 'ID', 'name', 'tot_cred' will be represented as:
+  - student (ID, name, tot cred)
+```
+# FIG. 6.16
+classroom(BUILDING, ROOM_NUMBER, capacity)
+department(DEPT_NAME, building, budget)
+course(COURSE_ID, title, credits)
+instructor(ID, name, salary)
+student(ID, name, tot_cred)
+```
 
 ##### 6.7.2 REPRESENTATION OF STRONG ENTITY SETS WITH COMPLEX ATTRIBUTES
+When a **strong entity set** has **complex attributes**
+- we create a **separate attribute** for each **component**
+- we do not create a separate attribute for the composite attribute itself.
+- 'instructor' has composite attribute 'name',
+  - the schema generated for instructor contains the attributes
+    - first_name, middle_initial, last_name
+```
+instructor (ID, first_name, middle_initial, last_name,
+                street_number, street_name, apt_number, city, state, postal_code,
+                date_of_birth)
+```
+**Derived attributes** 
+- can be represented as **stored procedures**
+  
+**Multivalued attributes**
+- new relation schemas are created for these attribute.
+- 'instructor', includes the multivalued attribute 'phone_number'.
+  - The **primary key** of instructor is ID.
+  - For this multivalued attribute, we create a relation schema
+- In addition, we create a **foreign-key** referencing the newly created schema
+```
+instructor_phone (ID, phone_number)
+```
+
+
 ##### 6.7.3 REPRESENTATION OF WEAK ENTITY SETS
 ##### 6.7.4 REPRESENTATION OF RELATIONSHIP SETS
 ##### 6.7.5 REDUNDANCY OF SCHEMAS
