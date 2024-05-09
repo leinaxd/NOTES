@@ -534,5 +534,49 @@ In this section, we describe how an E-R schema can be represented by relation sc
 - how constraints arising from the E-R design can be mapped to constraints on relation schemas.
 
 ##### 6.7.1 REPRESENTATION OF STRONG ENTITY SETS
+Let E be a strong entity set with only simple descriptive attributes a1 , a2 , ... , an. We
+represent this entity with a schema called E with n distinct attributes. Each tuple in a
+relation on this schema corresponds to one entity of the entity set E.
+For schemas derived from strong entity sets, the primary key of the entity set serves
+as the primary key of the resulting schema. This follows directly from the fact that each
+tuple corresponds to a specific entity in the entity set.
+As an illustration, consider the entity set student of the E-R diagram in Figure 6.15.
+This entity set has three attributes: ID, name, tot cred. We represent this entity set by a
+schema called student with three attributes:
+student (ID, name, tot cred)
+Note that since student ID is the primary key of the entity set, it is also the primary key
+of the relation schema.
+Continuing with our example, for the E-R diagram in Figure 6.15, all the strong
+entity sets, except time slot, have only simple attributes. The schemas derived from
+these strong entity sets are depicted in Figure 6.16. Note that the instructor, student, and
+course schemas are different from the schemas we have used in the previous chapters
+(they do not contain the attribute dept name). We shall revisit this issue shortly.
 
+##### 6.7.2 REPRESENTATION OF STRONG ENTITY SETS WITH COMPLEX ATTRIBUTES
+##### 6.7.3 REPRESENTATION OF WEAK ENTITY SETS
+##### 6.7.4 REPRESENTATION OF RELATIONSHIP SETS
+##### 6.7.5 REDUNDANCY OF SCHEMAS
+##### 6.7.6 COMBINATION OF SCHEMAS
+#### 6.8 EXTENDED E-R FEATURES
+##### 6.8.1 SPECIALIZATION
+##### 6.8.2 GENERALIZATION
+##### 6.8.3 ATTRIBUTE INHERITANCE
+##### 6.8.4 CONSTRAINTS OF SPECIALIZATIONS
+##### 6.8.5 AGGREGATION
+##### 6.8.6 REDUCTION TO RELATION SCHEMAS
+###### 6.8.6.1 REPRESENTATION OF GENERALIZATION
+###### 6.8.6.2 REPRESENTATION OF AGGREGATION
+#### 6.9 ENTITY-RELATIONSHIP DESIGN ISSUES
+##### 6.9.1 COMMON MISTAKES IN E-R DIAGRAMS
+##### 6.9.2 USE OF ENTITY SETS VS ATTRIBUTES
+##### 6.9.3 USE OF RELATIONSHIP SETS VS RELATIONSHIP SETS
+##### 6.9.4 BINARY VS n-ARY RELATIONSHIP SETS
+#### 6.10 ALTERNATIVE NOTATIONS FOR MODELING DATA
+##### 6.10.1 ALTERNATIVE E-R NOTATIONS
+##### 6.10.2 THE UNIFIED MODELING LANGUAGE (UML)
+#### 6.11 OTHER ASPECTS OF DATABASE DESIGN
+##### 6.11.1 FUNCTIONAL REQUIREMENTS
+##### 6.11.2 DATA FLOW, WORKFLOW
+##### 6.11.3 SCHEMA EVOLUTION
+#### 6.12 SUMMARY
 ### CHAPTER 7: RELATIONAL DATABASE DESIGN
