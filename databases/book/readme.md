@@ -486,4 +486,53 @@ It is also **possible** to have a **weak entity set** with **more** than **one i
 - of the **primary keys** of the **identifying entity sets**,
 - **plus** the **discriminator** of the **weak entity set**.
 
+###### 6.6 REMOVING REDUNDANT ATTRIBUTES IN ENTITY SETS
+When designing a database using the E-R model, 
+1. identify entity sets
+  - For example, 'student' and 'instructor'
+2. choose the appropriate attributes
+  - for 'instructor', we will include the attributes ID , name, dept name, and salary
+  - We could have added the attributes phone number, office number, home page, and others.
+  - The choice of what attributes to include is up to the designer
+3. Form the relationship sets among the various entities
+  - Redundancies are possible and need to be removed.
+  - Consider the entity sets 'instructor' and 'department':
+    - 'instructor' includes the attributes ID, name, **dept_name**, and salary
+    - 'department' includes the attributes **dept_name (PK)**, building, and budget
+    - Since it is the **primary key** for 'department', it is **redundant** in 'instructor' and needs to be removed.
+  - Treating the connection between 'instructors' and 'departments' uniformly as a **relationship** instead of an attribute
+    - the attribute 'dept_name' in fact gets added, if each instructor has at most one associated department
+    - also, it helps avoid a premature assumption that each 'instructor' is associated with only **one department**
+    - also, the 'student' entity set is related to the 'department' through the relationship set 'student_dept'    
+      - and thus there is **no need** for a 'dept_name' attribute in 'student'.
+  - a good entity-relationship design, does not contain redundant attributes
+
+![](6.15.jpg)
+
+In our university database, 
+- we have a **constraint** that each 'instructor' must have EXACTLY ONE associated 'department'. 
+  - As a result, there is a **double line (TOTAL participation)** between 'instructor' and 'inst_dept',
+- there is an **arrow** from 'inst_dept' to 'department',
+  - indicating that each 'instructor' can have AT MOST ONE associated 'department'
+
+Similarly, entity set 'course' has a **double line** to relationship set 'course_dept', 
+- indicating that every 'course' must be in some 'department',
+
+'student' has a **double line** to relationship set 'stud_dept',
+- indicating that every 'student' must be majoring in some department.
+- In each case, an **arrow** points to 'department' to show that a 'course' (and 'student')
+  - can be related to ONLY ONE 'department'
+
+The relationship set 'takes' has a descriptive attribute 'grade', 
+- and that each 'student' has at most one advisor. 
+The figure also shows that 'section' is a **weak entity** set, 
+  - with attributes 'sec_id', 'semester', 'year' forming the **discriminator**
+  - 'sec_course' is the **identifying relationship set** relating **weak entity set** 'section' to the **strong entity set** 'course'.
+
+#### 6.7 REDUCING E-R DIAGRAM TO RELATIONAL SCHEMAS
+In this section, we describe how an E-R schema can be represented by relation schemas and 
+- how constraints arising from the E-R design can be mapped to constraints on relation schemas.
+
+##### 6.7.1 REPRESENTATION OF STRONG ENTITY SETS
+
 ### CHAPTER 7: RELATIONAL DATABASE DESIGN
