@@ -699,6 +699,44 @@ The specialization relationship may also be referred to as a **superclass-subcla
   - that is, as rectangles containing the name of the entity set.
     
 ##### 6.8.2 GENERALIZATION
+The refinement from an initial entity set into successive levels of entity subgroupings
+- represents a top-down design process in which distinctions are made explicit.
+The design process may also proceed in a bottom-up manner,
+- in which multiple entity sets are synthesized into a higher-level entity set on the basis of common features.
+
+The database designer may have first identified:
+- instructor entity set with attributes instructor id, instructor name, instructor salary, and rank.
+- secretary entity set with attributes secretary id, secretary name, secretary salary, and hours per week.
+  
+There are similarities between the instructor entity set and the secretary entity set in the sense that they have several attributes that are conceptually the same across the two entity sets: 
+- the identifier,
+- name,
+- salary attributes.
+
+This commonality can be expressed by **generalization**, 
+- which is a containment relationship that exists between a higher-level entity set and one or more lower-level entity sets.
+In our example, employee is the higher-level entity set and instructor and secretary are lower-level entity sets.
+In this case, attributes that are conceptually the same had different names in the two lower-level entity sets.
+
+To create a generalization, the attributes must be given a common name and represented with the higher-level entity person. We can use the attribute names ID, name, street, and city, as we saw in the example in Section 6.8.1.
+- Higher- and lower-level entity sets also may be designated by the terms superclass and subclass, respectively.
+  - The person entity set is the superclass of the employee and student subclasses.
+For all practical purposes, generalization is a simple inversion of specialization.
+
+We apply both processes, in combination, in the course of designing the E-R schema for an enterprise. 
+- In terms of the E-R diagram itself, we do not distinguish between specialization and generalization.
+  - New levels of entity representation are distinguished (specialization) or synthesized (generalization) as the design schema comes to express fully the database application and the user requirements of the database.
+
+Differences in the two approaches may be characterized by their starting point and overall goal.
+Specialization stems from a single entity set; it emphasizes differences among entities within the set by creating distinct lower-level entity sets. 
+These lower-level entity sets may have attributes, or may participate in relationships, 
+that do not apply to all the entities in the higher-level entity set. 
+Indeed, the reason a designer applies specialization is to represent such distinctive features. 
+If student and employee have exactly the same attributes as person entities, and participate in exactly the same relationships as person entities, there would be no need to specialize the person entity set.
+
+Generalization proceeds from the recognition that a number of entity sets share some common features (namely, they are described by the same attributes and participate in the same relationship sets). 
+On the basis of their commonalities, generalization synthesizes these entity sets into a single, higher-level entity set. Generalization is used to emphasize the similarities among lower-level entity sets and to hide the differences;
+- it also permits an economy of representation in that shared attributes are not repeated.
 ##### 6.8.3 ATTRIBUTE INHERITANCE
 ##### 6.8.4 CONSTRAINTS OF SPECIALIZATIONS
 ##### 6.8.5 AGGREGATION
