@@ -592,64 +592,60 @@ The **primary key** of the 'course' entity set, on which 'section' depends, is '
   - section (COURSE_ID, SEC_ID, SEMESTER, YEAR)
   
 ##### 6.7.4 REPRESENTATION OF RELATIONSHIP SETS
-Let R be a relationship set, let a1 .. am be the set of attributes formed by the union of the primary keys of each of the entity sets participating in R, 
-and let the descriptive attributes (if any) of R be b1 .. bn. 
-We represent this relationship set by a relation schema called R with one attribute for each member of the set:
-{a1 , a2 , ... , am } ∪ {b1, b2 , ... , bn }
-
-We described in Section 6.5, how to choose a primary key for a binary relationship set. 
-
-The primary key attributes of the relationship set are also used as the primary key attributes of the relational schema R.
-
-As an illustration, consider the relationship set advisor in the E-R diagram of Figure 6.15. 
-This relationship set involves the following entity sets:
-• instructor, with the primary key ID.
-• student, with the primary key ID.
-
-Since the relationship set has no attributes, the advisor schema has two attributes, 
-the primary keys of instructor and student. 
-Since both attributes have the same name, we rename them i ID and s ID. 
-Since the advisor relationship set is many-to-one from student to instructor the primary key for the advisor relation schema is s ID.
-We also create foreign-key constraints on the relation schema R as follows: 
-- For each entity set Ei related by relationship set R,
-- we create a foreign-key constraint from relation schema R,
-- with the attributes of R that were derived from primary-key attributes of Ei referencing the primary key of the relation schema representing Ei .
-
-Returning to our earlier example, we thus create two foreign-key constraints on the advisor relation, with attribute i ID referencing the primary key of instructor and attribute s ID referencing the primary key of student.
-
-Applying the preceding techniques to the other relationship sets in the E-R diagram in Figure 6.15, 
-we get the relational schemas depicted in Figure 6.17. 
-Observe that for the case of the relationship set prereq, the role indicators associated with the relationship are used as attribute names, since both roles refer to the same relation course.
-
-Similar to the case of advisor, the primary key for each of the relations sec course,
-- sec time slot, sec class, inst dept, stud dept, and course dept consists of the primary key of only one of the two related entity sets, since each of the corresponding relationships is many-to-one.
-
-Foreign keys are not shown in Figure 6.17, but for each of the relations in the figure there are two foreign-key constraints, referencing the two relations created from the two related entity sets. Thus, for example, sec course has foreign keys referencing section and classroom, 
-teaches has foreign keys referencing instructor and section, and takes has foreign keys referencing student and section.
-The optimization that allowed us to create only a single relation schema from the entity set time slot, which had a multivalued attribute, prevents the creation of a foreign key from the relation schema sec time slot to the relation created from entity set time slot, 
-since we dropped the relation created from the entity set time slot. 
-We retained the relation created from the multivalued attribute and named it time slot, but this relation
-may potentially have no tuples corresponding to a time slot id, or it may have multiple tuples 
-- corresponding to a time slot id;
-- thus, time slot id in sec time slot cannot reference this relation.
+Let **R** be a relationship set, 
+- let **a1 .. am** be the attributes formed by the **union** of the **primary keys** of the entity sets participating in R
+- let the descriptive attributes (if any) of **R** be **b1 .. bn**
   
-The astute reader may wonder why we have not seen the schemas 'sec_course', 
-- sec time slot, sec class, inst dept, stud dept, and course dept in the previous chapters.
-- The reason is that the algorithm we have presented thus far results in some schemas that can be either eliminated or combined with other schemas. We explore this issue next.
+We **represent** this relationship set by a **relation schema** called **R** 
+- with **one attribute** for each member of the set
+  $\{a1 .. am \} \cup \{b1 .. bn \}
+- consider the relationship set 'advisor' involving 'instructor' and 'student'
+  - the advisor schema has two attributes, the **primary keys** of 'instructor' and 'student'.
+  - Since both attributes have the **same name**, we rename them 'i_ID' and 's_ID'. 
+  - Since the 'advisor' relationship set is **many-to-one** from 'student' to 'instructor'
+    - the **primary key** for 'advisor' is 's_ID'
+  - we create a **foreign-key** referencing the **primary key** of Ei in **R**
+    - we thus create two foreign-key constraints on the 'advisor' relation,
+    - **'i_ID'** referencing the **primary key** of 'instructor'
+    - **'s_ID'** referencing the **primary key** of 'student'.
+
+Applying the preceding techniques we get the relational schemas depicted in Figure 6.17. 
 ```
 # Figure 6.17
-teaches (ID, course id, sec id, semester, year)
-takes (ID, course id, sec id, semester, year, grade)
-prereq (course id, prereq id)
-advisor (s ID, i ID)
-sec course (course id, sec id, semester, year)
-sec time slot (course id, sec id, semester, year, time slot id)
-sec class (course id, sec id, semester, year, building, room number)
-inst dept (ID, dept name)
-stud dept (ID, dept name)
-course dept (course id, dept name)
+teaches (ID, COURSE_ID, SEC_ID, SEMESTER, YEAR)
+takes (ID, COURSE_ID, SEC_ID, SEMESTER, YEAR, grade)
+prereq (COURSE_ID, PREREQ_ID)
+advisor (S_ID, i_ID)
+sec_course (COURSE_ID, SEC_ID, SEMESTER, YEAR)
+sec_time slot (COURSE_ID, SEC_ID, SEMESTER, YEAR, time_slot_id)
+sec_class (COURSE_ID, SEC_ID, SEMESTER, YEAR, building, room_number)
+inst_dept (ID, dept_name)
+stud_dept (ID, dept_name)
+course_dept (COURSE_ID, dept_name)
 ```
+
+Observe that for the case of the relationship 'set_prereq', 
+- the **role** are used as **attribute names**,
+
+Foreign keys are not shown in Figure 6.17, 
+- but for each of the relations in the figure there are two foreign-key constraints,
+- Thus, for example, 'sec_course' has **foreign keys** referencing 'section' and 'classroom',
+  - 'teaches' has **foreign keys** referencing 'instructor' and 'section'
+  - 'takes' has **foreign keys** referencing 'student' and 'section'.
+ 
 ##### 6.7.5 REDUNDANCY OF SCHEMAS
+A relationship set linking a **weak entity set** to the corresponding **strong entity set** is redundant.
+- **many-to-one** and **have no descriptive attributes**
+- The **primary key** of weak 'section' is {'course_id', 'sec_id', 'semester', 'year'},
+- The **primary key** of strong 'course' is 'course_id'.
+- Since sec_course has no descriptive attributes,
+- the sec course schema has attributes course id, sec id, semester, and year.
+- The schema for the entity set section includes the attributes course id, sec id, semester, and year (among others). Every
+(course id, sec id, semester, year) combination in a sec course relation would also be
+present in the relation on schema section, and vice versa. Thus, the sec course schema
+is redundant.
+
+
 ##### 6.7.6 COMBINATION OF SCHEMAS
 #### 6.8 EXTENDED E-R FEATURES
 ##### 6.8.1 SPECIALIZATION
