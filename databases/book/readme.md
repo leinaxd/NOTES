@@ -639,16 +639,65 @@ A relationship set linking a **weak entity set** to the corresponding **strong e
 - The **primary key** of weak 'section' is {'course_id', 'sec_id', 'semester', 'year'},
 - The **primary key** of strong 'course' is 'course_id'.
 - Since sec_course has no descriptive attributes,
-- the sec course schema has attributes course id, sec id, semester, and year.
-- The schema for the entity set section includes the attributes course id, sec id, semester, and year (among others). Every
-(course id, sec id, semester, year) combination in a sec course relation would also be
-present in the relation on schema section, and vice versa. Thus, the sec course schema
-is redundant.
-
+  - the sec_course schema has attributes 'course_id', 'sec_id', 'semester', 'year'
+  - The schema for 'section' includes 'course_id', 'sec_id', 'semester', 'year'
+  - Every (course id, sec id, semester, year) combination in a 'sec_course' relation would also be present in 'section'
+    - and vice versa.
+    - Thus, the 'sec_course' schema is redundant.
 
 ##### 6.7.6 COMBINATION OF SCHEMAS
+Consider a **many-to-one** relationship set **AB** from entity **A** to **B**
+- Using our algorithm, we get three schemas:
+  - A, B, and AB.
+  - Suppose total participation of A, every entity in A must participate in relationship AB.
+  - Then we can combine the schemas A and AB into the union of attributes of both schemas.
+In the case of **one-to-one** relationships, the combined schemas can be either of the entity sets.
+- We can combine schemas even if the participation is partial by using null values. 
+
 #### 6.8 EXTENDED E-R FEATURES
+In this section, we discuss the extended E-R features of 
+- specialization
+- generalization
+- higher/lower-level entity sets,
+- attribute inheritance
+- aggregation
+
 ##### 6.8.1 SPECIALIZATION
+A **subset** of entities may have **attributes** that are **not shared** by all the entities.
+- As an example, 'person' may be further classified as 'employee' or 'student'
+  - 'employee' may have 'salary', whereas 'student' 'tot_cred'.   
+  - The specialization of 'person' allows us to distinguish among person entities.
+    - in general, a person could be an employee, a student, both, or neither.
+  - We can apply specialization repeatedly to refine a design
+    - The university could create two specializations of 'student', namely 'graduate' and 'undergraduate'.
+
+![](6.18.jpg)
+
+An entity set may be specialized by more than one distinguishing feature. 
+- In our example, the distinguishing feature among employee is the job the employee performs.
+- Another, coexistent, specialization could be based on whether the person is a temporary or permanent employee 
+
+When more than one specialization is formed on an entity set, 
+- a particular entity may belong to **multiple specializations**.
+- a given 'employee' may be a 'temporary employee' who is a 'secretary'
+
+In terms of an E-R diagram, **specialization** is depicted by a **hollow arrow-head** pointing 
+- **from the specialized entity** to the other entity
+- We refer to this relationship as the ISA relationship, which stands for “is a” and represents,
+  - for example, that an instructor “is a” employee.
+
+We depict specialization in an E-R diagram based on whether an entity belong to one or multiple specialized entity sets
+- one specialized entity, is called **disjoint specialization**
+  - a **single arrow** is used
+  - as is the case for 'instructor' and 'secretary' as **specializations** of 'employee'
+- multiple specialized entity, is called **overlapping specialization**
+  - two **separate arrows** are used.
+  - as is the case for 'student' and 'employee' as **specializations** of 'person'
+  
+The specialization relationship may also be referred to as a **superclass-subclass** relationship. 
+- Higher- and lower-level entity sets are depicted as regular entity sets
+  - that is, as rectangles containing the name of the entity set.
+    
 ##### 6.8.2 GENERALIZATION
 ##### 6.8.3 ATTRIBUTE INHERITANCE
 ##### 6.8.4 CONSTRAINTS OF SPECIALIZATIONS
