@@ -735,9 +735,9 @@ Constraint on specialization,
   - if an entity in the higher-level set must belong to AT LEAST one of the lower-level entity sets within the generalization/specialization.
 
 This constraint may be one of the following:
-- Total specialization or generalization.
+- **Total specialization**
   - each higher-level entity must belong to a lower-level entity set.
-- Partial specialization or generalization.
+- **Partial specialization**
   - Some higher-level entities may not belong to any lower-level entity set
   - Partial specialization is the default.
   - We specify total specialization by adding the keyword “total” in the diagram
