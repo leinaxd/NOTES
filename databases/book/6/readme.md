@@ -717,39 +717,48 @@ Differences in the two approaches may be characterized by their starting point a
 - Generalization proceeds from the recognition that a number of entity sets share some common features
 
 ##### 6.8.3 ATTRIBUTE INHERITANCE
-A crucial property of the higher- and lower-level entities created by specialization and
-generalization is attribute inheritance. The attributes of the higher-level entity sets are
-said to be inherited by the lower-level entity sets. For example, student and employee in-
-herit the attributes of person. Thus, student is described by its ID, name, street, and city
-attributes, and additionally a tot cred attribute; employee is described by its ID, name,
-street, and city attributes, and additionally a salary attribute. Attribute inheritance ap-
-plies through all tiers of lower-level entity sets; thus, instructor and secretary, which are
-subclasses of employee, inherit the attributes ID, name, street, and city from person, in
-addition to inheriting salary from employee.
-A lower-level entity set (or subclass) also inherits participation in the relationship
-sets in which its higher-level entity (or superclass) participates. Like attribute inheri-
-tance, participation inheritance applies through all tiers of lower-level entity sets. For
-example, suppose the person entity set participates in a relationship person dept with
-department. Then, the student, employee, instructor and secretary entity sets, which are
-subclasses of the person entity set, also implicitly participate in the person dept relation-
-ship with department. These entity sets can participate in any relationships in which
-the person entity set participates.
-Whether a given portion of an E-R model was arrived at by specialization or gen-
-eralization, the outcome is basically the same:
-••A higher-level entity set with attributes and relationships that apply to all of its
-lower-level entity sets.
-Lower-level entity sets with distinctive features that apply only within a particular
-lower-level entity set.
-In what follows, although we often refer to only generalization, the properties that
-we discuss belong fully to both processes.
-Figure 6.18 depicts a hierarchy of entity sets. In the figure, employee is a lower-level
-entity set of person and a higher-level entity set of the instructor and secretary entity sets.
-In a hierarchy, a given entity set may be involved as a lower-level entity set in only one
-ISA relationship; that is, entity sets in this diagram have only single inheritance. If an
-entity set is a lower-level entity set in more than one ISA relationship, then the entity
-set has multiple inheritance, and the resulting structure is said to be a lattice.
+The **attributes** of the higher-level entity sets are said to be **inherited** by the lower-level entity sets. 
+  - 'student' and 'employee' inherit the attributes of 'person'. 
+  - 'student(ID, name, street, city, **tot_credit**)'
+  - 'employee(ID, name, street, city, **salary**)'
+
+Attribute inheritance applies through all tiers of lower-level entity sets; 
+- 'instructor' and 'secretary', which are **subclasses** of 'employee'
+- inherit the attributes ID, name, street, and city from person, in addition to inheriting salary from employee.
+
+A lower-level entity set (or subclass) also inherits **participation** which participates. 
+
 ##### 6.8.4 CONSTRAINTS OF SPECIALIZATIONS
+Constraint on specialization, 
+- we saw earlier whether a specialization is **disjoint** or **overlapping**
+- Another type of constraint is a **completeness** constraint,
+  - if an entity in the higher-level set must belong to AT LEAST one of the lower-level entity sets within the generalization/specialization.
+
+This constraint may be one of the following:
+- Total specialization or generalization.
+  - each higher-level entity must belong to a lower-level entity set.
+- Partial specialization or generalization.
+  - Some higher-level entities may not belong to any lower-level entity set
+  - Partial specialization is the default.
+  - We specify total specialization by adding the keyword “total” in the diagram
+    - and drawing a **dashed line** to the corresponding **hollow arrowhead** to which it applies (for a total specialization),
+    - or to the set of hollow arrowheads to which it applies (for an overlapping specialization).
+
+The specialization of person to student or employee is total if the university does not need to represent any person who is neither a student nor an employee. 
+However, if the university needs to represent such persons, then the specialization would be partial.
+The completeness and disjointness constraints, do not depend on each other. 
+Thus, specializations may be partial-overlapping, partial-disjoint, total-overlapping, and totaldisjoint.
+
+We can see that certain insertion and deletion requirements follow from the constraints that apply to a given generalization or specialization. 
+For instance, when a total completeness constraint is in place, an entity inserted into a higher-level entity set must
+also be inserted into at least one of the lower-level entity sets. 
+An entity that is deleted from a higher-level entity set must also be deleted from all the associated lower-level
+entity sets to which it belongs.
+
 ##### 6.8.5 AGGREGATION
+
+![](6.19.jpg)
+
 ##### 6.8.6 REDUCTION TO RELATION SCHEMAS
 ###### 6.8.6.1 REPRESENTATION OF GENERALIZATION
 ###### 6.8.6.2 REPRESENTATION OF AGGREGATION
