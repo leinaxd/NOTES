@@ -699,14 +699,12 @@ The specialization relationship may also be referred to as a **superclass-subcla
   - that is, as rectangles containing the name of the entity set.
     
 ##### 6.8.2 GENERALIZATION
-The refinement from an initial entity set into successive levels of entity subgroupings
-- represents a top-down design process in which distinctions are made explicit.
 The design process may also proceed in a bottom-up manner,
 - in which multiple entity sets are synthesized into a higher-level entity set on the basis of common features.
 
 The database designer may have first identified:
-- instructor entity set with attributes instructor id, instructor name, instructor salary, and rank.
-- secretary entity set with attributes secretary id, secretary name, secretary salary, and hours per week.
+- 'instructor' entity set with attributes instructor id, instructor name, instructor salary, and rank.
+- 'secretary' entity set with attributes secretary id, secretary name, secretary salary, and hours per week.
   
 There are similarities between the instructor entity set and the secretary entity set in the sense that they have several attributes that are conceptually the same across the two entity sets: 
 - the identifier,
