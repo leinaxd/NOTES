@@ -703,39 +703,51 @@ The design process may also proceed in a bottom-up manner,
 - in which multiple entity sets are synthesized into a higher-level entity set on the basis of common features.
 
 The database designer may have first identified:
-- 'instructor' entity set with attributes instructor id, instructor name, instructor salary, and rank.
-- 'secretary' entity set with attributes secretary id, secretary name, secretary salary, and hours per week.
-  
-There are similarities between the instructor entity set and the secretary entity set in the sense that they have several attributes that are conceptually the same across the two entity sets: 
-- the identifier,
-- name,
-- salary attributes.
+- 'instructor(ID, name, salary, rank)'
+- 'secretary(ID, name, salary, hours per week)'
+- Note similarities between attributes
 
-This commonality can be expressed by **generalization**, 
-- which is a containment relationship that exists between a higher-level entity set and one or more lower-level entity sets.
-In our example, employee is the higher-level entity set and instructor and secretary are lower-level entity sets.
-In this case, attributes that are conceptually the same had different names in the two lower-level entity sets.
-
-To create a generalization, the attributes must be given a common name and represented with the higher-level entity person. We can use the attribute names ID, name, street, and city, as we saw in the example in Section 6.8.1.
-- Higher- and lower-level entity sets also may be designated by the terms superclass and subclass, respectively.
-  - The person entity set is the superclass of the employee and student subclasses.
 For all practical purposes, generalization is a simple inversion of specialization.
-
-We apply both processes, in combination, in the course of designing the E-R schema for an enterprise. 
-- In terms of the E-R diagram itself, we do not distinguish between specialization and generalization.
-  - New levels of entity representation are distinguished (specialization) or synthesized (generalization) as the design schema comes to express fully the database application and the user requirements of the database.
+- we apply both processes, in the designing the E-R schema
+- we do not distinguish between specialization and generalization.
+  - New levels of entity representation are distinguished (specialization) or synthesized (generalization)
 
 Differences in the two approaches may be characterized by their starting point and overall goal.
-Specialization stems from a single entity set; it emphasizes differences among entities within the set by creating distinct lower-level entity sets. 
-These lower-level entity sets may have attributes, or may participate in relationships, 
-that do not apply to all the entities in the higher-level entity set. 
-Indeed, the reason a designer applies specialization is to represent such distinctive features. 
-If student and employee have exactly the same attributes as person entities, and participate in exactly the same relationships as person entities, there would be no need to specialize the person entity set.
+- Specialization emphasizes differences among entities 
+- Generalization proceeds from the recognition that a number of entity sets share some common features
 
-Generalization proceeds from the recognition that a number of entity sets share some common features (namely, they are described by the same attributes and participate in the same relationship sets). 
-On the basis of their commonalities, generalization synthesizes these entity sets into a single, higher-level entity set. Generalization is used to emphasize the similarities among lower-level entity sets and to hide the differences;
-- it also permits an economy of representation in that shared attributes are not repeated.
 ##### 6.8.3 ATTRIBUTE INHERITANCE
+A crucial property of the higher- and lower-level entities created by specialization and
+generalization is attribute inheritance. The attributes of the higher-level entity sets are
+said to be inherited by the lower-level entity sets. For example, student and employee in-
+herit the attributes of person. Thus, student is described by its ID, name, street, and city
+attributes, and additionally a tot cred attribute; employee is described by its ID, name,
+street, and city attributes, and additionally a salary attribute. Attribute inheritance ap-
+plies through all tiers of lower-level entity sets; thus, instructor and secretary, which are
+subclasses of employee, inherit the attributes ID, name, street, and city from person, in
+addition to inheriting salary from employee.
+A lower-level entity set (or subclass) also inherits participation in the relationship
+sets in which its higher-level entity (or superclass) participates. Like attribute inheri-
+tance, participation inheritance applies through all tiers of lower-level entity sets. For
+example, suppose the person entity set participates in a relationship person dept with
+department. Then, the student, employee, instructor and secretary entity sets, which are
+subclasses of the person entity set, also implicitly participate in the person dept relation-
+ship with department. These entity sets can participate in any relationships in which
+the person entity set participates.
+Whether a given portion of an E-R model was arrived at by specialization or gen-
+eralization, the outcome is basically the same:
+••A higher-level entity set with attributes and relationships that apply to all of its
+lower-level entity sets.
+Lower-level entity sets with distinctive features that apply only within a particular
+lower-level entity set.
+In what follows, although we often refer to only generalization, the properties that
+we discuss belong fully to both processes.
+Figure 6.18 depicts a hierarchy of entity sets. In the figure, employee is a lower-level
+entity set of person and a higher-level entity set of the instructor and secretary entity sets.
+In a hierarchy, a given entity set may be involved as a lower-level entity set in only one
+ISA relationship; that is, entity sets in this diagram have only single inheritance. If an
+entity set is a lower-level entity set in more than one ISA relationship, then the entity
+set has multiple inheritance, and the resulting structure is said to be a lattice.
 ##### 6.8.4 CONSTRAINTS OF SPECIALIZATIONS
 ##### 6.8.5 AGGREGATION
 ##### 6.8.6 REDUCTION TO RELATION SCHEMAS
