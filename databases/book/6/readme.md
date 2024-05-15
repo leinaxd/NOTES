@@ -856,34 +856,32 @@ A **common mistake** when creating E-R models
 ![](6.21a.jpg)
 
 
+Another mistake is to designate the **primary-key** of the **entity** as attributes of the **relationship** set. 
+- STUDENT_ID and INSTRUCTOR_ID should not appear as attributes of the relationship 'advisor'.
+- **primary-key** are already **implicit** in the **relationship**
 
-Another related mistake that people sometimes make is to designate the primary-
-key attributes of the related entity sets as attributes of the relationship set. For example,
-ID (the primary-key attributes of student) and ID (the primary key of instructor) should
-not appear as attributes of the relationship advisor. This should not be done since the
-primary-key attributes are already implicit in the relationship set.6
-A third common mistake is to use a relationship with a single-valued attribute in
-a situation that requires a multivalued attribute. For example, suppose we decided to
-represent the marks that a student gets in different assignments of a course offering
-(section). A wrong way of doing this would be to add two attributes assignment and
-marks to the relationship takes, as depicted in Figure 6.21b. The problem with this
-design is that we can only represent a single assignment for a given student-section pair,
-since relationship instances must be uniquely identified by the participating entities,
-student and section.
-One solution to the problem depicted in Figure 6.21c, shown in Figure 6.22a, is to
-model assignment as a weak entity identified by section, and to add a relationship marks
-in between assignment and student; the relationship would have an attribute marks. An
-alternative solution, shown in Figure 6.22d, is to use a multivalued composite attribute
-{assignment marks} to takes, where assignment marks has component attributes assign-
-ment and marks. Modeling an assignment as a weak entity is preferable in this case,
-since it allows recording other information about the assignment, such as maximum
-marks or deadlines.
-When an E-R diagram becomes too big to draw in a single piece, it makes sense
-to break it up into pieces, each showing part of the E-R model. When doing so, you
-may need to depict an entity set in more than one page. As discussed in Section 6.2.2,
-attributes of the entity set should be shown only once, in its first occurrence. Subse-
-quent occurrences of the entity set should be shown without any attributes, to avoid
-repeating the same information at multiple places, which may lead to inconsistency.
+
+A third mistake is to use a **single-valued** attribute in a relationship that requires a **multivalued** attribute. 
+- Consider the 'marks' that a 'student' gets in different 'assignments' of a 'course'
+- A wrong way would be to add attributes 'assignment' and 'marks' to the relationship 'takes'
+
+![](6.21b.jpg)
+
+One solution is to model 'assignment' as a **weak entity** identified by 'section'
+- also add a relationship 'marks' between 'assignment' and 'student'
+- the relationship would have an attribute 'marks'.
+  
+![](6.22a.jpg)
+
+An alternative solution is to use a **multivalued composite attribute** {assignment marks} to 'takes'
+- where 'assignment marks' has **component attributes** 'assignment' and 'marks' 
+
+![](6.22b.jpg)
+
+Modeling an assignment as a **weak entity** is preferable in this case, 
+- since it allows **recording** other information about the 'assignment'
+  - such as 'maximum marks' or 'deadlines'
+
 ##### 6.9.2 USE OF ENTITY SETS VS ATTRIBUTES
 ##### 6.9.3 USE OF ENTITY SETS VS RELATIONSHIP SETS
 ##### 6.9.4 BINARY VS n-ARY RELATIONSHIP SETS
