@@ -757,16 +757,135 @@ An entity that is deleted from a higher-level entity set
 - must also be deleted from all the associated lower-level entity sets to which it belongs
 
 ##### 6.8.5 AGGREGATION
+One **limitation** of the E-R model is that it cannot express **relationships** among **relationships**. 
+- Consider the ternary relationship proj_guide, between an 'instructor', 'student' and 'project'
+- Now suppose that each 'instructor' guiding a 'student' on a 'project'
+  - is required to file a monthly evaluation report. 
+  - We model the **evaluation report** as an entity 'evaluation(ID)'
+    
+![](6.6.jpg)
+
+One alternative for recording the (student, project, instructor) combination
+- is to create a quaternary (4-way) relationship 'eval_for' between 'instructor', 'student', 'project', and 'evaluation'. 
 
 ![](6.19.jpg)
 
+It appears that 'proj_guide' and 'eval_for' can be combined.
+- Nevertheless, some 'instructor', 'student', 'project'  may not have an associated 'evaluation'.
+
+There is redundant information in the resultant figure, however, since every instructor, student, project combination in eval for must also be in proj guide. 
+
+If 'evaluation' was modeled as a **value** rather than an **entity**, 
+- we could instead make **evaluation** a **multivalued composite attribute** of 'proj_guide' 
+- not be an option if an 'evaluation' may also be related to **other entities** 
+  - for example, each **evaluation report** may be associated with a 'secretary' responsible of scholarship payments.
+
+**Aggregation**
+- is an abstraction through which **relationships** are treated **as** higher-level **entities**. 
+- 'proj_guide' treated in the same manner as is any other entity set. 
+  - then create a **binary relationship** 'eval_for' between 'proj_guide' and 'evaluation'
+  -  to represent which (student, project, instructor) combination an evaluation is for. 
+
+![](6.20.jpg)
+
 ##### 6.8.6 REDUCTION TO RELATION SCHEMAS
+We now describe how the extended E-R features into relation schemas.
+
 ###### 6.8.6.1 REPRESENTATION OF GENERALIZATION
+**METHOD 1. Create a schema for the higher-level entity set**
+For each lower-level entity set,
+- create a schema, that includes an **attribute** for each of the attributes of that **entity** set
+- plus the **primary key attributes** of the **higher**-level entity set.
+
+Thus, for the E-R diagram of Figure 6.18 (ignoring the 'instructor' and 'secretary' entity sets) we have three schemas:
+```
+person (PERSON_ID, name, street, city)
+employee (PERSON_ID (FK), salary)
+student (PERSON_ID (FK), tot_cred)
+```
+In addition, we create **foreign-key** constraints on the lower-level entity sets.
+
+**METHOD 2. If the generalization is disjoint and complete**
+Here, we **do not create** a schema for the **higher**-level **entity** set. 
+- Instead, we duplicate the superclass attributes into the lower-level.
+```
+employee (PERSON_ID, name, street, city, salary)
+student (PERSON_ID, name, street, city, tot_cred)
+```
+
+One drawback of the second method lies in **defining foreign-key** constraints. 
+- we do not have a single relation to which a foreign-key can refer
+  
+To avoid this problem, 
+  - we need to create a relation schema 'person' containing at least the **primary-key** attributes of the 'person' entity.
+    
+If the second method were used for an **overlapping** generalization, 
+- some values would be stored multiple times, unnecessarily.
+- if a 'person' is **both** an 'employee' and a 'student', 
+  - values for 'street' and 'city' would be stored twice.
+  
+If the generalization were **disjoint** but **not complete**
+- that is, if **some person** is neither an **employee** nor a **student**—
+- then an extra schema would be required to represent such people. 
+```
+person(PERSON_ID, name, street, city)
+```
+
+However, the problem with **foreign-key** constraints mentioned above would remain. 
+- suppose 'employees' and 'students' are additionally **represented** in the 'person' relation.
+- 'name', 'street', and 'city' would then be stored redundantly in the **'person'** relation
+The result is exactly the first method we presented. 
+
 ###### 6.8.6.2 REPRESENTATION OF AGGREGATION
+Consider Figure 6.20. 
+- The schema for 'eval_for' between the aggregation of 'proj_guide' and 'evaluation'
+  - includes an attribute for each attribute in the primary keys of 'evaluation' and 'proj_guide'
+  - It also includes the attributes of 'eval_for'
+
 #### 6.9 ENTITY-RELATIONSHIP DESIGN ISSUES
+The notions of an **entity set** and a **relationship set** are not precise, 
+- it's possible to define a set of entities and the relationships among them in a number of ways.
+  
 ##### 6.9.1 COMMON MISTAKES IN E-R DIAGRAMS
+A **common mistake** when creating E-R models 
+- is using the **primary key** of an entity as an **attribute** of another entity, instead of using a **relationship**
+- it's incorrect to have **'dept_name'** as an attribute of 'student'
+- even though it is present as an attribute in the relation schema for student.
+- **'stud_dept'** is the **correct** way to represent this information in the E-R model, 
+
+![](6.21a.jpg)
+
+
+
+Another related mistake that people sometimes make is to designate the primary-
+key attributes of the related entity sets as attributes of the relationship set. For example,
+ID (the primary-key attributes of student) and ID (the primary key of instructor) should
+not appear as attributes of the relationship advisor. This should not be done since the
+primary-key attributes are already implicit in the relationship set.6
+A third common mistake is to use a relationship with a single-valued attribute in
+a situation that requires a multivalued attribute. For example, suppose we decided to
+represent the marks that a student gets in different assignments of a course offering
+(section). A wrong way of doing this would be to add two attributes assignment and
+marks to the relationship takes, as depicted in Figure 6.21b. The problem with this
+design is that we can only represent a single assignment for a given student-section pair,
+since relationship instances must be uniquely identified by the participating entities,
+student and section.
+One solution to the problem depicted in Figure 6.21c, shown in Figure 6.22a, is to
+model assignment as a weak entity identified by section, and to add a relationship marks
+in between assignment and student; the relationship would have an attribute marks. An
+alternative solution, shown in Figure 6.22d, is to use a multivalued composite attribute
+{assignment marks} to takes, where assignment marks has component attributes assign-
+ment and marks. Modeling an assignment as a weak entity is preferable in this case,
+since it allows recording other information about the assignment, such as maximum
+marks or deadlines.
+When an E-R diagram becomes too big to draw in a single piece, it makes sense
+to break it up into pieces, each showing part of the E-R model. When doing so, you
+may need to depict an entity set in more than one page. As discussed in Section 6.2.2,
+attributes of the entity set should be shown only once, in its first occurrence. Subse-
+quent occurrences of the entity set should be shown without any attributes, to avoid
+repeating the same information at multiple places, which may lead to inconsistency.
 ##### 6.9.2 USE OF ENTITY SETS VS ATTRIBUTES
-##### 6.9.3 USE OF RELATIONSHIP SETS VS RELATIONSHIP SETS
+##### 6.9.3 USE OF ENTITY SETS VS RELATIONSHIP SETS
 ##### 6.9.4 BINARY VS n-ARY RELATIONSHIP SETS
 #### 6.10 ALTERNATIVE NOTATIONS FOR MODELING DATA
 ##### 6.10.1 ALTERNATIVE E-R NOTATIONS
