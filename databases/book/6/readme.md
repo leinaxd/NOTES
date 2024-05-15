@@ -731,29 +731,30 @@ A lower-level entity set (or subclass) also inherits **participation** which par
 ##### 6.8.4 CONSTRAINTS OF SPECIALIZATIONS
 Constraint on specialization, 
 - we saw earlier whether a specialization is **disjoint** or **overlapping**
+  - **Disjoint Specialization**
+    - Each entity instance of the superclass belongs to exactly one of the subclases
+    - 'CAR' and 'MOTORCYCLE' are disjoint as each instance is either a car or a motorcycle, never both.
+  - **OVERLAPPING**
+    - Allows the specialization to belong to more than one subclass.
+    - 'ELECTRIC VEHICLE' and 'SPORTS VEHICLES' where a vehicle could be both specialized at the same time.
 - Another type of constraint is a **completeness** constraint,
-  - if an entity in the higher-level set must belong to AT LEAST one of the lower-level entity sets within the generalization/specialization.
+  - **Total specialization**
+    - EACH higher-level entity has to belong to AT LEAST one lower-level entity set.
+    - 'VEHICLE' can be specialized in 'CAR' and 'MOTORCYCLE'
+      - There cannot exist a 'VEHICLE' that is neither a 'CAR' or a 'MOTORCYCLE'
+    - We specify total specialization by adding the keyword “total” in the diagram
+      - and drawing a **dashed line** to the corresponding **hollow arrowhead** to which it applies
+  - **Partial specialization**
+    - Some higher-level entities may not belong to any lower-level entity set
+    - There can exists a 'VEHICLE' that is neither a 'CAR' nor a 'MOTORCYCLE'
+    - is the default.
+    
+Thus, specializations may be partial-overlapping, partial-disjoint, total-overlapping, and total-disjoint.
 
-This constraint may be one of the following:
-- **Total specialization**
-  - each higher-level entity must belong to a lower-level entity set.
-- **Partial specialization**
-  - Some higher-level entities may not belong to any lower-level entity set
-  - Partial specialization is the default.
-  - We specify total specialization by adding the keyword “total” in the diagram
-    - and drawing a **dashed line** to the corresponding **hollow arrowhead** to which it applies (for a total specialization),
-    - or to the set of hollow arrowheads to which it applies (for an overlapping specialization).
-
-The specialization of person to student or employee is total if the university does not need to represent any person who is neither a student nor an employee. 
-However, if the university needs to represent such persons, then the specialization would be partial.
-The completeness and disjointness constraints, do not depend on each other. 
-Thus, specializations may be partial-overlapping, partial-disjoint, total-overlapping, and totaldisjoint.
-
-We can see that certain insertion and deletion requirements follow from the constraints that apply to a given generalization or specialization. 
-For instance, when a total completeness constraint is in place, an entity inserted into a higher-level entity set must
-also be inserted into at least one of the lower-level entity sets. 
-An entity that is deleted from a higher-level entity set must also be deleted from all the associated lower-level
-entity sets to which it belongs.
+When a total completeness constraint is in place, 
+- an entity inserted into a higher-level entity set must also be inserted into at least one of the lower-level entity sets. 
+An entity that is deleted from a higher-level entity set
+- must also be deleted from all the associated lower-level entity sets to which it belongs
 
 ##### 6.8.5 AGGREGATION
 
