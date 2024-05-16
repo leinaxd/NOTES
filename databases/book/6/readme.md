@@ -925,57 +925,76 @@ if the registrar’s office associates **other information** with a course-regis
 As a guideline relationships often describe an **action** between entities.
   
 ##### 6.9.4 BINARY VS n-ARY RELATIONSHIP SETS
-Relationships in databases are often binary. Some relationships that appear to be nonbi-
-nary could actually be better represented by several binary relationships. For instance,
-one could create a ternary relationship parent, relating a child to his/her mother and
-father. However, such a relationship could also be represented by two binary relation-
-ships, mother and father, relating a child to his/her mother and father separately. Using
-the two relationships mother and father provides us with a record of a child’s mother,
-even if we are not aware of the father’s identity; a null value would be required if the
-ternary relationship parent were used. Using binary relationship sets is preferable in
-this case.
-In fact, it is always possible to replace a nonbinary (n-ary, for n > 2) relationship set
-by a number of distinct binary relationship sets. For simplicity, consider the abstract
-ternary (n = 3) relationship set R, relating entity sets A, B, and C. We replace the
-relationship set R with an entity set E, and we create three relationship sets as shown
-in Figure 6.25:
-•••RA , a many-to-one relationship set from E to A.
-RB , a many-to-one relationship set from E to B.
-RC , a many-to-one relationship set from E to C.
-E is required to have total participation in each of RA , RB , and RC . If the relationship
-set R had any attributes, these are assigned to entity set E; further, a special identifying
-attribute is created for E (since it must be possible to distinguish different entities in
-an entity set on the basis of their attribute values). For each relationship (a i , bi , ci ) in
-the relationship set R, we create a new entity ei in the entity set E. Then, in each of the
-three new relationship sets, we insert a relationship as follows:
-•••(ei , ai ) in RA .
-(ei , bi ) in RB .
-(ei , ci ) in RC .
-We can generalize this process in a straightforward manner to n-ary relationship
-sets. Thus, conceptually, we can restrict the E-R model to include only binary relation-
-ship sets. However, this restriction is not always desirable.
-An identifying attribute may have to be created for the entity set created to rep-
-resent the relationship set. This attribute, along with the extra relationship sets
-required, increases the complexity of the design and (as we shall see in Section
-6.7) overall storage requirements.
-An n-ary relationship set shows more clearly that several entities participate in a
-single relationship.
-There may not be a way to translate constraints on the ternary relationship into
-constraints on the binary relationships. For example, consider a constraint that
-says that R is many-to-one from A, B to C; that is, each pair of entities from A and
-B is associated with at most one C entity. This constraint cannot be expressed by
-using cardinality constraints on the relationship sets RA , RB , and RC .
-Consider the relationship set proj guide in Section 6.2.2, relating instructor, stu-
-dent, and project. We cannot directly split proj guide into binary relationships between
-instructor and project and between instructor and student. If we did so, we would be able
-to record that instructor Katz works on projects A and B with students Shankar and
-Zhang; however, we would not be able to record that Katz works on project A with
-student Shankar and works on project B with student Zhang, but does not work on
-project A with Zhang or on project B with Shankar.
-The relationship set proj guide can be split into binary relationships by creating a
-new entity set as described above. However, doing so would not be very natural.
+Some relationships that appear to be **nonbinary** could be better represented by several **binary** relationships. 
+- For instance, one could create a ternary relationship 'parent',
+  - relating a 'child' to his 'mother' and 'father'. 
+- such a relationship could also be represented by **two binary** relationships,
+  - 'mother' and 'father'
+  - relating a 'child' to his 'mother' and 'father' separately
+
+
+Using the relationships 'mother' and 'father' provides the record of the **mother**, even if the **father** is unkown 
+- a **null value** would be required if the **ternary relationship** 'parent' were used. 
+- A binary relationship sets is preferable
+
+In fact, it is always possible to replace a **nonbinary** relationship set by a number of distinct **binary** relationship 
+
+Consider the **ternary** relationship set **R**, relating **entity** sets **A**, **B**, **C**
+- We **replace** **R** with an **entity** set **E** and we create the following relationships.
+  - $R_A$ , a many-to-one relationship set from **E** to **A**.
+  - $R_B$ , a many-to-one relationship set from **E** to **B**.
+  - $R_C$ , a many-to-one relationship set from **E** to **C**.
+
 ![](6.25.jpg)
+  
+**E** has to have **total participation** in each relation.
+- If R had any attributes, these are assigned to **E**
+- a special identifying attribute is created for **E**
+
+For each relationship (a_i , b_i , c_i ) in the relationship set R, 
+- we create a new entity e_i in the entity set E.
+- Then we insert a relationship as follows:
+  - (e_i , a_i ) in $R_A$ 
+  - (e_i , b_i ) in $R_B$ 
+  - (e_i , c_i ) in $R_C$ 
+We can **generalize** this process in a straightforward manner to **n-ary relationship sets**.
+
+Even that we can restrict the E-R model to include only binary relationship sets.
+- this restriction is not always desirable.
+
+An **identifying attribute** may have to be created for the **entity** set created to **represent** the **relationship** 
+- This attribute, along with the extra relationship sets required,
+- increases the complexity of the design and overall storage requirements.
+- An **n-ary** relationship set shows more clearly that several entities participate in a single relationship.
+
+There may not be a way to translate constraints on the **ternary** into the **binary** relationships. 
+- Consider a constraint that says that **R** is **many-to-one** from **A**, **B** to **C** 
+  - Each **pair** of entities from **A** and **B** is **associated** with at most **one** **C** entity. 
+  - This constraint cannot be expressed by using cardinality on R_A, R_B, R_C
+- Consider 'proj_guide' relating 'instructor', 'student', 'project' 
+  - We cannot split 'proj_guide' into binary relationships
+    - between 'instructor' and 'project' and
+    - between 'instructor' and 'student' 
+  - If we did so, we would be able to record that 'instructor' Katz
+    - works on 'projects' A and B with 'students' Shankar and Zhang
+  - however, we would not be able to record that Katz
+    - works on 'project' A with 'student' Shankar and
+    - works on 'project' B with 'student' Zhang,
+    - but does not work on 'project' A with Zhang
+
 #### 6.10 ALTERNATIVE NOTATIONS FOR MODELING DATA
+Creating a database schema requires 
+- data modeling experts,
+- domain experts, who know the requirements of the application
+
+An intuitive **representation** eases **communication** of between these groups of experts.
+- There is no universal standard for E-R diagram notation, 
+- **UML class diagrams**
+
+Summarization of the set of symbols used in our E-R diagram notation.
+
+![](6.26.jpg)
+
 ##### 6.10.1 ALTERNATIVE E-R NOTATIONS
 ##### 6.10.2 THE UNIFIED MODELING LANGUAGE (UML)
 #### 6.11 OTHER ASPECTS OF DATABASE DESIGN
