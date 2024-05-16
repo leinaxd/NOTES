@@ -883,8 +883,98 @@ Modeling an assignment as a **weak entity** is preferable in this case,
   - such as 'maximum marks' or 'deadlines'
 
 ##### 6.9.2 USE OF ENTITY SETS VS ATTRIBUTES
+The distinctions between 
+- What constitutes an attribute? and
+- what constitutes an entity set?
+mainly depend on the structure of the real-world enterprise being modeled.
+
+Consider the 'phone number' attribute for entity 'instructor'
+- Treated as an **entity** better models the extra information about a phone,
+  - its 'location',
+  - its 'type' (mobile, IP phone, or plain old phone),
+  - people who share the phone.
+- or defining 'phone number' as a **multivalued** attribute
+  - would be just something you don't want to model further
+  
+![](6.23.jpg)
+
+In contrast, it would not be appropriate to treat the attribute 'name' as an entity.
+
 ##### 6.9.3 USE OF ENTITY SETS VS RELATIONSHIP SETS
+Modeling an object as an **entity** or a **relationship** set.
+- As a **relationship set**,
+  - 'takes' is modeling the relation where a 'student' takes a (section of a) 'course'. 
+- As an **entity set**,
+  - to record the course 'registration' for each 'course' that each 'student' takes.
+    - 'registration', is representing course-registration records
+    - 'section_reg', is relating 'registration' and 'course'
+    - 'student_reg', is relating 'registration' and 'student'
+    
+![](6.15.jpg)
+
+![](6.24.jpg)
+
+Note that we use **double lines** to indicate **total participation** by 'registration' entities.
+
+Both accurately represent the university’s information, 
+- but the use of 'takes' is more compact
+
+if the registrar’s office associates **other information** with a course-registration record, 
+- modeling as an **entity** in a best fit.
+
+As a guideline relationships often describe an **action** between entities.
+  
 ##### 6.9.4 BINARY VS n-ARY RELATIONSHIP SETS
+Relationships in databases are often binary. Some relationships that appear to be nonbi-
+nary could actually be better represented by several binary relationships. For instance,
+one could create a ternary relationship parent, relating a child to his/her mother and
+father. However, such a relationship could also be represented by two binary relation-
+ships, mother and father, relating a child to his/her mother and father separately. Using
+the two relationships mother and father provides us with a record of a child’s mother,
+even if we are not aware of the father’s identity; a null value would be required if the
+ternary relationship parent were used. Using binary relationship sets is preferable in
+this case.
+In fact, it is always possible to replace a nonbinary (n-ary, for n > 2) relationship set
+by a number of distinct binary relationship sets. For simplicity, consider the abstract
+ternary (n = 3) relationship set R, relating entity sets A, B, and C. We replace the
+relationship set R with an entity set E, and we create three relationship sets as shown
+in Figure 6.25:
+•••RA , a many-to-one relationship set from E to A.
+RB , a many-to-one relationship set from E to B.
+RC , a many-to-one relationship set from E to C.
+E is required to have total participation in each of RA , RB , and RC . If the relationship
+set R had any attributes, these are assigned to entity set E; further, a special identifying
+attribute is created for E (since it must be possible to distinguish different entities in
+an entity set on the basis of their attribute values). For each relationship (a i , bi , ci ) in
+the relationship set R, we create a new entity ei in the entity set E. Then, in each of the
+three new relationship sets, we insert a relationship as follows:
+•••(ei , ai ) in RA .
+(ei , bi ) in RB .
+(ei , ci ) in RC .
+We can generalize this process in a straightforward manner to n-ary relationship
+sets. Thus, conceptually, we can restrict the E-R model to include only binary relation-
+ship sets. However, this restriction is not always desirable.
+An identifying attribute may have to be created for the entity set created to rep-
+resent the relationship set. This attribute, along with the extra relationship sets
+required, increases the complexity of the design and (as we shall see in Section
+6.7) overall storage requirements.
+An n-ary relationship set shows more clearly that several entities participate in a
+single relationship.
+There may not be a way to translate constraints on the ternary relationship into
+constraints on the binary relationships. For example, consider a constraint that
+says that R is many-to-one from A, B to C; that is, each pair of entities from A and
+B is associated with at most one C entity. This constraint cannot be expressed by
+using cardinality constraints on the relationship sets RA , RB , and RC .
+Consider the relationship set proj guide in Section 6.2.2, relating instructor, stu-
+dent, and project. We cannot directly split proj guide into binary relationships between
+instructor and project and between instructor and student. If we did so, we would be able
+to record that instructor Katz works on projects A and B with students Shankar and
+Zhang; however, we would not be able to record that Katz works on project A with
+student Shankar and works on project B with student Zhang, but does not work on
+project A with Zhang or on project B with Shankar.
+The relationship set proj guide can be split into binary relationships by creating a
+new entity set as described above. However, doing so would not be very natural.
+![](6.25.jpg)
 #### 6.10 ALTERNATIVE NOTATIONS FOR MODELING DATA
 ##### 6.10.1 ALTERNATIVE E-R NOTATIONS
 ##### 6.10.2 THE UNIFIED MODELING LANGUAGE (UML)
