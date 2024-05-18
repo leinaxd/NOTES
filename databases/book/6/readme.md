@@ -996,7 +996,90 @@ Summarization of the set of symbols used in our E-R diagram notation.
 ![](6.26.jpg)
 
 ##### 6.10.1 ALTERNATIVE E-R NOTATIONS
+
+![](6.27.jpg)
+
+Chen’s notation is:
+- **entity** sets are represented by a **box**
+- **attributes** are represented by **ovals** connected to an entity or relationship set.
+  - they are **underlined** if they are **primary key**
+- **Cardinality constraints** on relationships are indicated with labels on the edges
+
+IDEF1X notation
+- **relationship sets** are represented by **lines** between **entity** sets, without diamonds.
+  - only **binary** relationships can be modeled
+  - **Cardinality constraints** are shown by **“crow’s-foot”** notation
+    - crow’s feet on both sides indicate a **many-to-many** relationship,
+    - crow’s feet on just the E1 side indicate a **many-to-one** relationship
+    - **Total participation** is specified in this notation by a **vertical bar**. 
+    - **partial participation** is indicated by using a **circle** on the opposite side.
+- **generalization** is represented by **triangles**
+
 ##### 6.10.2 THE UNIFIED MODELING LANGUAGE (UML)
+**Entity-relationship diagrams** help model the **data representation** component of a software system. 
+- Other components include **models** of
+  - **user interactions** with the system,
+  - **functional modules** specification of the system
+
+**Unified Modeling Language (UML)** is a **standard** developed by the **Object Management Group (OMG)**
+- **Class diagram**. Similar to an E-R diagram. 
+- **Use case diagram**. Show the **interaction** between **users** and the **system**,
+  - in particular the **steps** of **tasks** that **users** perform, such as
+    - withdrawing money or registering for a course
+- **Activity diagram**. Depict the **flow** of **tasks** between various **components** of a system.
+- **Implementation diagram**. Show the **system components** and their **interconnections**,
+  - at the software and the hardware level.
+
+**UML** actually models **objects**
+- **Objects** are like **entities**
+- and have **attributes**
+- additionally provide a **set of methods** that can be invoked to compute
+  - values on the basis of attributes of the objects,
+  - or to update the object itself. 
+
+![](6.28.jpg)
+
+**UML** does **not support** 
+- **composite** or **multivalued** attributes,
+- and **derived attributes** are equivalent to methods without parameters. 
+
+Since **classes** support **encapsulation**, 
+- **UML** allows **attributes** and **methods** to be **prefixed** with a
+  - **+**, denote **public access**
+  - **-**, denote **private access**
+    - can only be used in methods of the class 
+  - **#**, denote **protected access**
+    - can be used only in methods of the class and its subclasses
+
+In UML terminology, relationship sets are referred to as associations; 
+we shall refer to them as relationship sets for consistency with E-R terminology. 
+We represent binary relationship sets in UML by just drawing a line connecting the entity sets. 
+We write the relationship set name adjacent to the line. 
+We may also specify the role played by an entity set in a relationship set by writing the role name on the line, adjacent to the entity set. 
+
+Alternatively, we may write the relationship set name in a box, along with attributes of the relationship set, and connect the box by a dotted line to the line depicting the relationship set. 
+This box can then be treated as an entity set, in the same way as an aggregation in E-R diagrams, and can participate in relationships with other entity sets.
+
+Since UML version 1.3, UML supports nonbinary relationships, using the same diamond notation used in E-R diagrams. Nonbinary relationships could not be directly represented in earlier versions of UML — they had to be converted to binary relationships by the technique we have seen earlier in Section 6.9.4. 
+UML allows the diamond notation to be used even for binary relationships, but most designers use the line notaation.
+Cardinality constraints are specified in UML in the same way as in E-R diagrams, in the form l..h, where l denotes the minimum and h the maximum number of relationships an entity can participate in. 
+However, you should be aware that the positioning of the constraints is exactly the reverse of the positioning of constraints in E-R diagrams, as shown in Figure 6.28. 
+The constraint 0.. ∗ on the E2 side and 0..1 on the E1 side means that each E2 entity can participate in at most one relationship, whereas each E1 entity can participate in many relationships; 
+in other words, the relationship is many-to-one from E2 to E1.
+
+Single values such as 1 or ∗ may be written on edges; 
+the single value 1 on an edge is treated as equivalent to 1..1, while ∗ is equivalent to 0.. ∗. 
+UML supports generalization; 
+the notation is basically the same as in our E-R notation, including the representation of disjoint and overlapping  generalizations.
+UML class diagrams include several other notations that approximately correspond to the E-R notations we have seen. 
+A line between two entity sets with a small shaded diamond at one end in UML specifies “composition” in UML. 
+The composition relationship between E2 and E1 in Figure 6.28 indicates that E2 is existence dependent on E1; 
+this is roughly equivalent to denoting E2 as a weak entity set that is existence dependent on the identifying entity set E1. 
+(The term aggregation in UML denotes a variant of composition where E2 is contained in E1 but may exist independently, and
+it is denoted using a small hollow diamond.)
+UML class diagrams also provide notations to represent object-oriented language features such as interfaces. 
+See the Further Reading section for more information on UML class diagrams.
+
 #### 6.11 OTHER ASPECTS OF DATABASE DESIGN
 ##### 6.11.1 FUNCTIONAL REQUIREMENTS
 ##### 6.11.2 DATA FLOW, WORKFLOW
