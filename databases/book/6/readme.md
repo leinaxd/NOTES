@@ -1051,38 +1051,78 @@ Since **classes** support **encapsulation**,
   - **#**, denote **protected access**
     - can be used only in methods of the class and its subclasses
 
-In UML terminology, relationship sets are referred to as associations; 
-we shall refer to them as relationship sets for consistency with E-R terminology. 
-We represent binary relationship sets in UML by just drawing a line connecting the entity sets. 
-We write the relationship set name adjacent to the line. 
-We may also specify the role played by an entity set in a relationship set by writing the role name on the line, adjacent to the entity set. 
+In **UML** terminology, **relationship sets** are referred to as **associations**
+- We represent **binary relationship** sets by drawing a **line** connecting the **entity sets** 
+- We write **relationship set** **name** adjacent to the **line** 
+- The **role** played by an entity in a relationship, is represented by its **name** on the line, adjacent to the entity
 
-Alternatively, we may write the relationship set name in a box, along with attributes of the relationship set, and connect the box by a dotted line to the line depicting the relationship set. 
-This box can then be treated as an entity set, in the same way as an aggregation in E-R diagrams, and can participate in relationships with other entity sets.
+Alternative we may write the **relationship** set **name** in a box,
+- along with **attributes** of the **relationship** set,
+- and connect the **box** by a **dotted line** 
+- This box can then be treated as an entity set, and can **participate** in **relationships** with other entity sets.
 
-Since UML version 1.3, UML supports nonbinary relationships, using the same diamond notation used in E-R diagrams. Nonbinary relationships could not be directly represented in earlier versions of UML — they had to be converted to binary relationships by the technique we have seen earlier in Section 6.9.4. 
-UML allows the diamond notation to be used even for binary relationships, but most designers use the line notaation.
-Cardinality constraints are specified in UML in the same way as in E-R diagrams, in the form l..h, where l denotes the minimum and h the maximum number of relationships an entity can participate in. 
-However, you should be aware that the positioning of the constraints is exactly the reverse of the positioning of constraints in E-R diagrams, as shown in Figure 6.28. 
-The constraint 0.. ∗ on the E2 side and 0..1 on the E1 side means that each E2 entity can participate in at most one relationship, whereas each E1 entity can participate in many relationships; 
-in other words, the relationship is many-to-one from E2 to E1.
+**Nonbinary relationships** had to be converted to binary relationships
 
-Single values such as 1 or ∗ may be written on edges; 
-the single value 1 on an edge is treated as equivalent to 1..1, while ∗ is equivalent to 0.. ∗. 
-UML supports generalization; 
-the notation is basically the same as in our E-R notation, including the representation of disjoint and overlapping  generalizations.
-UML class diagrams include several other notations that approximately correspond to the E-R notations we have seen. 
-A line between two entity sets with a small shaded diamond at one end in UML specifies “composition” in UML. 
-The composition relationship between E2 and E1 in Figure 6.28 indicates that E2 is existence dependent on E1; 
-this is roughly equivalent to denoting E2 as a weak entity set that is existence dependent on the identifying entity set E1. 
-(The term aggregation in UML denotes a variant of composition where E2 is contained in E1 but may exist independently, and
-it is denoted using a small hollow diamond.)
-UML class diagrams also provide notations to represent object-oriented language features such as interfaces. 
-See the Further Reading section for more information on UML class diagrams.
+UML allows the **diamond notation** to be used even for **binary relationships**, 
+- but most designers use the **line notaation**.
+- **Cardinality constraints** are specified in the same way as in E-R diagrams 
+- However, the **positioning** of the **constraints** is exactly the **reverse** of the E-R diagrams
+  - single value 1 on an edge is treated as equivalent to 1..1, while ∗ is equivalent to 0.. ∗. 
+- UML supports **generalization**
+  - similar notation as in E-R notation, including the representation of **disjoint** and **overlapping** generalizations
+- Other notations
+  - **COMPOSITION**, denoted by a **line** between two **entity** sets with a small **shaded diamond** at one end
+    - The composition relationship between E2 and E1 in Figure 6.28 indicates that E2 is existence dependent on E1
+    - Roghly equivalent to denote E2 as a **weak entity** set that is existence dependent on the identifying **E1**
+  - **AGGREGATION** is denoted using a small **hollow diamond**
+    - it is a variant of composition where E2 is contained in E1 but may exist independently
+
+**UML class diagrams** also provide notations to represent object-oriented language features such as **interfaces**. 
 
 #### 6.11 OTHER ASPECTS OF DATABASE DESIGN
+Schema design is not the only component of a database design to be aware of.
 ##### 6.11.1 FUNCTIONAL REQUIREMENTS
+All enterprises have rules on what kinds of **functionality** are to be supported by an application. 
+- These could include **transactions** that **update the data**,
+- as well as **queries** to **view data** in a desired fashion.
+- In addition to **planning** the **functionality**,
+  - designers have to **plan** the **interfaces** 
+  - **Authorization mechanism**
+    - Not all users are **authorized** to view all data, or to perform **all transactions**.
+    - Such authorization could be at the **level** of the **database**
+    - But it could also be at the **level** of **interfaces**
+      
 ##### 6.11.2 DATA FLOW, WORKFLOW
+**Database applications** are often part of a **larger** enterprise **application** 
+- that **interacts** not only with the **database system** but also with **various** specialized **applications**
+- As an example, consider a **travel-expense** report. 
+  - Created by an **employee** returning from a **business trip** and is subsequently **routed** to his **manager**
+  - perhaps other **managers** and eventually to the **accounting department** for **payment**
+    
+The term **workflow** refers to the **combination** of **data** and **tasks** involved in processes
+- They **interact** with the **database system** as they move among users to perform their tasks on the workflow
+- The database may **store** data about the **workflow itself**,
+  - tasks making up a workflow
+  - how they are to be routed among users
+
+**Workflows** thus specify a **series** of **queries** and **updates** to the **database** 
+- taken into account as part of the **database-design process**
+
 ##### 6.11.3 SCHEMA EVOLUTION
-#### 6.12 SUMMARY
-### CHAPTER 7: RELATIONAL DATABASE DESIGN
+**Database design** is usually not a **one-time** activity. 
+- An organization evolve continually
+- The data that it needs also evolve correspondingly
+
+During the **initial database-design phases**, or during the **development of an application**, 
+- the designer may realize that **changes** are required at the
+  - **conceptual**, **logical**, or **physical** schema levels.
+
+A good design **anticipates** future needs of an organization ensuring minimal changes to the schema as the needs evolve
+- There are **fundamental constraints**
+  - that are expected to be **permanent**
+    - an **instructor-id** identify a **unique instructor** 
+  - that are anticipated to **change**.
+    - The **policy** that an **instructor** can have **only one department** which may change later
+- the design is a **human-oriented** activity
+  - the **end users** are people 
+  - the designer needs to **interact** extensively with **experts** to understand the data requirements 
