@@ -262,9 +262,53 @@ If **r1** or **r2** is decomposed further,
 - the **primary** or **foreign-key** on **r1** or **r2** would be **inherited** by that relation.
 
 #### 7.3 NORMAL FORMS
-
+There are a number of different normal forms that are used in designing relational databases.
 ##### 7.3.1 BOYCE - CODD NORMAL FORM
+One of the most desirable normal forms that we can obtain is Boyce–Codd normal form (BCNF). 
+- It eliminates all redundancy that can be discovered based on functional dependencies
+- though, there may be other types of redundancy remaining.
 ###### 7.3.1.1 DEFINITION
+A relation schema **R** is in **BCNF** with respect to a set **F** of functional dependencies
+- if, for **all functional dependencies** in **F+** **α → β**, where α ⊆ R and β ⊆ R,
+  - **α → β** is a **trivial** functional dependency (i.e., β ⊆ α) 
+  - or **α** is a **superkey** for schema **R**
+    
+A **database** design is in **BCNF**
+- if each member of the set of relation schemas that constitutes the design is in BCNF.
+We have already seen in Section 7.1 an example of a relational schema that is not
+in BCNF:
+in dep (ID, name, salary, dept name, building, budget)
+The functional dependency dept name → budget holds on in dep, but dept name is not a
+superkey (because a department may have a number of different instructors). In Section
+7.1 we saw that the decomposition of in dep into instructor and department is a better
+design. The instructor schema is in BCNF. All of the nontrivial functional dependencies
+that hold, such as:
+ID → name, dept name, salary
+include ID on the left side of the arrow, and ID is a superkey (actually, in this case, the
+primary key) for instructor. (In other words, there is no nontrivial functional depen-
+dency with any combination of name, dept name, and salary, without ID, on the left
+side.) Thus, instructor is in BCNF.
+Similarly, the department schema is in BCNF because all of the nontrivial functional
+dependencies that hold, such as:
+dept name → building, budget
+include dept name on the left side of the arrow, and dept name is a superkey (and the
+primary key) for department. Thus, department is in BCNF.
+We now state a general rule for decomposing schemas that are not in BCNF. Let
+R be a schema that is not in BCNF . Then there is at least one nontrivial functional
+dependency α → β such that α is not a superkey for R. We replace R in our design with
+two schemas:
+• (α ∪ β)
+• (R − (β − α))
+In the case of in dep above, α = dept name, β = {building, budget}, and in dep is replaced
+by
+• (α ∪ β) = (dept name, building,budget)
+• (R − (β − α)) = (ID, name, dept name, salary)
+In this example, it turns out that β − α = β. We need to state the rule as we did so as
+to deal correctly with functional dependencies that have attributes that appear on both
+sides of the arrow. The technical reasons for this are covered later in Section 7.5.1.
+When we decompose a schema that is not in BCNF, it may be that one or more
+of the resulting schemas are not in BCNF. In such cases, further decomposition is
+required, the eventual result of which is a set of BCNF schemas.
 ###### 7.3.1.2 BCNF AND DEPENDENCY PRESERVATION
 ##### 7.3.2 THIRD NORMAL FORM
 ##### 7.3.3 COMPARISON OF BCNF AND 3NF
