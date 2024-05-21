@@ -108,9 +108,166 @@ The approach is decide if a given relation schema is in 'good form'
 - each of which is in an appropriate normal form.
 
 #### 7.2 DECOMPOSITION USING FUNCTIONAL DEPENDENCIES
+A **database** models a set of entities and relationships in the real world. 
+- There are a variety of constraints on the data 
+1. 'Students' and 'instructors' are uniquely identified by their ID.
+2. Each 'student' and 'instructor' has only one name.
+3. Each 'instructor' and 'student' is associated with only one department.
+4. Each 'department' has only one value for its 'budget'
+
+a **Legal instance** of a relation is when the instance satisfies all such real-world constraints
+
 ##### 7.2.1 NOTATIONAL CONVENTIONS
+In discussing algorithms, rather than taking examples we shall need to take arbitrary relations and schemas
+- we use **Greek letters** for **sets of attributes** (α, ß).
+- We use an **uppercase Roman letter** to refer to a **relation schema**.
+  - **r(R)** means that schema **R** is for relation **r**.
+  - A **relation schema** is a **set of attributes**,
+    - but not all sets of attributes are schemas.
+- We use a **lowercase Greek letter** to refer to a **set of attributes**
+  - that may or may not be a schema.
+- A **Roman letter** to indicate that the **set of attributes** is definitely a **schema**.
+- we denote by **K** a set of **superkey** attributes
+  - If a **superkey** pertains to a specific **relation** schema,
+    - "K is a superkey for R"
+- We use a **lowercase name** for **relations**
+  - Names are intended to be realistic (e.g., 'instructor'),
+  - while in our **definitions** and **algorithms**, we use single letters, like **r**
+- The notation r(R) thus refers to the relation r with schema R.
+- **r(R)** **refers** both to the **relation** and its **schema**.
+- A **relation**, has a particular **value** at any given time refered as "instance of r"
+- When it is clear that we are talking about an instance,
+  - we may use simply the relation name (e.g., r).
+
+We assume that attribute names have only **one meaning** within the database schema.
+
 ##### 7.2.2 KEYS AND FUNCTIONAL DEPENDENCIES
+Some commonly used constraints can be represented as 
+- keys (superkeys, candidate keys, and primary keys)
+  - a **superkey** is a set attributes that uniquely identify a tuple
+- functional dependencies
+
+
+We restate the **superkey** definition
+- Given r(R), a subset K of R is a superkey of r(R) 
+- if, in any legal instance of r(R),
+  - for all pairs t1 and t2 of tuples in the instance of r if t1 ≠ t2,
+  - then t1[K] ≠ t2[K].
+No two tuples in any legal instance of relation r(R) 
+- may have the same value on attribute set K.
+
+Whereas a superkey uniquely identify an entire tuple.
+- A **functional dependency** uniquely identify the **values** of certain attributes. 
+
+Consider a relation schema r(R), and let α ⊆ R and β ⊆ R.
+- The instance r(R) satisfies the **functional dependency α→β**
+  - if **all pairs** of tuples **t1** and **t2** in the instance
+    - such that t1[α]=t2[α]
+    - it is also the case that t1[β]=t2[β].
+- the **functional dependency α → β** holds on **schema r(R)**
+  - if every **legal instance** of r(R) satisfies the functional dependency
+
+Using the functional-dependency notation, 
+- we say that **K** is a superkey for **r(R)**
+  - if the **functional dependency** **K→R** holds on **r(R)** 
+  - In other words, for every legal instance of r(R),
+    - for every pair of tuples **t1** and **t2** from the instance,
+    - when t1[K]=t2[K] is also the case t1[R]=t2[R] (i.e., t1 = t2 ).
+
+**Functional dependencies** allow us to **express constraints** that we cannot express with superkeys. 
+- consider the schema 'in_dep'
+- the **functional dependency** 'dept_name' → 'budget' holds
+- because each 'department' (identified by dept_name) there is a **unique** 'budget' amount
+```
+in_dep (ID, name, salary, dept_name, building, budget)
+```
+
+The pair of attributes can also form a **superkey** for 'in_dep'
+  - (ID, dept_name) → (name, salary, building, budget)
+    
+We shall use functional dependencies in two ways:
+1. To **test** instances of relations if they satisfy a given set F of functional dependencies.
+2. To specify constraints on the set of legal relations.
+  - say that F holds on r(R)
+
+Observe in Figure 7.4 that
+- **A → C** is satisfied. 
+  - There are **two tuples** that have value **a1** and **c1**
+- **C → A** is not satisfied
+  - knowing **c2** doesn't define **a2** or **a3**
+  - Thus, we have a pair of tuples that t1[C]=t2[C], but t1[A]≠t2[A].    
+
+![](7.4.jpg)
+
+Some trivial functional dependencies are
+- **A→A** is satisfied by all relations involving attribute A. 
+- **AB → A** is satisfied by all relations involving attribute A. 
+  - in general, **α→β** is trivial if **β ⊆ α**. 
+
+**some functional dependencies** may not be **required** to hold
+- **room_number→capacity** is satisfied.
+- however it is not a real-world constraint
+  
+![](7.5.jpg)
+
+Because we assume that attribute names have only **one meaning** in the database schema
+- if we state that **α → β** holds as a constraint on the database, 
+- then **α → β** must hold for any schema **R** such that **α ⊆ R** and **β ⊆ R**, 
+
+Given a set of **functional dependencies** F holds on a relation r(R), 
+- it may be possible to **infer** other functional dependencies must also hold
+- given a schema r(A, B, C), 
+- if functional dependencies **A → B** and **B → C** hold on r, 
+  - we may infer **A → C** 
+
+We use notation **F+** to denote the **closure** of the set F.
+- the set of **all functional dependencies** that can be **inferred** given the set **F** 
+
 ##### 7.2.3 LOSSLESS DECOMPOSITION AND FUNCTIONAL DEPENDENCIES
+We can use **functional dependencies** to show when certain **decompositions** are **lossless**
+- Let **R1** and **R2** form a **lossless decomposition** of **R**
+- if at least one of the following functional dependencies is in F+:
+  - R1 ∩ R2 → R1
+  - R1 ∩ R2 → R2
+if **R1 ∩ R2** forms a **superkey** for either **R1** or **R2**
+- the **decomposition** of R is a **lossless decomposition**
+- We can use **attribute closure** to test efficiently for **superkeys**
+
+Consider the schema
+```
+in_dep(ID, name, salary, dept name, building, budget)
+```
+decomposed into 'instructor' and 'department'
+```
+instructor(ID, name, dept_name, salary)
+department(dept_name, building, budget)
+```
+The **intersection** of these schemas is 'dept_name'. 
+- We see that because **dept_name → dept_name, building, budget** the lossless-decomposition rule is satisfied.
+
+the **test** for **binary decomposition** is a sufficient condition for **lossless decomposition**, 
+- it is a necessary condition only if all constraints are functional dependencies. 
+
+- multivalued dependencies can ensure that a decomposition is lossless even if no functional dependencies are present.
+  
+Suppose we **decompose** a relation schema **r(R)** into **r1(R1)** and **r2(R2)**
+- where R1 ∩ R2 → R1
+- Then the following SQL constraints must be imposed on the decomposition to ensure consistency
+- **R1 ∩ R2** is the **primary key** of **r1** enforcing the functional dependency.
+- **R1 ∩ R2** is a **foreign key** from **r2** referencing **r1** ensuring each tuple in r2 has a matching in r1,
+  - without which it would not appear in the natural join of r1 and r2 .
+
+If **r1** or **r2** is decomposed further, 
+- as long as the decomposition ensures that **all attributes** in **R1 ∩ R2** are in **one** relation,
+- the **primary** or **foreign-key** on **r1** or **r2** would be **inherited** by that relation.
+
 #### 7.3 NORMAL FORMS
 
+##### 7.3.1 BOYCE - CODD NORMAL FORM
+###### 7.3.1.1 DEFINITION
+###### 7.3.1.2 BCNF AND DEPENDENCY PRESERVATION
+##### 7.3.2 THIRD NORMAL FORM
+##### 7.3.3 COMPARISON OF BCNF AND 3NF
+##### 7.3.4 HIGHER NORMAL FORMS
+#### 7.4 FUNCTIONAL DEPENDENCY THEORY
 
