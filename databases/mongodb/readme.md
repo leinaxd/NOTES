@@ -26,5 +26,7 @@ db.newCollection.update(
   {name:'John'},
   {$set:{age:31}}
   )
-db.newCollection.remove({ nombre: "John" })
+db.newCollection.remove({ name: "John" })
+exit #exit the shell
+sudo journalctl -u mongod #logs and errors
 ```
