@@ -269,47 +269,104 @@ One of the most desirable normal forms that we can obtain is Boyce–Codd normal
 - though, there may be other types of redundancy remaining.
 ###### 7.3.1.1 DEFINITION
 A relation schema **R** is in **BCNF** with respect to a set **F** of functional dependencies
-- if, for **all functional dependencies** in **F+** **α → β**, where α ⊆ R and β ⊆ R,
+- if, for **all functional dependencies** in **F+** where α ⊆ R and β ⊆ R,
   - **α → β** is a **trivial** functional dependency (i.e., β ⊆ α) 
   - or **α** is a **superkey** for schema **R**
-    
-A **database** design is in **BCNF**
-- if each member of the set of relation schemas that constitutes the design is in BCNF.
-We have already seen in Section 7.1 an example of a relational schema that is not
-in BCNF:
-in dep (ID, name, salary, dept name, building, budget)
-The functional dependency dept name → budget holds on in dep, but dept name is not a
-superkey (because a department may have a number of different instructors). In Section
-7.1 we saw that the decomposition of in dep into instructor and department is a better
-design. The instructor schema is in BCNF. All of the nontrivial functional dependencies
-that hold, such as:
-ID → name, dept name, salary
-include ID on the left side of the arrow, and ID is a superkey (actually, in this case, the
-primary key) for instructor. (In other words, there is no nontrivial functional depen-
-dency with any combination of name, dept name, and salary, without ID, on the left
-side.) Thus, instructor is in BCNF.
-Similarly, the department schema is in BCNF because all of the nontrivial functional
-dependencies that hold, such as:
-dept name → building, budget
-include dept name on the left side of the arrow, and dept name is a superkey (and the
-primary key) for department. Thus, department is in BCNF.
-We now state a general rule for decomposing schemas that are not in BCNF. Let
-R be a schema that is not in BCNF . Then there is at least one nontrivial functional
-dependency α → β such that α is not a superkey for R. We replace R in our design with
-two schemas:
-• (α ∪ β)
-• (R − (β − α))
-In the case of in dep above, α = dept name, β = {building, budget}, and in dep is replaced
-by
-• (α ∪ β) = (dept name, building,budget)
-• (R − (β − α)) = (ID, name, dept name, salary)
-In this example, it turns out that β − α = β. We need to state the rule as we did so as
-to deal correctly with functional dependencies that have attributes that appear on both
-sides of the arrow. The technical reasons for this are covered later in Section 7.5.1.
-When we decompose a schema that is not in BCNF, it may be that one or more
-of the resulting schemas are not in BCNF. In such cases, further decomposition is
-required, the eventual result of which is a set of BCNF schemas.
+
+A **database** design is in **BCNF** if each relation schemas is in BCNF.
+
+Example of a relational schema **not** in BCNF
+- **dept_name → budget** holds
+- dept_name is not a **superkey** (a department may have many different instructors). 
+```
+in_dep (ID, name, salary, dept_name, building, budget)
+```
+The **instructor** schema is in **BCNF**, as **ID** is the superkey.
+
+Let state a general rule for **decomposing** schemas that are **not** in **BCNF**. 
+- Let **R** be a schema that is **not in BCNF**. 
+- There is AT LEAST ONE nontrivial functional dependency **α → β**
+  - such that **α** is not a **superkey** for R. 
+We **replace R** in our design with two schemas:
+- **(α ∪ β)**
+- **(R − (β − α))**
+In the case of **in_dep**, **α = dept_name**, **β = {building, budget}** it would be replaced by
+- **(α ∪ β) = (dept_name, building, budget)**
+- **(R − (β − α)) = (ID, name, dept_name, salary)**
+In this example, it turns out that **β − α = β**.
+
+If the decomposistion is **not in BCNF**, further decomposition is required.
+
 ###### 7.3.1.2 BCNF AND DEPENDENCY PRESERVATION
+**Consistency constraints** may be seen in several ways
+- primary-key
+- functional dependencies
+- check constraints
+- assertions
+- triggers
+
+The design has to consider **testing constraints efficiently**.
+- If testing a **functional dependency** can be done by **considering** just **one relation**,
+- then the cost of testing this constraint is low.
+- Decomposition into BCNF can prevent efficient testing of certain functional dependencies.
+
+Suppose that a **student** may have **more than one advisor** 
+- but **no more** than **one** from a given 'department'
+- Suppose that an **instructor** can be associated with only **one department**, 
+
+One implementation would be a ternary relationship set 'dept_advisor', 
+- involving 'instructor', 'student', 'department' 
+- that is **many-to-one** from pair ('student', 'instructor') to 'department'
+
+![](7.6.jpg)
+
+The E-R diagram specifies the constraint 
+- a 'student' may have **more than one** 'advisor', but at most **one** corresponding to a given 'department'
+
+With this new E-R diagram, 
+the schemas for the instructor, department, and student relations are unchanged. 
+
+However, the schema derived from the 'dept_advisor' relationship set is
+dept_advisor(s_ID, i_ID , dept_name)
+
+Although not specified in the E-R diagram, 
+suppose we have the additional constraint that 
+- an 'instructor' can **act as advisor** for only **a** single **department**
+- Then, the following functional dependencies hold on 'dept_advisor'
+- **i_ID → dept_name**
+- **s_ID, dept_name → i_ID**
+
+The first functional dependency follows from our requirement that
+- an 'instructor' can act as an 'advisor' for only **one department**
+
+The second functional dependency follows from our requirement that 
+- a 'student may have at most **one advisor** for a given 'department'
+
+Notice that with this design, 
+- we are forced to **repeat** the 'department' **name**
+- once for each time an **instructor participates** in a 'dept_advisor' relationship. 
+
+We see that 'dept_advisor' is **not in BCNF** as 'i_ID' is **not a superkey** 
+Following our rule for BCNF decomposition, we get
+- (s ID, i ID)
+- (i ID, dept name)
+Both the above schemas are **BCNF**. 
+- In fact, any schema with only two attributes is in BCNF
+  
+Note, that in our BCNF design, 
+- there is no schema that includes all the attributes appearing in the functional dependency
+- **s_ID, dept_name → i_ID**
+The only dependency that can be enforced on the individual decomposed relations is ID → dept name. 
+The functional dependency s ID , dept name → i ID can only be checked by computing the join of the decomposed relations.
+
+Because our design does not permit the enforcement of this functional dependency without a join, 
+- we say that our design is **not dependency preserving** 
+- Because **dependency preservation** is **desirable**, we consider another **normal form**
+  - weaker than BCNF, that will allow us to preserve dependencies. 
+
+That normal form is called the **third normal form**
+
+
 ##### 7.3.2 THIRD NORMAL FORM
 ##### 7.3.3 COMPARISON OF BCNF AND 3NF
 ##### 7.3.4 HIGHER NORMAL FORMS
