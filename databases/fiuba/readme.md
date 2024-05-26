@@ -200,3 +200,14 @@ JuegaEn(nombre_fut FK PK, nombre_club FK, pais FK)
 Futbolistas(nombre_fut PK, f_nac, pais_fut, nombre_club FK, pais_club FK)
 Clubes(nombre_club PK, pais_club PK, division)
 ```
+
+**CASO 10** ENTIDADES DEBILES
+- En este caso no es necesario representar la interrelación 'tiene'
+- La entidad débil tiene como FK la PK que lo identifica y su atributo privado
+  
+![](10.jpg)
+
+```
+Hoteles(nombre_hotel PK, direccion)
+Habitaciones(numbero_habitacion PK, nombre_hotel FK PK, capacidad)
+```
