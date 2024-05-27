@@ -99,8 +99,8 @@
   - En caso de violar alguna restriccion, se deben deshacer los cambios
 
 ### PASAJE DE MODELOS
-**CASO 1** Entidad con atributos
 
+**CASO 1** Entidad con atributos
 ![](1.jpg)
 ```
 Pais(Nombre PK, poblacion, area)
@@ -125,23 +125,34 @@ Mails(legajo FK PK, mail PK)
 Tarjeta(MII PK, issuer_subid PK, cuenta PK, checksum PK, fecha_venc)
 ```
 
-**CASO 4** INTERRELACION CON CARDINALIDAD ARBITRARIA
+**CASO 4** ENTIDADES DEBILES
+- En este caso no es necesario representar la interrelación 'tiene'
+- La entidad débil tiene como FK la PK que lo identifica y su atributo privado
+  
+![](4.jpg)
+
+```
+Hoteles(nombre_hotel PK, direccion)
+Habitaciones(numbero_habitacion PK, nombre_hotel FK PK, capacidad)
+```
+
+**CASO 5** INTERRELACION CON CARDINALIDAD ARBITRARIA
 - Aprobaciones necesita ambas claves foráneas para definirse,
   - entonces tanto padrón como código son PK
 
-![](4.jpg)
+![](5.jpg)
 ```
 Alumnos(padron PK, nombre) #Entidad 1
 Asignaturas(codigo PK, nombre) #Entidad 2
 Aprobaciones(padron PK FK, codigo PK FK, fecha) #Interrelación
 ```
 
-**CASO 5** INTERRELACION CON CARDINALIDAD 1:1
+**CASO 6** INTERRELACION CON CARDINALIDAD 1:1
 - Cuando la cardinalidad es 1, saber el gerente sabe el dpto.
   - sólo una PK es necesaria para definir la relación
 - El viceversa también es válido
   
-![](5.jpg)
+![](6.jpg)
 
 ```
 Gerentes(nombre_gerente PK, tel, mail)
@@ -149,7 +160,7 @@ Departamentos(codigo PK, nombre)
 Dirige(nombre_gerente FK PK, codigo FK)
 ```
 
-**CASO 6** INTERRELACION CON CARDINALIDAD 1:1 Y PARTICIPACION TOTAL DE UNA ENTIDAD
+**CASO 7** INTERRELACION CON CARDINALIDAD 1:1 Y PARTICIPACION TOTAL DE UNA ENTIDAD
 - Si además una entidad tiene participación total,
   - se escoje esa entidad como clave primaria de la relación
 - En este caso Gerente tiene participación total
@@ -157,28 +168,28 @@ Dirige(nombre_gerente FK PK, codigo FK)
 - En este caso nos ahorramos la tabla 'dirige'
   - y gerente toma la FK del dpto
     
-![](6.jpg)
+![](7.jpg)
 
 ```
 Gerentes(nombre_gerente PK, telefono, mail, codigo_dpto FK)
 Departamentos(codigo PK, nombre_dpto)
 ```
-**CASO 7** INTERRELACION CON CARDINALIDAD 1:1 Y PARTICIPACION TOTAL DE AMBAS ENTIDADES
+**CASO 8** INTERRELACION CON CARDINALIDAD 1:1 Y PARTICIPACION TOTAL DE AMBAS ENTIDADES
 - En este caso particular, definir al gerente define al dpto y viceversa.
 - Es posible ahorrarse dos tablas,
 - luego una sóla PK (gerente o dpto) es suficiente para definir una super tupla.
   
-![](7.jpg)
+![](8.jpg)
 
 ```
 GerentesDepartamentos(nombre_gerente PK, tel, mail, codigo_dpto, nombre_dpto)
 ```
-**CASO 8** INTERRELACION CON CARDINALIDAD 1:N 
+**CASO 9** INTERRELACION CON CARDINALIDAD 1:N 
 - El caso general usa 3 tablas
 - Determinar el futbolista, determina el club
 - Así que la tabla usa como PK el que tiene cardinalidad 1
   
-![](8.jpg)
+![](9.jpg)
 
 ```
 Futbolistas(nombre_fut PK, f_nac, pais)
@@ -186,7 +197,7 @@ Clubes(nombre_club PK, pais PK, division)
 JuegaEn(nombre_fut FK PK, nombre_club FK, pais FK)
 ```
 
-**CASO 9** INTERRELACION CON CARDINALIDAD 1:N Y PARTICIPACION TOTAL
+**CASO 10** INTERRELACION CON CARDINALIDAD 1:N Y PARTICIPACION TOTAL
 - Aqui nos ahorramos una tabla
 - En este caso existen clubes vacíos
 - Pero cada jugador pertenece a un único club.
@@ -194,22 +205,11 @@ JuegaEn(nombre_fut FK PK, nombre_club FK, pais FK)
     - el recíproco, conocer el club puede tener jugadores nulos y la tupla queda mal formada
   - El futbolista tiene el FK del club
     
-![](9.jpg)
+![](10.jpg)
 
 ```
 Futbolistas(nombre_fut PK, f_nac, pais_fut, nombre_club FK, pais_club FK)
 Clubes(nombre_club PK, pais_club PK, division)
-```
-
-**CASO 10** ENTIDADES DEBILES
-- En este caso no es necesario representar la interrelación 'tiene'
-- La entidad débil tiene como FK la PK que lo identifica y su atributo privado
-  
-![](10.jpg)
-
-```
-Hoteles(nombre_hotel PK, direccion)
-Habitaciones(numbero_habitacion PK, nombre_hotel FK PK, capacidad)
 ```
 
 **CASO 11** INTERRELACION TERNARIA N:N:N
@@ -241,7 +241,7 @@ Interpreta(nombre_actor FK PK, nombre_pelicula FK PK, nombre_personaje FK PK)
   - Si conozco el curso y la asignatura, automáticamente sé que docente es
   - Así que el nombre del docente no es PK de Enseña
     
-![](14.jpg)
+![](12.jpg)
 
 ```
 Docentes(nombre_docente PK)
@@ -260,7 +260,7 @@ En un hipódromo, se corren varias carreras,
 
 En este caso, se puede elegir cual de las dos PK caballo o hokey no es necesario determinar
 
-![](15.jpg)
+![](13.jpg)
 
 ```
 Carrera(dia PK, hora PK, largo)
@@ -274,7 +274,7 @@ Corre(dia FK PK, hora FK PK, nombre_caballo FK   , nombre_hokecy PK FK) #Alterna
 - Las subclases heredan el PK y se referencia FK a la superclase
 
 
-![](11.jpg)
+![](14.jpg)
 
 ```
 Personas(DNI PK, nombre_persona) #General
@@ -285,7 +285,7 @@ Docentes(DNI PK FK, legajo, fecha_alta)
 **CASO 15** UNION
 - En este caso debemos crear una clase sustituta para identificar a los clientes
   - el id del cliente, se transforma en DNI o CUIT
-![](12.jpg)
+![](15.jpg)
 ```
 Clientes(id_cliente PK, nombre_cliente)
 PersonasFisicas(DNI PK, f. nacimiento, id_cliente FK)
