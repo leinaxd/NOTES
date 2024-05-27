@@ -212,29 +212,7 @@ Hoteles(nombre_hotel PK, direccion)
 Habitaciones(numbero_habitacion PK, nombre_hotel FK PK, capacidad)
 ```
 
-** CASO 11** GENERALIZACION/ESPECIALIZACION 
-- Las subclases heredan el PK y se referencia FK a la superclase
-
-
-![](11.jpg)
-
-```
-Personas(DNI PK, nombre_persona) #General
-Alumnos(DNI PK FK, padron) #particular
-Docentes(DNI PK FK, legajo, fecha_alta) 
-```
-
-**CASO 12** UNION
-- En este caso debemos crear una clase sustituta para identificar a los clientes
-  - el id del cliente, se transforma en DNI o CUIT
-![](12.jpg)
-```
-Clientes(id_cliente PK, nombre_cliente)
-PersonasFisicas(DNI PK, f. nacimiento, id_cliente FK)
-PersonasJuridicas(CUIT PK, f. constitucion, id_cliente FK)
-```
-
-**CASO 13** INTERRELACION TERNARIA N:N:N
+**CASO 11** INTERRELACION TERNARIA N:N:N
 - A veces un mismo actor puede interpretar varios personajes en una misma película
 - o un personaje de una película ser interpretado por muchos actores
 - También existen personajes que existen en múltiples películas (han solo en star wars 1,2,3)
@@ -242,7 +220,7 @@ PersonasJuridicas(CUIT PK, f. constitucion, id_cliente FK)
 - Simplemente se crea una tabla extra para modelar esta interrelación entre personajes, películas y actores.
   - Las 3 primary keys son también PK de la interrelación
     
-![](13.jpg)
+![](11.jpg)
 
 ```
 Actores(nombre_actor PK, pais)
@@ -251,7 +229,7 @@ Personajes(nombre_personaje PK)
 Interpreta(nombre_actor FK PK, nombre_pelicula FK PK, nombre_personaje FK PK)
 ```
 
-**CASO 14** INTERRELACION TERNARIA 1:N:N
+**CASO 12** INTERRELACION TERNARIA 1:N:N
 - En una escuela, docentes enseñan asignaturas (matematica, historia)
 - Los cursos son los grados (3ºA, 3ºB)
 - Cada asignatura en cada curso es enseñada por un único docente
@@ -272,7 +250,7 @@ Asignaturas(nombre_asignatura PK)
 ENSEÑA(nombre_curso FK PK, nombre_asignatura FK PK, nombre_docente FK)
 ```
 
-**CASO 15** INTERRELACION TERNARIA 1:1:N
+**CASO 13** INTERRELACION TERNARIA 1:1:N
 En un hipódromo, se corren varias carreras,
 - participan hockeys y caballos
 - En una carrera, cada Jokey está asociado a un caballo
@@ -290,4 +268,26 @@ Caballo(nombre_caballo PK)
 Jokey(nombre_jockey PK, peso)
 Corre(dia FK PK, hora FK PK, nombre_caballo FK PK, nombre_hokecy FK)
 Corre(dia FK PK, hora FK PK, nombre_caballo FK   , nombre_hokecy PK FK) #Alternativa
+```
+
+** CASO 14** GENERALIZACION/ESPECIALIZACION 
+- Las subclases heredan el PK y se referencia FK a la superclase
+
+
+![](11.jpg)
+
+```
+Personas(DNI PK, nombre_persona) #General
+Alumnos(DNI PK FK, padron) #particular
+Docentes(DNI PK FK, legajo, fecha_alta) 
+```
+
+**CASO 15** UNION
+- En este caso debemos crear una clase sustituta para identificar a los clientes
+  - el id del cliente, se transforma en DNI o CUIT
+![](12.jpg)
+```
+Clientes(id_cliente PK, nombre_cliente)
+PersonasFisicas(DNI PK, f. nacimiento, id_cliente FK)
+PersonasJuridicas(CUIT PK, f. constitucion, id_cliente FK)
 ```
