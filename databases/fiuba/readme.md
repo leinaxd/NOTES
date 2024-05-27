@@ -99,7 +99,8 @@
   - En caso de violar alguna restriccion, se deben deshacer los cambios
 
 ### PASAJE DE MODELOS
-
+- Silberchatz 6.8.6
+  
 **CASO 1** Entidad con atributos
 ![](1.jpg)
 ```
@@ -272,10 +273,10 @@ Corre(dia FK PK, hora FK PK, nombre_caballo FK   , nombre_hokecy PK FK) #Alterna
 
 **CASO 14** ESPECIALIZACION TOTAL SUPERPUESTA
 La especialización puede ser
-  - Total, toda instancia está especializada (toda persona es o docente o estudiante)
-  - Parcial, existen instancias no especializadas (personas que no son ni docentes ni estudiantes)
-  - Superpuesta, 
-  - Disjunta
+  - **Total**, Toda instancia está especializada (toda persona es o docente o estudiante)
+  - **Parcial**, Existen instancias no especializadas (personas que no son ni docentes ni estudiantes)
+  - **Superpuesta**, una subclase puede ser miembro de otra (Uno puede ser docente y secretario)
+  - **Disjunta**, las subclases son únicas (o sos persona jurídica o sos persona física)
     
 - Las subclases heredan el PK y se referencia FK a la superclase
 
@@ -297,4 +298,23 @@ Docentes(DNI PK FK, legajo, fecha_alta)
 Clientes(id_cliente PK, nombre_cliente)
 PersonasFisicas(DNI PK, f. nacimiento, id_cliente FK)
 PersonasJuridicas(CUIT PK, f. constitucion, id_cliente FK)
+```
+
+**CASO 16** ESPECIALIZACION TOTAL DISJUNTA
+- Cada entidad es una subclase (total)
+- Cada entidad es miembro de una sóla especialización, no ambas (disjunta)
+
+En este caso nos ahorramos la relación de la super clase
+- Pero los atributos de la superclase, los repetimos en las subclases
+  
+![](16.jpg)
+
+```
+Empleado(DNI PK, nombre, **salario**)
+Estudiante(DNI PK, nombre, **creditos**)
+```
+**NOTA**. Si la superclase tiene relación foránea con otra entidad, 
+- entonces no es posible ahorrarse la relación
+```
+Persona(DNI PK, nombre)
 ```
