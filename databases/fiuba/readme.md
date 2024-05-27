@@ -270,9 +270,14 @@ Corre(dia FK PK, hora FK PK, nombre_caballo FK PK, nombre_hokecy FK)
 Corre(dia FK PK, hora FK PK, nombre_caballo FK   , nombre_hokecy PK FK) #Alternativa
 ```
 
-** CASO 14** GENERALIZACION/ESPECIALIZACION 
+**CASO 14** ESPECIALIZACION TOTAL SUPERPUESTA
+La especialización puede ser
+  - Total, toda instancia está especializada (toda persona es o docente o estudiante)
+  - Parcial, existen instancias no especializadas (personas que no son ni docentes ni estudiantes)
+  - Superpuesta, 
+  - Disjunta
+    
 - Las subclases heredan el PK y se referencia FK a la superclase
-
 
 ![](14.jpg)
 
@@ -282,10 +287,12 @@ Alumnos(DNI PK FK, padron) #particular
 Docentes(DNI PK FK, legajo, fecha_alta) 
 ```
 
-**CASO 15** UNION
+**CASO 15** ESPECIALIZACION PARCIAL DISJUNTA
 - En este caso debemos crear una clase sustituta para identificar a los clientes
   - el id del cliente, se transforma en DNI o CUIT
+    
 ![](15.jpg)
+
 ```
 Clientes(id_cliente PK, nombre_cliente)
 PersonasFisicas(DNI PK, f. nacimiento, id_cliente FK)
