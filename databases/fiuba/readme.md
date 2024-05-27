@@ -304,9 +304,9 @@ PersonasJuridicas(CUIT PK, f. constitucion, id_cliente FK)
 - Cada entidad es una subclase (total)
 - Cada entidad es miembro de una sóla especialización, no ambas (disjunta)
 
-En este caso nos ahorramos la relación de la super clase
+Este es el único caso que uno puede ahorrarse la relación de la superclase
 - Pero los atributos de la superclase, los repetimos en las subclases
-  
+
 ![](16.jpg)
 
 ```
