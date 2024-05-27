@@ -271,7 +271,31 @@ Corre(dia FK PK, hora FK PK, nombre_caballo FK PK, nombre_hokecy FK)
 Corre(dia FK PK, hora FK PK, nombre_caballo FK   , nombre_hokecy PK FK) #Alternativa
 ```
 
-**CASO 14** ESPECIALIZACION TOTAL SUPERPUESTA
+**CASO 14** INTERRELACION TERNARIA 1:1:1
+- En este caso hay diferentes alternativas
+- Supongamos que en vez de I, usamos A, para que quede una interrelación entre A, B, C 1:1:1
+
+![](14.jpg)
+
+**Opción 1**, definir la tabla entera
+- con alguna clave foránea como primaria
+```
+A(idA PK, A1)
+B(idB PK, B1)
+C(idC PK, C1)
+Ternary(idA FK PK, idB FK   , idC FK   ) #alternativa 1
+Ternary(idA FK   , idB FK PK, idC FK   ) #alternativa 2
+Ternary(idA FK   , idB FK   , idC FK PK) #alternativa 3
+```
+**Opción 2**, definir la relación ternaria en alguna tabla 
+```
+A(idA PK, A1)
+B(idB PK, B1)
+C(idC PK, C1, idA FK, idB FK) # alternativa 1 de 3
+```
+
+
+**CASO 15** ESPECIALIZACION TOTAL SUPERPUESTA
 La especialización puede ser
   - **Total**, Toda instancia está especializada (toda persona es o docente o estudiante)
   - **Parcial**, Existen instancias no especializadas (personas que no son ni docentes ni estudiantes)
@@ -280,7 +304,7 @@ La especialización puede ser
     
 - Las subclases heredan el PK y se referencia FK a la superclase
 
-![](14.jpg)
+![](15.jpg)
 
 ```
 Personas(DNI PK, nombre_persona) #General
@@ -288,11 +312,11 @@ Alumnos(DNI PK FK, padron) #particular
 Docentes(DNI PK FK, legajo, fecha_alta) 
 ```
 
-**CASO 15** ESPECIALIZACION PARCIAL DISJUNTA
+**CASO 16** ESPECIALIZACION PARCIAL DISJUNTA
 - En este caso debemos crear una clase sustituta para identificar a los clientes
   - el id del cliente, se transforma en DNI o CUIT
     
-![](15.jpg)
+![](16.jpg)
 
 ```
 Clientes(id_cliente PK, nombre_cliente)
@@ -300,14 +324,14 @@ PersonasFisicas(DNI PK, f. nacimiento, id_cliente FK)
 PersonasJuridicas(CUIT PK, f. constitucion, id_cliente FK)
 ```
 
-**CASO 16** ESPECIALIZACION TOTAL DISJUNTA
+**CASO 17** ESPECIALIZACION TOTAL DISJUNTA
 - Cada entidad es una subclase (total)
 - Cada entidad es miembro de una sóla especialización, no ambas (disjunta)
 
 Este es el único caso que uno puede ahorrarse la relación de la superclase
 - Pero los atributos de la superclase, los repetimos en las subclases
 
-![](16.jpg)
+![](17.jpg)
 
 ```
 Empleado(DNI PK, nombre, **salario**)
@@ -318,3 +342,4 @@ Estudiante(DNI PK, nombre, **creditos**)
 ```
 Persona(DNI PK, nombre)
 ```
+
