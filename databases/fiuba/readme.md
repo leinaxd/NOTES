@@ -448,4 +448,7 @@ Ejemplo
     
 ![](18.jpg)
 
+**CONJUNTOS COMPLETOS DE OPERADORES**, es un conjunto de operadores que pueden formar el resto de operadores
+- Con {σ, π, ρ, ∪, −, ×} puede construirse el resto de operadores
+  
 ### CALCULO RELACIONAL
