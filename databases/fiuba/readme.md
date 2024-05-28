@@ -423,5 +423,29 @@ Ejemplo
 
 **ARBOL DE CONSULTA**, arbol de prioridad de operadores
 
-**JUNTA
+**JUNTA (⨝)**, combina producto cartesiano con selección
+- R ⨝_cond S
+- Selecciona las tuplas que cumplen la **cond**ición del producto carseiano entre R × S
+  - La condición debe ser entre atributos de ambas relaciones (Ai >= Bj)
+  - No valen condiciones del tipo Ai cond $c\in dom(Ai)$
+- Peliculas ⨝_{nombre=nombre} Actuación = pel_act (Peliculas.nombre, director,Actuaciones.nombre, nombre_actor)
+
+**THETA JOIN**, el caso más general
+**EQUIJOIN**, cuando la condición es de igualdad
+  - Pero genera redundancia de atributos ya que 2 van a coincidir
+**NATURAL JOIN (∗)**, es equijoin pero sin el atributo redundante
+  - No se especifica condiciones
+  - Requiere que las relaciones tengan el mismo nombre de atributo para su juntura (**Atributos de juntura**)
+  - Peliculas ∗ Actuaciones = pel_act(nombre_pelicula, director, nombre_actor)
+
+**DIVISION (÷)**
+- T = R ÷ S, son los valores de R que están asociados con todos los valores de S
+  - Requiere que los atributos de S(B1 .. Bm) sean subconjunto de R(A1 .. An)
+  - El resultado tiene los atributos de **R** que no están en **S**  
+- Propiedad: $T∗S \subset R$
+  - para mí es un error, debe ser T cartesiano S
+  - o R ÷ T = S
+    
+![](18.jpg)
+
 ### CALCULO RELACIONAL
