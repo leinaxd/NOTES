@@ -343,3 +343,85 @@ Estudiante(DNI PK, nombre, **creditos**)
 Persona(DNI PK, nombre)
 ```
 
+## ALGEBRA Y CALCULO RELACIONAL
+Para interactuar con un **MODELO** es necesario utilizar un **LENGUAJE**
+- **PROCEDURALES**, indican un proceso a seguir (bajo nivel)
+- **DECLARATIVOS**, especifican qué resultado final se espera (alto nivel)
+
+**DATA MANIPULATION LANGUAGES (DML)**, sirven para extraer información de un modelo de datos
+  - **lenguajes prácticos**:
+    - **SQL** (y es declarativo)
+  - **lenguajes formales**: 
+    - **algebra relacional (procedural)**
+    - **cálculo relacional (declarativo)**
+
+### ALGEBRA RELACIONAL
+Provee un marco formal de operaciones
+- ayuda a optimizar la ejecución de consultas
+- especifica los procedimientos de consulta a partir de un conjunto de **operaciones**
+
+**OPERACION**, función cuyos operandos son una o mas relaciones y cuyo resultado también es una relación
+  $O: R_1 \times \cdots R_n \mapsto S$
+
+**Aridad**, cantidad de operandos que toma operación
+
+**EXPRESION**, combinación de operadores
+
+---
+
+**Condiciones atómicas**, símbolos de comparación e igualdad
+  - Ai cond Aj                (ej. salario > productividad)
+  - Ai cond $c \in dom(Ai)$   (ej. salario > 1000)
+**Condición**, combinación de condiciones atómicas mediante operadores
+  - **AND (∧)**
+  - **OR (∨)**
+  - **NOT (¬)**
+
+**SELECCION ($\sigma_{cond}$)**, operador UNARIO que selecciona tuplas cuya condición es verdadera
+- $\sigma_{cond}(R): R \mapsto S$
+  - $\sigma_{cant_oscars \gte 1} (Peliculas) = \{(Django, 2012, 2), (Coco, 2017, 2)\}
+
+**PROYECCION ($\pi$)**, operador UNARIO que filtra atributos
+- $\pi_L(R): R \mapsto S,\ con\ L\in \{Ai .. An\}$
+  - $\pi_{(año, nombre_director)}(Peliculas) = \{(2003, Quentin Tarantino), (2012, Quentin Tarantino), (2005, George Lucas)\}
+- El **orden** de atributos en la relación, coincide con el orden de atributos de L
+- La proyección remueve tuplas **duplicadas**
+
+**ASIGNACION (←)**, es una secuencia de operaciones
+- Temp ← $\sigma_{oscars > 0}(Peliculas)$
+- director_oscar ← $\pi_{nombre_dicrector}(Temp)$
+
+**REDENOMINACIÓN (ρ)**, sólo renombra atributos
+- $\rho_{S(B1 .. Bn)}(R(A1 .. An)$
+- $\rho_{Film (name, year, n_oscars) }(Peliculas) = Film(name, year, n_oscars)$
+
+**OPERADORES DE CONJUNTO**, operadores binarios, Union, Intersección y Diferencia
+
+**UNION (∪)**, Concatena relaciones
+- R ∪ S contiene todas las tuplas de R y todas las de S
+- Requiere
+  - R(A1 .. An) y S(B1 .. Bn) mismo grado
+  - dom(Ai) = dom(Bi) mismo dominio por atributo o **Compatibilidad de tipo**
+- El nombre de los atributos finales los define R
+
+**INTERSECCIÓN (∩)**, 
+- R ∩ S Conserva tuplas que están en R y en S
+- Requiere **compatibilidad de tipo** y grado
+
+**DIFERENCIA (-)**
+- R - S Conserva las tuplas de R que no están en S
+- Requiere **compatibilidad de tipo** y grado
+  
+**PRODUCTO CARTESIANO (×)**, produce todas las combinaciones de atributos
+- R(A1 .. An) × S(B1 .. Bm) = T(A1 .. An, B1 .. Bm)
+- Si algún Ai tiene el mismo nombre que Bj, uno se llamará R.Ai y el otro S.Bj
+  - Si se hace R × R entonces, uno se llamará R1.Ai y el otro R2.Ai
+- No requiere compatibilidad de tipo
+Ejemplo
+- Pelicula(nombre, director) × Actuaciones(nombre, nombre_actor) = pel_act(Pelicula.nombre, director, Actuaciones.nombre, nombre_actor)
+- Luego se puede filtrar $\sigma_{Peliculas.nombre=Actuaciones.nombre} (Pelicula × Actuaciones)$
+
+**ARBOL DE CONSULTA**, arbol de prioridad de operadores
+
+**JUNTA
+### CALCULO RELACIONAL
