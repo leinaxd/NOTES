@@ -487,4 +487,54 @@ Ejemplo
        2 |    b | NULL          |  NULL | NULL | 2 
        3 |    c | Y             |     c |    Y | 3 
     NULL | NULL | Z             |     d |    Z | NULL
+
 ### CALCULO RELACIONAL
+Es un lenguaje declarativo, no especifica orden de operaciones a realizar
+- basado en lógica de predicados
+- Variante 1. **CALCULO RELACIONAL DE TUPLAS**. (SQL)
+- Variante 2. **CALCULO RELACIONAL DE DOMINIOS**
+
+**PROPOSICIONES**
+  - "pepe" gano el torneo 2009
+  - "andy" gano el campeonato 2021
+Un conjunto de proposiciones con identica estructura pueden tifica
+**PREDICADO**, estructura que tipifica un conjunto de proposiciones
+  - [tenista] gano [torneo] [año]
+  - Es una función cuyo resultado en un valor de verdad V o F
+    - Tenista(pepe, torneo, 2009) = V
+    - Tenista(lucas, campeonato, 2021) = F
+
+Los **esquemas de relación** pueden pensarse como predicados
+- las bases de datos sólo almacenan proposiciones verdaderas
+
+**Lógica de predicados de primer orden**
+- Predicados: p(m,n). 
+- Operadores: ∧, ∨, ¬, ← | P(m, n) ∧ ¬Q(m)
+- Cuantificadores:
+  - Universal (∀m)q(m), es verdadero si el predicado es verdadero para todo m
+  - Existencial (∃m)q(m), es verdadero si al menos un valor de m consigue que q lo sea
+
+**CALCULO RELACIONAL DE TUPLAS**, las variables representan tuplas
+**PREDICADO SIMPLE**, es una función de una tupla o atributos, cuyo resultado es un valor de verdad V o F.
+- R(t): la tupla de la relación R
+- t1.Ai cond t2.Aj
+- t.Ai cond c $\in dom(Ai)$
+**EXPRESION**, tiene la forma
+  { t1.A1 .. tn.An | p(t1 .. tn+m) }
+  - { p.name | Player(p) AND p.date_birth<1980 }  #Lista los jugadores nacidos antes del 80
+  - { p.name | Player(p) AND (∃s)(Score(s) AND s.player_id = p.id}
+  - { p.name | Player(p) AND (∀θ)(¬Player(θ) OR θ.birth_date ≥ p.birth_date)} #El jugador más anciano, la negación es necesaria
+  - Notar que una variable que no fue cuantificada, no puede aparecer en el lado izquierdo de la barra
+    - Las variables cuantificadas se llaman **ligadas**
+    - Las variables no cuantificadas se llaman **libres**
+
+**EXPRESION SEGURA**, garantiza una cantidad finita de tuplas
+  - {p.name | ¬ Player(p) } #genera todos los strings y numeros posibles
+  - Probar es garantizar que los valores de los atributos del resultado son parte del dominio de la expresión.
+
+**CALCULO RELACIONAL DE DOMINIOS**, las variables representan dominios que hacen referencia a atributos
+- un predicado simple es una función de un conjunto de dominios cuyo resultado es un valor de verdad V o F
+- { n | (∃i)(∃g)(∃s)(∃c)(Equipo(i, n, g, s, c)) } #Lista los nombres de los paises de cada equipo
+
+**COMPLETITUD RELACIONAL** hay equivalencia entre el **algebra relacional** y el **calculo relacional**
+- ambos lenguajes tienen el mismo poder expresivo
