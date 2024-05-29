@@ -462,15 +462,29 @@ Ejemplo
         
 ![](19.jpg)
 
-- **LEFT OUTER JOIN (R ⟕ S)**, incluye una tupla de dimensión n+m por cada tupla que no se encuentra en la proyección sobre {A1 .. An}
+- **LEFT OUTER JOIN (R ⟕ S)**,
+- incluye todas las tuplas de la relación de la izquierda, independientemente si existen coincidencias en la derecha
 **R(A,B)**        |         **S(B,C)**      |  **R LEFT OUTER JOIN S ON B**
- A | B            |           B | C         |          A | B | C
----+----          |          ---+----       |        ----+---+---
- 1 | a            |           a | X         |          1 | a | X 
- 2 | b            |           c | Y         |          2 | b | NULL
- 3 | c            |                         |          3 | c | Y
+ A | B            |           B | C         |          A | R.B | C
+---+----          |          ---+----       |        ----+-----+-----
+ 1 | a            |           a | X         |          1 |  a  | X 
+ 2 | b            |           c | Y         |          2 |  b  | NULL
+ 3 | c            |           d | Z         |          3 |  c  | Y
 
-- **RIGHT OUTER JOIN (R ⟖ S)**
-- **FULL OUTER JOIN (R ⟗ S)**
-
+- **RIGHT OUTER JOIN (R ⟖ S)**, R RIGHT OUTER JOIN S es identico a S LEFT OUTER JOIN R,
+- lo que cambia es como se ordenan las columnas
+**R RIGHT OUTER JOIN S ON B**   |  **S LEFT OUTER JOIN R ON B**
+    A |  R.B | C                |      S.B | C | A
+------+------+---               |     -----+---+---
+    1 |    a | X                |       a  | X | 1
+    3 |    c | Y                |       c  | Y | 3
+ NULL | NULL | Z                |       d  | Z | NULL
+- **FULL OUTER JOIN (R ⟗ S)**, Es una combinación de ambas
+**R FULL OUTER JOIN S ON B**    |  **S FULL OUTER JOIN R ON B**  
+       A |  R.B | C             |   S.B |    C | A
+     ----+------+-----          |   ----+------+-----
+       1 |    a | X             |     a |    X | 1
+       2 |    b | NULL          |  NULL | NULL | 2 
+       3 |    c | Y             |     c |    Y | 3 
+    NULL | NULL | Z             |     d |    Z | NULL
 ### CALCULO RELACIONAL
