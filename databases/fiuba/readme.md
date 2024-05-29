@@ -450,5 +450,27 @@ Ejemplo
 
 **CONJUNTOS COMPLETOS DE OPERADORES**, es un conjunto de operadores que pueden formar el resto de operadores
 - Con {σ, π, ρ, ∪, −, ×} puede construirse el resto de operadores
-  
+
+**OPERACIONES ADICIONALES**, estos operadores no pueden ser expresados con el álgebra relacional básica.
+- **Proyección generalizada**
+- **Agregación**
+- **Junta externa**
+
+**JUNTA EXTERNA**
+- En la **Junta interna**, se descartaban las tuplas que no matcheaban en la selección.
+  - Esto no pasa en la junta exterior
+        
+![](19.jpg)
+
+- **LEFT OUTER JOIN (R ⟕ S)**, incluye una tupla de dimensión n+m por cada tupla que no se encuentra en la proyección sobre {A1 .. An}
+**R(A,B)**        |         **S(B,C)**      |  **R LEFT OUTER JOIN S ON B**
+ A | B            |           B | C         |          A | B | C
+---+----          |          ---+----       |        ----+---+---
+ 1 | a            |           a | X         |          1 | a | X 
+ 2 | b            |           c | Y         |          2 | b | NULL
+ 3 | c            |                         |          3 | c | Y
+
+- **RIGHT OUTER JOIN (R ⟖ S)**
+- **FULL OUTER JOIN (R ⟗ S)**
+
 ### CALCULO RELACIONAL
