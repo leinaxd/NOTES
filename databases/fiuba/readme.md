@@ -542,9 +542,274 @@ Los **esquemas de relación** pueden pensarse como predicados
 ## SQL
 Los lenguajes son herramientas para interactuar con un modelo.
 En el contexto de base de datos definimos.
-- **lenguaje de DEFINICION DE DATOS**
+- **lenguaje de DEFINICION DE DATOS (DDL)**
     - expresa la estructura y restricciones del modelo
-- **lenguaje de MANIPULACION DE DATOS**
+- **lenguaje de MANIPULACION DE DATOS (DML)**
     - permite ingresar, modificar, eliminar y consultar datos del modelo
-- **lenguaje de CONTROL DE DATOS**
+- **lenguaje de CONTROL DE DATOS (CDL)**
     - Manejan los permisos de acceso
+
+SQL es
+- DDL y DML
+- no procedural
+- basado en calculo de tuplas
+- **Gramática libre de contexto**, su sintaxis puede definirse por reglas de producción
+  - ej. Backus-Naur
+    
+Estandar SQL
+- ISO/IEC 9075-1: Framework (SQL/framework)
+- ISO/IEC 9075-2: Foundation (SQL/Foundation) -> CORE SQL
+- ISO/IEC 9075-3: Call level interface (SQL/CLI)
+- ISO/IEC 9075-4: Persistent Stored Modules (SQL/PSM)
+- ISO/IEC 9075-9: Management of external data (SQL/MED)
+- ISO/IEC 9075-10: Object Language Bindings (SQL/OLB)
+- ISO/IEC 9075-11: Information and definition schemas (SQL/schemata) -> CORE SQL
+- ISO/IEC 9075-13: SQL Routing and types using Java (SQL/JRT)
+- ISO/IEC 9075-14: XML Related Specifications (SQL/XML)
+
+Gramatica
+
+![https://jakewheat.github.io/sql-overview/sql-2011-foundation-grammar.html]
+
+```
+<query specification > ::=
+    SELECT [ <set quantifier > ] <select list > <table expression >
+<set quantifier > ::=
+    DISTINCT
+    | ALL
+<select list > ::=
+    <asterisk >
+    | <select sublist > [ { <comma > <select sublist > }... ]
+<table expression > ::=
+    <from clause >
+    [ <where clause > ]
+    [ <group by clause > ]
+    [ <having clause > ]
+    [ <window clause > ]
+```
+
+### DEFINICION DE DATOS (DDL)
+Creación de esquema
+- AuthId identifica al dueño del esquema
+
+**CREATE SCHEMA** nombre_schema [**AUTHORIZATION** AuthId];
+
+Los esquemas se agrupan en colecciones llamados **CATALOGOS**
+- Todo catalogo tiene un esquema llamado **INFORMATION_SCHEMA**, que describe el resto de esquemas
+
+**TIPOS DE VARIABLES**
+- NUMBERS
+    - **INTEGER**, **INT**
+    - **SMALLINT**
+    - **FLOAT(n)**, n es la precision
+    - **DOUBLE PRECISION**, numerico de alta precision (n=53, e=11, IEEE 754)
+    - **NUMERIC(i, j)**, tipo numerico exacto. Precision(i) (digitos totales) y Escala(j)(digitos decimales)
+- STRINGS
+    - **CHARACTER(n=1)**, **CHAR(n=1)**. Longitud fija
+    - **CHARACTER VARYING(n)**, **VARCHAR(n)**
+- DATE
+    - **DATE**, precision de días. Formato 'YYYY-MM-DD' (ISO8601)
+    - **TIME(i)**, Precisión de hasta microsegundos. Formato 'HH:MM:SS.[0-9]^i' (ISO8601), tantos digitos decimales como i
+    - **TIMESTAMP(i)**, Combina un **DATE** y un **TIME**
+- BOOLEANOS
+    - **BOOLEAN**, lógica de 3 valores **TRUE, FALSE, UNKNOWN**
+- OBJETOS
+    - **CLOB**, Character large object, para documentos de texto largos
+    - **BLOB**, Binary Large Object, para archivos binarios grandes
+
+**TIPOS DEFINIDOS POR EL USUARIO**
+- Facilitan la realización de cambios
+  
+**CREATE DOMAIN** nombre_dominio **AS** TIPO_BASICO;
+  - ej. CREATE DOMAIN codigo_pais AS CHAR(2);
+
+**CREACION DE UNA TABLA**
+
+**CREATE TABLE** T1 (
+    A1 TYPE1 [NOT NULL] [CHECK condition1] [PRIMARY KEY] [DEFAULT] [AUTO_INCREMENT],
+    ...
+    An TYPEn [NOT NULL] [CHECK conditionn] [PRIMARY KEY] [DEFAULT] [AUTO_INCREMENT],
+
+    [**PRIMARY KEY** (A1 .. Ap)]
+    {**UNIQUE** (A1 .. Au)}
+    {**FOREIGN KEY** (A1 .. Ah) **REFERENCES** T2(B1 .. Bm)}
+    [**ON DELETE** SET NULL | RESTRICT | CASCADE | SET DEFAULT]
+    [**ON UPDATE** SET NULL | RESTRICT | CASCADE | SET DEFAULT]
+    );
+Ejemplo:
+CREATE TABLE Persona (
+  dni INT CHECK(dni<93000000) PRIMARY KEY, -- No considera DNI extranjero (mayores a 93 millones)
+  nombre VARCHAR(255) UNIQUE,
+  nacimiento DATE
+  );
+
+#DML
+El esquema básico es
+
+**SELECT** A1 .. An 
+**FROM** T1 .. Tm
+[**WHERE** condition];
+
+**SELECT** es equivalente a **proyectar**
+y **WHERE** es equivalente a **seleccionar** o filtrar.
+
+Las condiciones dentro de where son:
+- **Ai cond Aj**, comparacion entre dos atributos
+- **Ai cond cte**, idem con cte
+- **Ai [NOT] like pattern**, expresion regular
+- **(Ai .. Ak) [NOT] IN multiset**, si el atributo es miembro de un conjunto
+- **Ai [NOT] BETWEEN a AND b**, con a<= Ai <= b
+- **Ai IS [NOT] NULL**, equivalente a la igualdad
+- **EXISTS table**
+- **Ai cond [ANY|ALL] table**
+- **AND, OR, NOT**, combina expresiones
+
+**ALIAS**
+**FROM** persona [AS] p1, persona p2
+
+También se puede cambiar el nombre de la tabla y sus columnas
+**FROM** persona **AS** p1(dni_1, nombre_2)
+
+También se puede cambiar los nombres en el resultado
+**SELECT** p1.nombre AS nombre_padre ...
+
+También se pueden realizar operaciones entre las columnas 
+**SELECT** Producto.precio *0.9 AS precioDescontado
+- Las operaciones pueden ser
+  - Numericas + - * /
+  - Concatenación ||
+  - DATE + -
+  - Funciones LN, EXP, POWER, LOG, SQRT, FLOOR, CEIL, ABS
+
+**FUNCIONES DE AGREGACION**
+- **SUM(A)**, para la columna A, suma sus filas
+- **COUNT(A)**, cuenta cantidad de filas no nulas de A
+    - COUNT([DISTINCT] A), cuenta cantidad de valores distintos en A
+    - COUNT(*), Cuenta cantidad de filas en el resultado
+- **AVG(A)**, promedio
+- **MAX(A)**, solo para dominios ordenados
+- **MIN(A)**
+
+**EXPRESIONES REGULARES**
+- WHERE attrib LIKE pattern;
+- **_**, representa caracter arbitrario
+- **%**, representa cero o mas caracteres arbitrarios
+
+
+**JUNTA THETA**
+- **FROM** R **INNER JOIN** S **ON** condition...
+- **FROM** R **INNER JOIN** S **USING**(attribute)...
+
+**JUNTA NATURAL**
+- **FROM** R **NATURAL JOIN** S
+- Los nombres de las columnas deben coincidir en ambas tablas
+
+**JUNTA EXTERNA**
+- **FROM** R **[LEFT|RIGHT|FULL] OUTER JOIN** S **ON** condition
+
+**OPERACIONES DE CONJUNTOS**
+- R **UNION [ALL]** S
+- R **INTERSECT [ALL]** S
+- R **EXCEPT [ALL]** S, diferencia
+
+R y S
+- pueden provenir de una subconsulta
+- Deben ser compatible en atributos
+- La palabra [ALL] incluye tuplas repetidas
+
+**ORDENAMIENTO Y PAGINACION**
+**SELECT** A1 .. An
+**FROM** T1 .. Tm
+[**WHERE** condition]
+[**ORDER BY** Ak [ASC|DESC], Al [ASC|DESC]] -- ASC es por defecto
+
+**PAGINACION**
+[**OFFSET** nro **ROWS**] **FETCH FIRST** nro **ROWS ONLY**;
+[**LIMIT** nro]
+
+**AGRUPAMIENTO**
+SELECT A1.. An, f1(B1), .. fp(Bp)
+FROM T1 .. Tm
+[WHERE condition]
+**GROUP BY** A1 .. An
+[HAVING condition_2]
+[ORDER BY Ak [ASC|DESC]]
+
+La clausula 'Having' permite filtrar algunos grupos del resultado
+```
+# Liste los tags cuyo primer uso ocurrió después del 01/01/2018.
+
+SELECT t. TagName
+  FROM Tags t, PostTags pt , Posts p
+  WHERE t.Id = pt.TagId
+  AND pt. PostId = p.Id
+  GROUP BY t. TagName
+  HAVING MIN(p. CreationDate )>=’2018 −01 − 01’;
+```
+
+**SUBCONSULTAS**
+- El resultado de una subconsulta es una tabla, excepto que tenga una sola columna y una sola fila, lo cual sera una constante
+**SELECT ...**
+**WHERE** A **IN** (**SELECT X FROM ...**) --debe devolver 1 sola columna
+**WHERE** A = (**SELECT X FROM ...**)      --debe devolver 1 sola fila
+**WHERE** (A,B)= IN(**SELECT X, Y FROM ...**) --Debe devolver 2 columnas
+**WHERE** A < [SOME|ALL] (**SELECT X FROM ...**)
+**WHERE** [NOT] EXISTS (**SELECT ... FROM ...**) --Devuelve True/False dependiendo si la tabla esta vacia o no
+
+
+### DATA MANIPULATION LANGUAGE
+**INSERSIONES**
+ 
+**INSERT** **INTO** T[(A1 .. An)] **VALUES**
+  (a11 .. a1n),
+  (ap1 .. apn);
+
+No se inserta si:
+- Se asigna una columna por fuera de su dominio
+- Se omitio columna que no podía ser null
+- Se puso en null una columna que no podía serlo
+- la clave asignada ya existe en la tabla
+- Una clave foránea hace referencia a una clave inexistente
+
+**ELIMINACIONES**
+
+**DELETE** FROM T [WHERE condition];
+
+Si la clave foránea se asignó como
+- ON DELETE CASCADE, se eliminan las filas que hacían referencias a ella
+- ON DELETE SET NULL, Se pone en null las filas que hacian referencia a ella
+- ON DELETE RESTRICT, No se elimina la tupla
+
+**MODIFICACIONES**
+- se pueden modificar muchas tuplas a la vez
+  
+**UPDATE** T 
+**SET** A1 = c1, A2=c2
+**WHERE** condition;
+
+Falla si
+- Se modifica una columna con un valor fuera de su dominio
+- Se puso a Null una columna que no podía serlo
+- Se asignó una clave primaria un valor que ya existía
+- Se modificó una clave foránea a una clave inexistente
+
+Se propaga con
+- ON UPDATE CASCADE, se modifican las filas que hacían referencia a ella
+- ON UPDATE SET NULL, idem null
+- ON UPDATE RESTRICT, no modifica la tupla
+
+**ELIMINACION DE TABLA**
+
+**DROP TABLE**  T [**RESTRICT**|**CASCADE**]
+**DROP SCHEMA** S [**RESTRICT|CASCADE**]
+
+**MANIPULACION DE STRING**
+- **SUBSTRING(string FROM start FOR length)**, selecciona un substring desde la posicion start y de largo length
+- **UPPER(string)/LOWER(string)**, convierte a mayúsculas o minusculas
+- **CHAR_LENGTH(string)**, Devuelve la long del string
+
+- **CAST(attr AS type)**, conversiones entre tipos
+- **EXTRACT(campo FROM attr)**, extrae información de una columna de fecha/hora. EXTRACT (DAY FROM fecha)
+- **COALESCE(expr1 .. exprn)**, devuelve la primera expresión no nula de izquierda a derecha
+  - **SELECT COALESCE(domicilio, 'desconocido') FROM ...**
+  - 
