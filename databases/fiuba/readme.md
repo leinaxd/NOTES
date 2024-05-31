@@ -812,4 +812,19 @@ Se propaga con
 - **EXTRACT(campo FROM attr)**, extrae información de una columna de fecha/hora. EXTRACT (DAY FROM fecha)
 - **COALESCE(expr1 .. exprn)**, devuelve la primera expresión no nula de izquierda a derecha
   - **SELECT COALESCE(domicilio, 'desconocido') FROM ...**
-  - 
+
+
+**CASE**, añade cierta logica estructurada
+- selecciona distintas salidas en función de distintas condiciones
+
+SELECT padron, apellido, nombre 
+CASE WHEN primera_op>=4 OR primer_rec>=4 OR segundo_rec>=4
+  THEN 'APROBO'
+  ELSE 'DESAPROBO'
+  END AS situación_parcial
+FROM notass_parcial;
+
+**WITH** permite construir una tabla auxiliar.
+
+WITH T[(A1 .. An)] AS (subquery) --La tabla T, será el subquery
+query;
