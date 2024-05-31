@@ -538,3 +538,13 @@ Los **esquemas de relación** pueden pensarse como predicados
 
 **COMPLETITUD RELACIONAL** hay equivalencia entre el **algebra relacional** y el **calculo relacional**
 - ambos lenguajes tienen el mismo poder expresivo
+
+## SQL
+Los lenguajes son herramientas para interactuar con un modelo.
+En el contexto de base de datos definimos.
+- **lenguaje de DEFINICION DE DATOS**
+    - expresa la estructura y restricciones del modelo
+- **lenguaje de MANIPULACION DE DATOS**
+    - permite ingresar, modificar, eliminar y consultar datos del modelo
+- **lenguaje de CONTROL DE DATOS**
+    - Manejan los permisos de acceso
