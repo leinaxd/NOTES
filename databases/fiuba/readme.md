@@ -824,7 +824,100 @@ CASE WHEN primera_op>=4 OR primer_rec>=4 OR segundo_rec>=4
   END AS situación_parcial
 FROM notass_parcial;
 
-**WITH** permite construir una tabla auxiliar.
 
-WITH T[(A1 .. An)] AS (subquery) --La tabla T, será el subquery
+## SQL PARTE II
+
+**WITH**, permite construir una tabla auxiliar.
+
+**WITH** T[(A1 .. An)] **AS** (subquery) --La tabla T, será el subquery
 query;
+
+**RECURSIVE**, permite encontrar la clausula transitiva
+- Dada una tabla T_0 inicial, que no dependa de T
+- se encuentra T_{t+1} = subquery(T_{t}a)
+- hasta que T_{t+1}=T_t
+  
+**WITH RECURSIVE** T[(A1 .. An)]
+**AS** (<initial_value_query> **UNION** <subquery>)
+<continue_the_T_query>;
+
+```
+WITH RECURSIVE DestinosAlcanzables(ciudad)
+AS ( VALUES ('Paris')
+    UNION
+    SELECT v. ciudadHasta AS ciudad
+    FROM DestinosAlcanzables d, Vuelos v
+    WHERE d. ciudad = v. ciudadDesde
+    )
+SELECT ciudad FROM DestinosAlcanzables ;
+```
+
+### FUNCIONES DE VENTANA
+Permiten aplicar un procesamiento final a los resultados de una consulta.
+1. Dividiendos en grupos, llamados **particiones**
+2. Ordenando internamente cada partición.
+3. Cruzando información entre las filas de cada partición
+
+A cada atributo **SELECT** se le puede aplicar una función de ventana distinta
+
+**SELECT** .. [f(Ai) | w( [Ai] )] **OVER** ({**ORDER BY** Aj [ASC|DES]}) **FROM** ..
+- Esto ordena el resultado por el atributo Aj
+- Y para cada fila muestra el resultado de una **función de agregación**, o **función de ventana**
+
+Hasta acá f(Ai) no parece nada que ya no podamos hacer con **GROUP BY**
+- La novedad son las **funciones de ventana**
+- https://www.postgresql.org/docs/9.1/functions-window.html.
+- **RANK()**, asigna un puntaje, según una estrategia de ordenamiento
+```SELECT Vendedor, Ventas, RANK() OVER (ORDER BY Ventas DESC) AS Posicion FROM Ventas;```
+VENDEDOR | VENTAS | POSICION
+---------+--------+---------
+     Ana |  500   | 2
+    Luis |	300   | 3
+   Marta |	700   | 1
+    Jose |  500   | 2
+    
+- **ROW_NUMBER()**, idem rank, pero asignando posiciones distintas a numeros iguales,
+    - ayuda a crear una nueva 'clave primaria' pero con valores ordenados
+```SELECT Vendedor, Ventas, ROW_NUMBER() OVER (ORDER BY Ventas DESC) AS Posicion FROM Ventas;```
+
+VENDEDOR | VENTAS | POSICION
+---------+--------+---------
+   Marta |	700   | 1
+     Ana |  500   | 2
+    Jose |  500   | 3
+    Luis |	300   | 4
+
+- **LAG(Ai, offset)**, permite acceder al valor de una fila anterior
+```SELECT Mes, Ventas, LAG(Ventas, 1) OVER (ORDER BY Mes) AS VentasMesAnterior FROM VentasMensuales;```
+    MES | VENTAS | VENTAS MES ANTERIOR
+--------+--------+--------------------
+  Enero |	   500 | NULL
+Febrero |	   600 | 500
+  Marzo |	   550 | 550
+  Abril |	   700 | 700
+   Mayo |	   650 | 650
+
+Observaciones
+- La función de ventana se aplica una por **columna**
+- La función de ventana se aplica **antes** del ordenamiento
+- A diferencia de GROUP BY, OVER no cambia la cantidad de filas del resultado
+- A diferencia de GROUP BY, OVER se calcula sobre la particion y repite este valor en cada columna
+
+La ventana puede renombrarse con **WINDOW**
+```SELECT RANK() OVER mi_ventana AS Posicion FROM VentasMensuales
+WINDOW mi_ventana AS (ORDER BY Ventas DESC);
+```
+
+**PARTICIONES MULTIPLES**, permiten 'agrupar' atributos antes de aplicar la función de ventana
+
+SELECT  [f(Ai) | w([Ai]) ] OVER (**PARTITION BY** Ak {ORDER BY Aj [ASC|DESC]}) FROM ..
+
+
+```SELECT Vendedor, Ventas, Region, ROW_NUMBER() OVER (PARTITION BY Region ORDER BY Ventas DESC) AS Posicion FROM Ventas;```
+VENDEDOR | VENTAS | REGION | POSICION
+---------+--------+--------+----------
+   Marta |	  700 |  NORTE | 1
+     Ana |    500 |  NORTE | 2
+   Pedro |	  300 |  NORTE | 3
+    Jose |    500 |    SUR | 1        <- Notar que aquí empieza la particion sur
+    LUIS |    300 |    SUR | 2
