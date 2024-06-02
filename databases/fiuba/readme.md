@@ -1015,3 +1015,20 @@ En MySQL
  - Si la consulta no usa **DISTINCT**, el resultado es un multiset y su costo será siempre B(R)
 
 **UNION E INTERSECCION**
+- Primero **ordenamos** las tablas R y S, si alguna no entra en memoria, usamos sort externo.
+    - Asumimos que no se devuelven repetidos (default en sql)
+- Procesamos ambas tablas ordenadas haciendo un **merge** que avanza conjuntamente por filas ri y sj
+    - **COST(R [∪ | ∩] S)=Cost(sort_M(R)) +cost(sort_M(S)) +2·B(R)+2·B(S) **
+- Para la **unión**, devolver todas las tuplas.
+    - si **ri=sj**, devolver una de ellas y avanzar ambas tablas hasta que cambien de valor
+    - sino, devolver la menor y avanzar sobre su tabla hasta que cambie de valor
+    - cuando alguna tabla termine, devolver todo lo que quede de la otra sin duplicados.
+- Para la **intersección**, devolver tuplas en ambas tablas
+    - si **ri != sj**, avanzar sobre la tabla de la menor de ellas un lugar sin devolver nada
+    - si **ri == sj**, devolver una de ellas y avanzar sobre ambas tablas hasta que cambien de valor
+    - Cuando alguna termine, finalizar
+- Para la **diferencia**, devuelve las que están en R pero no en S
+    - Si **ri > sj**, avanzar sobre la tabla S hasta cambio de valor
+    - Si **ri < sj**, devolver ri y avanzar R hasta cambio de valor
+    - Si **ri == sj**, avanzar sobre ambas tablas hasta cambio de valor
+    - Cuando R termine, finalizar. Cuando S termine, devolver todo lo que resta de R.
