@@ -1032,3 +1032,34 @@ En MySQL
     - Si **ri < sj**, devolver ri y avanzar R hasta cambio de valor
     - Si **ri == sj**, avanzar sobre ambas tablas hasta cambio de valor
     - Cuando R termine, finalizar. Cuando S termine, devolver todo lo que resta de R.
+
+**JUNTA**
+- **METODO ANIDADOS POR BLOQUE**, toma cada par de bloques de ambas relaciones y compara las tuplas entre sí
+    - Por cada bloque **R**, se leen todos los bloques de **S** con costo de **1+B(S)**, asumiendo que B(R) < B(S)
+        - Peor caso con Memoria de dos bloques, **COST(R ∗ S) = B(R)(1+B(S))**
+        - Si alguna tabla quepa en memoria, **COST(R ∗ S) = B(R) + B(S)**
+- **METODO DE UNICO LOOP**, requiere de un índice en **R**
+    - Recorrer las tuplas de **S** y buscar por índice de **R** en qué atributo coincide
+    - Si el índice es primario, **COST(R ∗ S)=B(S)+n(S)·(Height(I(A,R)) + 1)**
+    - Si el índice es clustering, puede haber varias coincidencias, **COST(R ∗ S)=B(S)+n(S)·(Height(I(A,R)) + ceil(n(R)/(V(A,R)·F(R))))
+    - Si el índice es secundario, **COST(R ∗ S)=B(S)+n(S)·(Height(I(A,R))+ceil(n(R)/V(A,R)))
+- **METODO SORT-MERGE**
+    - ordena los archivos de cada tabla por los atributos de la junta
+    - Si entran en memoria, el ordenamiento puede hacerse con **quicksort** con un costo de **B(R)+B(S)**
+    - Sino, **sort externo**.
+        - El costo de ordenar y guardarlo en disco es:
+             **2·B(R)·ceil(log_{M-1}(B(R)))** log estima cantidad de etapas del sort
+    - Una vez ordenados, se hace un **Merge** de ambos archivos, que sólo selecciona aquellos pares de tuplas que coinciden en atributo de junta.
+        - costo de **B(R)+B(S)** por unica vez
+    - **COST(R ∗ S)=B(R)+B(S)+2·B(R)·ceil(log_{M-1}(B(R))) + 2·B(S)·ceil(log_{M-1}(B(S)))**
+- **METODO DE JUNTA HASH (VARIANTE GRACE)**, particiona las tablas **R** y **S** en **m** grupos, utilizando función hash **h(X)** X: Atributo junta.
+    - Obs. que dos tuplas **h(r.X)=h(s.X)**, no implica que **r.X=s.X**
+    - Costo del particionado: **2·(B(R)+B(S))**, es necesario leer todos los bloques y reescribirlos en otro orden.
+    - Cada par de grupos **Ri** y **Si** se combina verificando si se cumple la condición de junta con fuerza bruta.
+        - Obs. No es necesario combinar Ri con Sj para i != j
+        - si r.X=s.X luego h(r.X) = h(s.X)
+    - Hipótesis. **m** fue escogido para que cada par (**Ri, Si**), al menos uno entre en memoria.
+    - Costo de la combinación: **B(Ri)+B(Si)**
+        - F(Ri)=F(R) y F(Si)=F(S)
+        - $\sum_{i=1}^m n(Ri) = n(R)$ idem para Si
+    - **COST(R ∗ S) = 3·(B(R)+B(S))**
