@@ -1063,3 +1063,7 @@ En MySQL
         - F(Ri)=F(R) y F(Si)=F(S)
         - $\sum_{i=1}^m n(Ri) = n(R)$ idem para Si
     - **COST(R ∗ S) = 3·(B(R)+B(S))**
+
+**PIPELINING**, evita materializar toda la salida
+- En muchos casos, el costo de un operador puede ser procesado por el operador siguiente en forma parcial.(sin terminar de generar tuplas)
+- El costo de operaciones anidadas $O_2(O_1(R))$ debemos considerar que el pipeling, no necesita todos los O_1 para calcular el O_2
