@@ -921,3 +921,65 @@ VENDEDOR | VENTAS | REGION | POSICION
    Pedro |	  300 |  NORTE | 3
     Jose |    500 |    SUR | 1        <- Notar que aquí empieza la particion sur
     LUIS |    300 |    SUR | 2
+
+## OPTIMIZACION DE CONSULTAS
+Las bases de datos, registran ciertas estadísticas en su catálogo para optimizar consultas.
+- **n(R)**, denota la cantidad de tuplas en R
+- **B(R)**, la cantidad de bloques de almacenamiento en R
+- **V(A,R)**, la cantidad de valores distintos que adopta atributo A en R, (variabilidad)
+- **F(R)**, cantidad de tuplas en R que entran en un bloque. (factor de bloque = n/B)
+
+También sobre los indices se recupera cierta información
+- **Height(I(A,R))**, profundidar del índice de búsqueda **I** por el atributo **A** de R
+- **Length(I(A,R))**, cantidad de bloques que ocupan las hojas del índice **I**
+
+Observaciones.
+- Se suelen actualizar las estadísticas
+    - con cierta periodicidad,
+    - cuando se indica explícitamente
+    - cuando los recursos están ociosos
+
+**ESQUEMA DE PROCESAMIENTO**
+- [SQL Query] -> [PARSER] -> [RELATIONAL ALGEBRA EXPRESSION] -> [OPTIMIZER(Statistics)] -> [EXECUTION PLAN] -> [EVALUATION ENGINE (data files)] -> [RESULT]
+
+**OPTIMIZACION**
+- comienza con una expresión en álgebra relacional
+- se optimiza mediante heurísticas o reglas de equivalencia, generando un **plan de consulta**
+- Se estima el costo de distintos planes de consulta y el óptimo se materializa en un **plan de ejecución** (estructuras de datos, índices, algoritmos)
+    - Se estima el costo de acceso al disco (de lectura y de escritura)
+    - Se estima el costo de procesamiento
+    - Se estima el uso de memoria
+    - Se estima el uso de red
+
+**INDICES**, son estructuras que agilizan la búsqueda para un atributo.
+  - Implementaciones de árboles (binario, B, B+, B*)
+  - Implementaciones de tablas de Hash
+
+Tipos de índices
+  - **INDICE PRIMARIO**, cuando el índice se construye sobre un atributo clave de ordenamiento (Solo uno es posible)
+  - **INDICE DE CLUSTERING**, cuando el ordenamiento se realiza sobre los bloques físicos (Solo uno es posible)
+  - **INDICE SECUNDARIO**, cuando el índice se realiza sobre atributos que no son clave de ordenamiento (Muchos son posibles)
+
+**CREATE** [**UNIQUE**] **INDEX** nombre_indice **ON** tabla_1(A1..An) ;
+
+En postgresql
+- Para claves múltiples (varios atributos), sólo se permite BTREE
+- **ON** tabla_1 [**USING BTREE | GiST | HASH**] (A1 ..)
+- El comando **CLUSTER** tabla_1 [**USING** nombre_indx] la reorganiza físicamente
+
+En DB2
+- **ON** tabla (A1 .. An) [**CLUSETER**]
+- La opción 'cluster' indica  que el índice será de ordenamiento
+
+En SQLServer
+- **CREATE INDEX** nombre_ix **ON** tabla_1(A1 .. An) --Indice secundario
+- **CREATE CLUSTERED INDEX** nombre_ix **ON** tabla_1(A1 .. An) --Indice de ordenamiento, primario o clustering
+- **CREATE UNIQUE INDEX** nombre_ix **ON** tabla_1(A1..An) --Indice de no-ordenamiento sobre atributo clave
+
+En MySQL
+- **CREATE [UNIQUE | FULLTEXT | SPATIAL] INDEX** name_ix **[USING BTREE | HASH]**
+- **FULLTEXT**, permite indexar tablas con datos tipo 'text', para búsquedas con **MATCH .. AGAINST**
+- **SPATIAL**, permite indexar tipos de datos espaciales (**PONT** y **GEOMETRY**)
+
+
+**COSTOS DE OPERADORES**
