@@ -925,7 +925,7 @@ VENDEDOR | VENTAS | REGION | POSICION
 ## OPTIMIZACION DE CONSULTAS
 Las bases de datos, registran ciertas estadísticas en su catálogo para optimizar consultas.
 - **n(R)**, denota la cantidad de tuplas en R
-- **B(R)**, la cantidad de bloques de almacenamiento en R
+- **B(R)**, la cantidad de bloques de almacenamiento en R (**B=ceil(n/F)**)
 - **V(A,R)**, la cantidad de valores distintos que adopta atributo A en R, (variabilidad)
 - **F(R)**, cantidad de tuplas en R que entran en un bloque. (factor de bloque = n/B)
 
@@ -982,4 +982,36 @@ En MySQL
 - **SPATIAL**, permite indexar tipos de datos espaciales (**PONT** y **GEOMETRY**)
 
 
-**COSTOS DE OPERADORES**
+### COSTOS DE OPERADORES
+
+**SELECCION**, partimos de $\sigma_{cond}(R)$
+    - para condición de igualdad (**=**), pero pueden extenderse para el resto
+**METODOD FILE SCAN**, se recorren los archivos en busca de registros que cumplan la condición
+  - **BUSQUEDA LINEAL**, se explora cada registro. **COST(S)=B(R)**
+**METODO INDEX SCAN**, hacen uso eficiente de un índice de búsqueda
+  - **BUSQUEDA CON INDICE PRIMARIO** (sobre clave Aj),sólo una tupla puede satisfacer la condición
+      - Arbol de búsqueda: **COST(S)=Height(I(Aj, R))+1**
+      - Hash: **COST(S)=1**
+  - **BUSQUEDA CON INDICE DE CLUSTERING** (sobre no-clave Aj), las tuplas se encontrarán contiguas en bloques disjuntos
+      - **COST(S)=Height(I(Aj, R)) + ceil(n(R) / (V(Aj, R)·F(R)) )
+  - **BUSQUEDA CON INDICE SECUNDARIO** (sobre Aj)
+      - **COST(S)=Height(I(Aj, R)) + ceil( n(R) / V(Aj, R) )**
+- **CONJUNCION (AND) DE CONDICIONES**
+    - Si **uno** de los **atributos** tiene un **índice** asociado, se aplica primero esta condición. Luego se filtran las otras condiciones.
+    - Si hay un **indice compuesto** entre atributos, se le da prioridad.
+    - Si hay indices para **varios** atributos, se utilizan los índices por **separado** y finalmente se intersectan los resultados
+- **DISYUNCION (OR) DE CONDICIONES**, simplemente se unen los resultados
+    - si uno de los resultados no posee índice, se aplica fuerza bruta. (recorrer todas las opciones)
+ 
+**PROYECCION**, partimos de $\pi_{X}(R)$
+- **CASO X ES SUPERCLAVE**, no es necesario eliminar duplicados
+    - **COST(P) = B(R)**
+- **CASO X NO ES SUPERCLAVE**, debemos eliminar duplicados
+    1. **ORDENAR la tabla** si el bloque entra en memoria $B(R)<M$
+       - si no, **COST(P)=cost(sort_M(R))=2·B(R)·ceil(log_{M-1}(B(R))) - B(R)**
+       - ceil(log_{M-1}(B(R))), representa la cantidad de etapas del sort
+    2. **TABLA HASH**, si entra en memoria el costo será **B(R)**
+       - si no, **COST(P)=B(R)+2*B($\hat{\pi}_X(R)$R)**
+ - Si la consulta no usa **DISTINCT**, el resultado es un multiset y su costo será siempre B(R)
+
+**UNION E INTERSECCION**
