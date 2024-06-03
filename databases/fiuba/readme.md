@@ -1083,4 +1083,20 @@ En MySQL
     Ahora estimamos la proyección
     - B(Persona.DNI) = 40E6 · 4 / 1000 = 160 000 bloques
 - **SELECCION**, reduce cantidad de tuplas
+    - n($\sigma_{Ai=c}$(R)) = n(R) / V(Ai, R)
+    - donde V(Ai, R) es la cantidad de valores distintos que toma Ai en dicha relación, su inversa se llama selectividad.
+    - n($\sigma_{genero=F}(Persona)$)=40E6 / 2 generos = 20E6
+    - B(Persona.F)=20E6 tuplas ·(4+15+4+1) / (1024-24) = 480 000 bloques
+    Limitaciones
+    - estimar otros operadores es más dificil (>,<, neq)
+    - la estimación asume que c se toma al azar
+    **HISTOGRAMA**, estimar la distribución del atributo Ai
+       - ejemplo Pelicula(id, nombre, genero)
+       - n(Pelicula)=728
+       - V(genero, Pelicula)=9
+                       | drama | comedia | suspenso | otros
+       ----------------+-------+---------+----------+-------
+       Pelicula.genero |   150 |     140 |      128 |  310
+       - n(sigma_genero=comedia) = 140
+       - n(sigma_genero=terror) = (n(Peliculas) - (#drama+#comedia+#suspenso)) / (V(genero, Pelicula) - 3) = 728-418 / 9-3 = 52
 - **JUNTA**
