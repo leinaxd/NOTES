@@ -1138,3 +1138,23 @@ Selección
 Proyección
   - **CASCADA** π x1 (π x2 R) = π x1 (R)
   - **CONMUTIVIDAD CON σ** π x1 (σ cond (R)) = σ cond (π x1 (R))
+Producto cartesiano y junta
+  - **CONMUTATIVIDAD**, R × S = S × R
+  - R ∗ S = S ∗ R
+  - **ASOCIATIVIDAD**, (R × S) × T = R × (S × T)
+  - (R ∗ S) ∗ T = R ∗ (S ∗ T)
+Operadores de conjuntos
+  - **CONMUTATIVIDAD**, R ∪ S = S ∪ R
+  - R ∩ S = S ∩ R
+  - **ASOCIATIVIDAD**, (R ∪ S) ∪ T = R ∪ (S ∪ T)
+  - (R ∩ S) ∩ T = R ∩ (S ∩ T)
+Otras mixtas
+  - **DISTRIBUCION DE LA SELECCION DE JUNTA**, σ [cr, cs] (R ∗ S) = σ cR (R) ∗ σ cS (S). con cr y cs todos los atributos de R y S
+  - **DISTRIBUCION DE LA PROYECCION EN LA JUNTA**, π X (R ∗ S) = π xr (R) ∗ π xs (S). con xr y xs incluido en X, que son todos atributos de junta
+
+### HEURISTICAS DE OPTIMIZACION
+ **OPTIMIZACION ALGEBRAICA**, utilización de reglas para obtener una expresión de menor costo
+   - realizar la selección lo más temprano posible
+   - Reemplazar productos cartesianos por juntas
+   - Proyectar para descartar atributos lo antes posible (entre selección y proyección, se prioriza la selección)
+   - En caso de varias juntas, empezar por la más restrictiva (arboles left-deep o right-deep acota posibilidades)
