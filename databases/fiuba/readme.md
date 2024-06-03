@@ -1100,3 +1100,32 @@ En MySQL
        - n(sigma_genero=comedia) = 140
        - n(sigma_genero=terror) = (n(Peliculas) - (#drama+#comedia+#suspenso)) / (V(genero, Pelicula) - 3) = 728-418 / 9-3 = 52
 - **JUNTA**
+  - en principio 0<= **n(R ∗ S)**<=n(R)·n(S)
+  - asumiremos que los valroes del atributo en común B,  en la relación con menor variabilidad V(B,S) o V(B,R) están incluidos en la otra relación
+      - si el atributo de junta es clave primaria en una relación y foránea en otra, esto se cumple
+  - Supongamos que **V(B,R)>=V(B,S)**, como ts.B está incluido en los valores que toma B en R
+      - luego **P(ts.B=tr.B)=1/V(B,R)**
+      - luego **n(R ∗ S)=n(R)·n(S)/V(B,R)**
+  - Para estimar el factor de bloque,
+      - asumiremos que si una tupla R ocupa 1/F(R) bloques, idem para S
+      - entonces una tupla del resultado ocupa menos de 1/F(R)+1/F(S)
+      - **F(R ∗ S) = (1/F(R)+1/F(S))^-1**
+      - subestimando el factor de bloque, atributos de junta se repiten
+  - La cantidad de bloques será (sobre estimado)
+      - **B(R ∗ S)=js·n(R)·n(S)/F(R ∗ S)=js·B(R)·B(S)·(F(R)+F(S))**
+  - Estimación con **HISTOGRAMA**
+      - sea R(A,B), con V(B,R) = 18
+      - sea S(B,C), con V(B,S) = 15
+      - sea el histograma de los k valores mas frecuentes de B en cada relación
+            |      4 |     12 |     14 |     20 |     22 |   30 | otros
+        ----+--------+--------+--------+--------+--------+------+-------
+        R.B |    200 | **43** |    320 |    120 |    150 |   65 | 550 (507)
+        S.B |    150 |    100 | **41** |    180 |    210 |   85 | 410 (369)
+        ----+--------+--------+--------+--------+--------+------+-------
+        R∗S | 30 000 |        |        | 21 600 | 31 500 | 5525 |        <- Para cada valor que conozcamos ambos, n($\sigma_{B=xi}(R))·n(\sigma_{B=xi}(S))
+        R∗S |        |  4 300 | 13 120 |        |        |      |        <- cuando sólo conocemos uno sólo, estimamos el faltante con la columna 'otros'
+                                                                            fs(xi)=fs(otros)/(V(B,S)-k)
+        R∗S |        |        |        |        |        |      | 15 590 <- Estimamos la columna otros con f(otros)=fR(otros)·fS(otros)/max(V(B,R),V(B,S))-k'
+        La estimación final
+          - **n(R∗S)=sum_i f_{r∗s}(xi) = 121635
+          - la estimación sin histograma daba, 88594
