@@ -1067,3 +1067,20 @@ En MySQL
 **PIPELINING**, evita materializar toda la salida
 - En muchos casos, el costo de un operador puede ser procesado por el operador siguiente en forma parcial.(sin terminar de generar tuplas)
 - El costo de operaciones anidadas $O_2(O_1(R))$ debemos considerar que el pipeling, no necesita todos los O_1 para calcular el O_2
+
+**ESTIMACION DE LA CARDINALIDAD**, Estima el tamaño de las relaciones intermedias
+- se espera que la estimación: sea precisa, fácil de calcular, independiente de cómo se calculó la relación intermedia
+- **PROYECCIÔN**, reduce cantidad de atributos
+    - Persona(DNI, nombre, f_nac, genero)
+    - 40 millones de tuplas
+    - DNI: INT (4 bytes)
+    - nombre: VARCHAR(15 bytes)
+    - f_nac: TIMESTAMP(4 bytes)
+    - genero: CHAR(1 byte)
+    - Bloques de 1024 bytes - header de 24 bytes
+    Entonces la cantidad de bloques que ocupa la relación es:
+    - B(Persona) = 40E6 ·(4+15+4+1) / (1024-24) = 960 000 bloques
+    Ahora estimamos la proyección
+    - B(Persona.DNI) = 40E6 · 4 / 1000 = 160 000 bloques
+- **SELECCION**, reduce cantidad de tuplas
+- **JUNTA**
