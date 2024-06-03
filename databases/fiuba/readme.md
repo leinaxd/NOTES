@@ -1129,3 +1129,12 @@ En MySQL
         La estimación final
           - **n(R∗S)=sum_i f_{r∗s}(xi) = 121635
           - la estimación sin histograma daba, 88594
+
+### REGLAS DE EQUIVALENCIA
+Selección
+  - **CASCADA**, σ (c1 AND c2 .. AND cn) R = σ c1 (σ c2 (.. σ(cn) R ))
+  - σ(c1 OR c2 .. OR cn) R = σ c1 R UNION .. UNION σ(cn) R
+  - **CONUMTATIVIDAD** σ c1 (σ c2 (R)) = σ c2 (σ c1 (R))
+Proyección
+  - **CASCADA** π x1 (π x2 R) = π x1 (R)
+  - **CONMUTIVIDAD CON σ** π x1 (σ cond (R)) = σ cond (π x1 (R))
