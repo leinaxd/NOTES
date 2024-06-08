@@ -1203,3 +1203,66 @@ Otras mixtas
       - que relaciona sus diferentes tablas de dimensiones (mes, edad, producto, ciudad)
   - **TIPO 2. DIAGRAMA COPO DE NIEVE (snowflake)**, todas las tablas están normalizadas
 - **Modelado lógico**, 
+    - En OLTP cada transaccion se registra en filas distintas
+    - En OLAP la tabla de hechos guarda información resumida, según las dimensiones que nos interesa explorar.
+    - **MOLAP (Multidimensional OLAP)**, los datos agregados se guardan en un cubo de datos, precalculados al en base al uso esperado.
+        - Matriz multidimensional donde se almacena una 'medida' agregada por una serie de dimensiones.
+        - Ej. Producto x Edad x Ciudad = {(shampoo,(0,15), Buenos Aires), (shampoo, (16, 30), Buenos Aires) }
+    - **ROLAP (Relational OLAP)**, la tabla de hechos agregada se almacena como una tabla mas.
+        - solo guardamos la 'SQL view' que la define
+        - cada cierto tiempo, se ejecuta y materializa la vista
+            - **mantenimiento inmediato**, se ejecuta cada vez que se ejecuta una transacción en los datos
+            - **Mantenimiento diferido**,
+                - **LAZY**, Cuando el usuario requiere los datos
+                - **Periodico**, cada cierto tiempo
+                - **Forzado**, Después de una cantidad fija de cambios
+    - **HOLAP (Hybrid OLAP)**, Combina una gestión relacional con un servidor multidimensional.
+
+**OPERACIONES OLAP**
+  - **ROLL UP**, sube en la jerarquía de los datos en una dimensión.
+      - ventas por ciudad y producto. roll-up de ciudad obtendría un total de 'provincia' y producto.
+  - **DRILL DOWN**, es lo contrario, baja un nivel de jerarquía
+  - **PIVOTEO**, genera tabla agregada por un subconjunto de dimensiones en cierto orden deseado.
+      - (producto, mes, edad, ciudad) podría pivotear en (edad, producto)
+  - **SLICING/DICING**, selección de una dimensión (slice) o en más de una (dice).
+      - ejemplo datos sólo de córdoba
+**SOPORTE EN SQL**
+  - **GROUPING SETS**, simplifica la sintaxis de agregado
+      - cada uno de los grouping sets define un conjunto de agrupación distinto
+      - los paréntesis vacíos significan montos totales
+    id |	producto | región |	ventas
+   ----+-----------+--------+-------
+     1 |      A    |  Norte |	 100
+     2 |	    A	   |   Sur  |  150
+     3 |      B	   |  Norte |  200
+     4 | 	    B	   |    Sur |  250
+    Si quiero agrupar las ventas por producto y región
+    ``` SELECT producto, region, SUM(ventas) FROM ventas GROUP BY GROUPING SETS (producto, region); ```
+    producto | región |	ventas
+   -----------+--------+-------
+        A    |   NULL |	 450
+        B	   |   NULL |  250
+      NULL   |  Norte |  400
+      NULL   |    Sur |  300
+    ```
+    SELECT producto, region, SUM(ventas.vendido)
+    FROM ventas
+    GROUP BY GROUPING SETS ((producto, region),producto, ());
+    ```
+    producto | región |	ventas
+   -----------+--------+-------
+        NULL |   NULL | 700
+           B |  Norte |	200
+           B |    Sur | 250
+           A |  Norte | 100
+           A |    Sur | 150
+           B |   NULL | 450
+           A |   NULL | 250
+  - **ROLLUP**, es una simplificación de grouping sets que además de agrupar por dicho conjunto, lo hace para todos los subconjuntos
+      **GROUP BY GROUPING SETS (a,b,c), (a,b), (a), ()** Es igual a **GROUP BY ROLLUP (a,b,c)**
+  - **CUBE**, es otra simplificación de grouping sets, que incluye todas las permutaciones
+      - **GROUP BY CUBE (a,b,c)**
+      - Equivale a
+      - **GROUP BY GROUPING SETS (a,b,c), (a,b), (a,c), (b,c), (a), (b), (c), ()**
+  - **RANK**, **OVER**
+  - **CREATE MATERIALIZED VIEW**
