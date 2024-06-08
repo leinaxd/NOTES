@@ -1158,3 +1158,48 @@ Otras mixtas
    - Reemplazar productos cartesianos por juntas
    - Proyectar para descartar atributos lo antes posible (entre selección y proyección, se prioriza la selección)
    - En caso de varias juntas, empezar por la más restrictiva (arboles left-deep o right-deep acota posibilidades)
+
+## DATA WAREHOUSING
+**Datos estáticos**, clientes, productos, contactos direcciones
+**Datos dinámicos**, compras, pedidos, liquidaciones
+**Capacidad transaccional**, recursos que determinan el volumen de datos capaz de procesar.
+
+**arquitectura de 3 capas**, caso de la web
+- **Capa presentación**, interfaz web donde el usuario carga consulta y ve resultado
+- **Capa lógica**, el servidor web recibe la consulta y conecta los nodos de almacenamiento
+    - no almacena información
+    - determina la escalabilidad del sistema y capacidades de concurrencia
+- **Capa de datos**, Constituida por los nodos de almacenamiento y sus procesos.
+
+**OLTP (online transaction prorcessing)**, permite procesar transacciones en línea de forma concurrente y escalable
+
+**Capacidad analítica**, capacidad de extraer información que sirva de soporta para tomar una decisión
+  - Reducir cantidad de datos
+  - Expresar consultas más pesadas
+
+**OLAP (online analytical processing)**, debe ofrecer los siguientes servicios
+  - **Vista conceptual multidimensional**, mantener los datos en una matriz en la que cada dimensión representa un **atributo**.
+  - **manipulación intuitiva de datos**, Poder diseñar la vista conceptual mediante una interfaz amigable
+  - **Accesibilidad**, mediar las fuentes de datos cuando estas son diversas (ej. BBDD distintas, formatos)
+  - **Extracción en batch e interpretativa**, poder presentar paquetes de datos actualizados en tiempo real.
+  - **Modelos de análisis**, poder realizar consultas del tipo estadístico, predictivo
+  - **Arquitectura cliente-servidor**
+
+**DATA WAREHOUSE**, las aplicaciones OLAP generalmente se ejecutan en una copia paralela
+  - integran datos provenientes de diferentes fuentes.
+  - [BASES DE DATOS HETEROGENEAS] -> Procesos ETL (Extraer transformar cargar) [DATA WAREHOUSE] -> Visualizaciones, OLAP, mineria de datos
+
+**MODELADO DIMENSIONAL**, definir una serie de medidas (**hecho**, valores) numéricas sobre un conjunto de atributos (dimensiones)
+  - durante el modelado, debemos definir estas dimensiones (mes, edad, ciudad)
+  - **Hecho**: 'en noviembre de 2016 en Rosario, las personas entre 40 y 60 valoraban el shampoo en 8.6 puntos'
+  - **Dimensión**, En general, cada dimensión tiene asociado un conjunto de atributos.
+      - Edad(id, cota_inferior, cota_superior, es_mayor_edad)
+      - **tablas de dimensiones**, estas tablas que describen la dimensión
+      - **Jerarquías**, 'una ciudad pertenece a una provincia'
+- **Modelado conceptual**, para construir una estructura OLAP, el SGBD toma una foto de la base
+  - y **agrega** los datos para construir un **modelo multidimensional**
+  - **TIPO 1. DIAGRAMA ESTRELLA**, comunica la estructura de hechos y dimensiones
+      - hay una tabla central (hechos)
+      - que relaciona sus diferentes tablas de dimensiones (mes, edad, producto, ciudad)
+  - **TIPO 2. DIAGRAMA COPO DE NIEVE (snowflake)**, todas las tablas están normalizadas
+- **Modelado lógico**, 
