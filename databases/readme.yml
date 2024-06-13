@@ -399,7 +399,29 @@ Yellowbrick:
 
 YugaByte:
   - ARCHITECTURE: (S)hare (D)isk / (S)hare (N)othing
-  
+
+
+# DECISIONS TO SELECT YOUR DATABASE SYSTEM
+# 1. How efficiently query data through indexes?
+#    - semantic vectors
+#    - B+TREE search
+#    - Hashing search
+# 2. How does your system escalate?
+#    - Horizontally (distributed system)
+#    - Vertically (increasing hardware, cores, memory)
+# 3. Storage Capabilities
+#    - Disk Architecture
+#    - On memory systems
+#    - Cloud architecture
+# 4. object type
+#    - Does your data fit entirely into a single page size? (long texts)
+#    - how to store binary large objects? (images)
+#    - How to store time series data?
+# 5. How many redundancy replicas
+# 6. Can your data expire over time? (purge old records)
+# 7. Does your data has to be consistent? (locking protocols)
+# 8. Does your data has to be exactly right, or an approximation is also legal?
+
 /*
 - MAIN_STORAGE o - STORAGE_MANAGER? 
 */
