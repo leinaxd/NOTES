@@ -441,3 +441,78 @@ YugaByte:
 | (D)isk/(M)emory |    D    |
 | (I)TERATOR      |    I    |
 */
+
+
+By APPLICATION:
+- Relational DDBB:
+  - structured tables
+  - Data integrity 
+  - Complex queries
+  - ACID transactions
+  - Examples: 
+    - MySQL
+    - Posgresql
+    - sqlite
+    - Oracle
+    - SQL server
+    
+- Documents DDBB:
+  - Stores JSON files
+  - Unstructured (each document can have different keys)
+  - High adpatability to structure change
+  - Easily Scalable (horizontal/distributed)
+  - Examples:
+    - CouchDB
+    - MongoDB
+    
+- In Memory:
+  - Real time data processing
+  - low latency txns
+  - high throughput
+  - Examples: 
+    - Apache Geode
+    - Hazelcast
+  - Applications:
+    - Games
+    - High frecuency operations
+    
+- Graph based systems: 
+  - Models relations
+  - Dense data relations
+  - Examples:
+    - Neo4j
+    - OrientDB
+  - Applications:
+    - Model social networks
+    - Knowledge graphs
+    - Pattern Recognition
+    
+- Time Series based systems:
+  - Optimized for time series data
+  - Optimized for data compression
+  - Examples:
+    - Timescale
+    - InfluxDB
+  - Applications:
+    - IoT
+    - Fast data retrieval
+    - Time series Machine Learning
+    - Tracking, log, monitor of registers
+    
+- Spatial based systems:
+  - Geographic data
+  - Examples:
+    - Amazon Aurora
+    - PostGIS
+    - Oracle
+  - Applications:
+    - Queries based on location
+    - Earth science
+
+- Vector based systems:
+  - Optimized for information retrieval
+  - Examples:
+    - Pinecone
+  - Applications:
+    - RAG LLM
+    - Search by meaning
