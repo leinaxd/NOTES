@@ -472,6 +472,7 @@ By APPLICATION:
   - Examples: 
     - Apache Geode
     - Hazelcast
+    - Redis
   - Applications:
     - Games
     - High frecuency operations
@@ -482,6 +483,8 @@ By APPLICATION:
   - Examples:
     - Neo4j
     - OrientDB
+    - ArangoDB
+    - JanusGraph
   - Applications:
     - Model social networks
     - Knowledge graphs
@@ -493,6 +496,14 @@ By APPLICATION:
   - Examples:
     - Timescale
     - InfluxDB
+    - Prometheus
+    - OpenTSDB
+    - Graphite
+    - KairosDB
+    - Druid
+    - VictoriaMetrics
+    - CreateDB
+    - QuestDB
   - Applications:
     - IoT
     - Fast data retrieval
@@ -505,14 +516,24 @@ By APPLICATION:
     - Amazon Aurora
     - PostGIS
     - Oracle
+    - geomesa
   - Applications:
     - Queries based on location
     - Earth science
-
+    
 - Vector based systems:
   - Optimized for information retrieval
   - Examples:
     - Pinecone
+    - Weaviate
+    - Faiss
+    - Annoy
+    - HNSWlib
+    - Milvus
+    - ElasticSearch
+    - Vearch
+    - Zilliz Cloud
+    - Qdrant
   - Applications:
     - RAG LLM
     - Search by meaning
